@@ -1,0 +1,27 @@
+
+.js-plotly-plot .poltly .modebar {
+  display: flex !important;
+  flex-direction: row !important;
+  flex-wrap: nowrap !important;
+  justify-content: flex-start;
+  align-items: center;
+  top: 414px;
+  right: 25px;
+  left: unset !important;
+  width: auto !important;
+
+}
+
+.js-plotly-plot .plotly .modebar-group {
+  display: flex !important;
+  flex-direction: row !important;
+}
+
+.div .modebar-group {
+  display: flex !important;
+  flex-direction: row !important;
+}
+
+.js-plotly-plot .modebar-group {
+  margin-left: 40px;
+}

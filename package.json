@@ -1,0 +1,15 @@
+{
+    "name": "spectural-platform",
+    "version": "1.0.1",
+    "description": "React Flask project",
+    "repository": {
+        "type": "git",
+        "url": "https://github.com/rosswu159/spectural_platform"
+    },
+    "author": "Rosa Wu",
+    "engines": {
+        "node": ">=10.0.0"
+    },
+    "dependencies": {},
+    "devDependencies": {}
+}
