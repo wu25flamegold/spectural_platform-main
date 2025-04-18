@@ -6,6 +6,7 @@ import clsx from 'clsx';
 import HoloPlot from './Holoplot';
 import FadeMessage from './FadeMessage';
 import ROICoordsDisplay from './ROICoordsDisplay';
+import { useRef } from 'react';
 
 import {
     Card,
@@ -41,25 +42,75 @@ const SamplePage = () => {
     const [isLoading, setIsLoading] = useState(false);
     const [errors, setErrors] = useState({});
     const account = useSelector((state) => state.account);
+
+    const [edfMeta, setEdfMeta] = useState({
+        num_signals: null,
+        fs: null,
+        duration: null,
+        records: null
+    });
     const [roiCoords, setRoiCoords] = useState({
         x1: '',
         x2: '',
         y1: '',
         y2: ''
       });
-
-      const handleFileChange = (e) => {
+    const parseTimeout = useRef(null);
+    const handleFileChange = (e) => {
         const selectedFile = e.target.files[0];
         const maxSizeMB = 50;
     
-        // 若選擇了檔案且超出限制
         if (selectedFile && selectedFile.size > maxSizeMB * 1024 * 1024) {
             setErrors(prev => ({ ...prev, file: `File size exceeds ${maxSizeMB}MB limit.` }));
             setFile(null);
-        } else {
-            setFile(selectedFile);
-            setErrors(prev => ({ ...prev, file: "" })); // 清除錯誤訊息
+            return;
         }
+    
+        setFile(selectedFile);
+        setErrors(prev => ({ ...prev, file: "" }));
+    
+        // ✅ 延遲呼叫 validate API，避免連續操作觸發太快
+        clearTimeout(parseTimeout.current);
+        parseTimeout.current = setTimeout(async () => {
+            try {
+                const formData = new FormData();
+                formData.append('file', selectedFile);
+    
+                const response = await axios.post(
+                    'http://xds3.cmbm.idv.tw:81/tmapi/validate_edf_metadata',
+                    formData,
+                    {
+                        headers: {
+                            Authorization: `${account.token}`,
+                            UserId: `${account.user._id}`,
+                            'Content-Type': 'multipart/form-data',
+                        }
+                    }
+                );
+    
+                // ✅ 顯示來自後端的 fs/duration/records 等資訊
+                const { num_signals, fs_detected, duration_str, num_records_str, message } = response.data;
+                console.log("num_signals:", num_signals);
+                console.log("fs_detected:", fs_detected);
+                console.log("duration_str:", duration_str);
+                console.log("num_records_str:", num_records_str);
+    
+                //setMessage(`✅ ${message} (fs: ${fs_detected}, duration: ${duration_str}, records: ${num_records_str})`);
+                setEdfMeta({
+                    num_signals: num_signals,
+                    fs: fs_detected,
+                    duration: duration_str,
+                    records: num_records_str,
+                    
+                });
+                // 如果你有狀態欄位也可以 setFS(fs_detected) 之類
+            } catch (error) {
+                const errMsg = error?.response?.data?.message || error.message;
+                console.error("❌ EDF 驗證失敗", errMsg);
+                setMessage(`❌ ${errMsg}`);
+            }
+        }, 500); // 0.5 秒延遲
+
     };
     
 
@@ -100,7 +151,7 @@ const SamplePage = () => {
             formData.append('cmd', cmd);
             formData.append('chn', chn);
             formData.append('signal_size', signalSize);
-            formData.append('sampling_rate', samplingRate);
+            formData.append('sampling_rate', edfMeta.fs);
             formData.append('d_start', dStart);
             formData.append('d_stop', dStop);
             formData.append('selectedFunction', selectedFunction);
@@ -184,8 +235,9 @@ const SamplePage = () => {
             if (fileExtension !== ".edf") errors.file = "Only .edf files are allowed.";
         }
         if (!chn || isNaN(chn) || chn <= 0 || !/^\d+$/.test(chn)) errors.chn = "Channel must be a positive number.";
-        if (!samplingRate || isNaN(samplingRate) || samplingRate <= 0 || !/^(0|[1-9]\d*)(\.\d+)?$/.test(samplingRate)) errors.samplingRate = "Sampling Rate must be a positive number.";
-        if (!dStart || isNaN(dStart) || dStart < 0 || !/^(0|[1-9]\d*)(\.\d+)?$/.test(dStart)) errors.dStart = "Start Time must be a non-negative number.";
+        if (dStart === "" || dStart === null || dStart === undefined || isNaN(dStart) || dStart < 0 || !/^(0|[1-9]\d*)(\.\d+)?$/.test(dStart)) {
+            errors.dStart = "Start Time must be a non-negative number.";
+        }
         if (
             isNaN(+dStop) ||
             +dStop <= 0 ||
@@ -252,12 +304,38 @@ const SamplePage = () => {
                                                         <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 16V4a1 1 0 011-1h7l5 5v8a1 1 0 01-1 1H5a1 1 0 01-1-1z" />
                                                     </svg>
                                                     <span className="truncate max-w-[120px]">{file.name}</span>
-                                                    <button onClick={() => setFile(null)} className="hover:text-red-500 text-gray-400 transition">
+                                                    <button onClick={() => {
+                                                        setFile(null);
+                                                        setEdfMeta({ num_signals: null, fs: null, duration: null, records: null });
+                                                    }} className="hover:text-red-500 text-gray-400 transition">
                                                         <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                                                         <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
                                                         </svg>
                                                     </button>
                                                     </div>
+                                                    <div className="text-xs text-gray-600 -mt-1 text-left leading-snug">
+                                                        {edfMeta.fs && (
+                                                            <>
+                                                            <div>
+                                                                <span className="font-medium">Sample Rate:</span>{' '}
+                                                                <span className="text-blue-600 font-semibold">{edfMeta.fs} Hz</span>
+                                                            </div>
+                                                            <div>
+                                                                <span className="font-medium">Total Duration:</span>{' '}
+                                                                <span className="text-blue-600 font-semibold">{edfMeta.duration} s</span>
+                                                            </div>
+                                                            <div>
+                                                                <span className="font-medium">Channel Counts:</span>{' '}
+                                                                <span className="text-blue-600 font-semibold">{edfMeta.num_signals}</span>
+                                                            </div>
+                                                            </>
+                                                        )}
+                                                        </div>
+
+
+
+
+
                                                 </div>
                                                 
                                                 ) : (
@@ -302,16 +380,12 @@ const SamplePage = () => {
                                                     <input type="text" className="border p-2 rounded" value={age} onChange={(e) => setAge(e.target.value)} />
                                                     {errors.age && <span className="text-red-500 text-xs italic">{errors.age}</span>}
                                                 </div>
-                                                <div className="flex flex-col">
-                                                    <label>Channel:</label>
-                                                    <input type="text" className="border p-2 rounded" value={chn} onChange={(e) => setChn(e.target.value)} />
-                                                    {errors.chn && <span className="text-red-500 text-xs italic">{errors.chn}</span>}
-                                                </div>
-                                                <div className="flex flex-col">
+                                                
+                                                {/* <div className="flex flex-col">
                                                     <label>Sampling Rate:</label>
                                                     <input type="number" className="border p-2 rounded" value={samplingRate} onChange={(e) => setSamplingRate(e.target.value)} />
                                                     {errors.samplingRate && <span className="text-red-500 text-xs italic">{errors.samplingRate}</span>}
-                                                </div>
+                                                </div> */}
                                                 <div className="flex flex-col">
                                                     <label>Start Time:</label>
                                                     <input type="number" className="border p-2 rounded" value={dStart} onChange={(e) => setDStart(e.target.value)} />
@@ -322,10 +396,16 @@ const SamplePage = () => {
                                                     <input type="number" className="border p-2 rounded" value={dStop} onChange={(e) => setDStop(e.target.value)} />
                                                     {errors.dStop && <span className="text-red-500 text-xs italic">{errors.dStop}</span>}
                                                 </div>
-                                                <div className="flex flex-col md:col-span-2">
+                                                <div className="flex flex-col">
+                                                    <label>Channel:</label>
+                                                    <input type="text" className="border p-2 rounded" value={chn} onChange={(e) => setChn(e.target.value)} />
+                                                    {errors.chn && <span className="text-red-500 text-xs italic">{errors.chn}</span>}
+                                                </div>
+                                                <div className="flex flex-col">
                                                     <label>Clinical Diagnosis Codes (Optional):</label>
                                                     <input type="text" className="border p-2 rounded w-full" value={diagnosisCodes} onChange={(e) => setDiagnosisCodes(e.target.value)} placeholder="Enter codes separated by commas" />
                                                 </div>
+                                                
                                                 <div className="md:col-span-2">
                                                     <button className="bg-primary hover:bg-primary-dark text-white px-4 py-2 rounded w-full" 
                                                             onClick={handleUpload}

@@ -278,41 +278,7 @@ class MATLABSharedMemoryClient:
         with open(self.file_path, "r+b") as f:
             self.mm = mmap.mmap(f.fileno(), self.buffer_size)
 
-    def validate_edf_by_header_only(self, edf_path, n, start_index, end_index, fs):
-        if not os.path.exists(edf_path):
-            return False, f"❌ 找不到檔案：{edf_path}"
-        try:
-            # 取得檔案大小
-            filesize = os.path.getsize(edf_path)
-
-            # 讀通道數（第 252-255 字元為 ASCII 數字）
-            with open(edf_path, 'rb') as f:
-                f.seek(252)
-                num_signals = int(f.read(4).decode().strip())
-
-            # 計算可用長度（秒）
-            header_size = 256 + num_signals * 256
-            bytes_per_sample = 2
-            bytes_per_second = fs * num_signals * bytes_per_sample
-            data_bytes = filesize - header_size
-            total_seconds = data_bytes / bytes_per_second
-
-            print(f"📊 通道數：{num_signals}")
-            print(f"⏱️ 檔案長度：約 {total_seconds:.2f} 秒")
-
-            if n < 1 or n > num_signals:
-                return False, f"❌ 通道 index ({n}) 超出範圍，僅有 {num_signals} 通道"
-
-            if start_index < 0 or end_index <= start_index:
-                return False, "❌ 時間區間無效，start_index 必須小於 end_index 且皆為正整數"
-
-            if end_index > total_seconds:
-                return False, f"❌ 結束時間 {end_index}s 超出檔案總長 {total_seconds:.2f}s"
-
-            return True, None  # ✅ 驗證成功
-        except Exception as e:
-            return False, f"❌ 驗證時發生錯誤：{str(e)}"
-
+    
     def send_request(self,  UserId, edf_filename="fa0019r0.edf", fs=200, n=10, start_index=220, end_index=240):
         """發送 EDF 文件名稱到 MATLAB 端並觸發計算"""
         self.mm[5] = 200

@@ -6,6 +6,7 @@ import time
 import psutil
 from flask import current_app
 import pygetwindow as gw
+from werkzeug.utils import secure_filename
 
 from ctypes import WinDLL
 from ctypes import WINFUNCTYPE, c_long, Structure, c_void_p, wintypes, c_int, c_wchar_p, c_ulong, byref
@@ -294,7 +295,6 @@ class SendCommand(Resource):
         email = request.form['email']
         usage = int(request.form['usage'])
         cmd=""
-
         # buf, buf_n = prepare_tmapi_data(
         #     tmapi, selectedFunction, file.filename if file_path else "",
         #     cmd, sampling_rate, chn, d_start, d_stop
@@ -415,7 +415,47 @@ class AnalyzeROI(Resource):
             "roi_coords": roi_coords
         })
 
+@rest_api.route('/tmapi/validate_edf_metadata', endpoint='validate_edf_metadata')
+class ValidatEdfMetadata(Resource):
+    def post(self):
+        file = request.files.get('file')
+        if not file:
+            return jsonify({"message": "❌ No file uploaded"}), 400
 
+        
+        timestamp = datetime.now().strftime("%Y%m%d%H%M%S")
+        original_filename = secure_filename(file.filename)
+        filename = f"{timestamp}_{original_filename}"
+        save_dir = "C:\\HHSA_shared\\Temp"
+        os.makedirs(save_dir, exist_ok=True)  # 若資料夾不存在就自動建立
+        save_path = f"{save_dir}\\{filename}"
+
+        file.save(save_path)
+
+        try:
+            with open(save_path, 'rb') as f:
+                f.seek(252)
+                num_signals = int(f.read(4).decode().strip())
+                f.seek(244)
+                duration_str = f.read(8).decode().strip()
+                f.seek(236)
+                num_records_str = f.read(8).decode().strip()
+                f.seek(256 + num_signals * 216)
+                samples_per_record_all = [int(f.read(8).decode().strip()) for _ in range(num_signals)]
+                fs_detected = samples_per_record_all[0] / float(duration_str)
+                duration_per_record = float(duration_str)
+                num_records = int(num_records_str)
+            total_duration = duration_per_record * num_records
+
+            return jsonify({
+                "message": "Header parsed successfully",
+                "num_signals": num_signals,
+                "fs_detected": fs_detected,
+                "duration_str": total_duration,
+                "num_records_str": num_records_str
+            })
+        except Exception as e:
+            return jsonify({"message": f"❌ Failed to parse EDF: {str(e)}"}), 500
 
 @rest_api.route('/upload_for_fft', endpoint='upload_for_fft')
 class UploadFFT(Resource):
@@ -533,35 +573,26 @@ def validate_edf_by_header_only(edf_path, n, start_index, end_index, fs):
             # 取得檔案大小
             filesize = os.path.getsize(edf_path)
 
-            # 讀通道數（第 252-255 字元為 ASCII 數字）
             with open(edf_path, 'rb') as f:
+                # 通道數
                 f.seek(252)
                 num_signals = int(f.read(4).decode().strip())
+
+                # 每段紀錄時間
                 f.seek(244)
                 duration_str = f.read(8).decode().strip()
+
+                # 紀錄段數
                 f.seek(236)
                 num_records_str = f.read(8).decode().strip()
 
+                if not duration_str or not num_records_str:
+                    return False, "❌ EDF 檔案缺少紀錄段資訊（duration 或 record 數）"
 
-            if not duration_str or not num_records_str:
-                return False, "❌ EDF 檔案缺少紀錄段資訊（duration 或 record 數）"
+                duration_per_record = float(duration_str)
+                num_records = int(num_records_str)
 
-            duration_per_record = float(duration_str)
-            num_records = int(num_records_str)
-
-            # 預期的資料區長度（bytes）
-            expected_data_bytes = num_signals * fs * duration_per_record * num_records * 2
-            actual_data_bytes = filesize - (256 + num_signals * 256)
-
-            # margin = 0.1  # 可接受誤差（10%）
-            # lower_bound = expected_data_bytes * (1 - margin)
-            # upper_bound = expected_data_bytes * (1 + margin)
-
-            # if not (lower_bound <= actual_data_bytes <= upper_bound):
-            #     return False, (
-            #         f"❌ Sample rate {fs} 與檔案大小不符\n"
-            #         f"🔢 預期大小約 {expected_data_bytes:.0f} bytes，實際為 {actual_data_bytes:.0f} bytes"
-            #     )
+            total_duration = duration_per_record * num_records
 
 
             # 計算可用長度（秒）
@@ -569,10 +600,9 @@ def validate_edf_by_header_only(edf_path, n, start_index, end_index, fs):
             bytes_per_sample = 2
             bytes_per_second = fs * num_signals * bytes_per_sample
             data_bytes = filesize - header_size
-            total_seconds = data_bytes / bytes_per_second
 
             print(f"📊 通道數：{num_signals}")
-            print(f"⏱️ 檔案長度：約 {total_seconds:.2f} 秒")
+            print(f"⏱️ 檔案總長：約 {total_duration:.2f} 秒")
 
             if n < 1 or n > num_signals:
                 return False, f"❌ 通道 index ({n}) 超出範圍，僅有 {num_signals} 通道"
@@ -580,8 +610,8 @@ def validate_edf_by_header_only(edf_path, n, start_index, end_index, fs):
             if start_index < 0 or end_index <= start_index:
                 return False, "❌ 時間區間無效，start_index 必須小於 end_index 且皆為正整數"
 
-            if end_index > total_seconds:
-                return False, f"❌ 結束時間 {end_index}s 超出檔案總長 {total_seconds:.2f}s"
+            if end_index > total_duration:
+                return False, f"❌ 結束時間 {end_index}s 超出檔案總長 {total_duration:.2f}s"
 
             return True, None  # ✅ 驗證成功
         except Exception as e:
