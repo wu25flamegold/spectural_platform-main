@@ -80,7 +80,7 @@ def prepare_tmapi_data(tmapi, selectedFunction, file_name, cmd, sampling_rate, c
         return tmapi.prepare_data("", cmd, sampling_rate, chn, d_start, d_stop, 4000, selectedFunction)
 
 def open_tmapi_window(UserId):
-    exe_path = r"C:\\Users\\admin\\Documents\\2024\\matlab_edf_server_for_json.exe"
+    exe_path = r"C:\\Users\\admin\\Documents\\2024.0\\matlab_edf_server_for_json.exe"
     tmapiPath = r"C:\\Users\\admin\\Desktop\\v026\\TMAPI.exe"
     user32 = WinDLL('user32', use_last_error=True)
     if BaseConfig.PROCESSING_MODE == "TMAPI":

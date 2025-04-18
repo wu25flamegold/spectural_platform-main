@@ -186,8 +186,15 @@ const SamplePage = () => {
         if (!chn || isNaN(chn) || chn <= 0 || !/^\d+$/.test(chn)) errors.chn = "Channel must be a positive number.";
         if (!samplingRate || isNaN(samplingRate) || samplingRate <= 0 || !/^(0|[1-9]\d*)(\.\d+)?$/.test(samplingRate)) errors.samplingRate = "Sampling Rate must be a positive number.";
         if (!dStart || isNaN(dStart) || dStart < 0 || !/^(0|[1-9]\d*)(\.\d+)?$/.test(dStart)) errors.dStart = "Start Time must be a non-negative number.";
-        if (!dStop || isNaN(dStop) || dStop <= 0 || dStop <= dStart || !/^(0|[1-9]\d*)(\.\d+)?$/.test(dStop)) errors.dStop = "Stop Time must be greater than Start Time.";
-        return errors;
+        if (
+            isNaN(+dStop) ||
+            +dStop <= 0 ||
+            +dStop <= +dStart ||
+            !/^(0|[1-9]\d*)(\.\d+)?$/.test(dStop)
+          ) {
+            errors.dStop = "Stop Time must be greater than Start Time.";
+          }
+                  return errors;
     };
 
     return (
@@ -340,6 +347,7 @@ const SamplePage = () => {
                                 HHSA Spectrum Result
                             </Typography>
                             <Divider className="mb-4" />
+                            
                             <HoloPlot holoData={image} isLoading={isLoading} userid={`${account.user._id}`} token={`${account.token}`}/>
     {/* 
                             <div className="grid grid-cols-1 md:grid-cols-3 gap-4 items-start">

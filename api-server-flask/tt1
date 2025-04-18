@@ -1,0 +1,79 @@
+    "MATLAB 伺服器視窗已改名為: "    "MATLAB_Server_2"
+
+MATLAB: 發現上次遺留的數據，正在清理 buffer...
+MATLAB: buffer 清理成功！✅
+Cannot find option file 
+Some menu items hidden. Use Preference menu to show them all.
+Cannot find option file 
+Loading plugins
+EEGLAB: Could not load "eegplugin_eepimport": Function eegplugin_eepimport does not exist.
+EEGLAB: Could not load "eegplugin_iclabel": Function eegplugin_iclabel does not exist.
+EEGLAB: Could not load "eegplugin_VisEd": Function eegplugin_VisEd does not exist.
+EEGLAB: Could not load "eegplugin_eegbids": Function eegplugin_eegbids does not exist.
+EEGLAB: Could not load "eegplugin_bva_io": Function eegplugin_bva_io does not exist.
+EEGLAB: Could not load "eegplugin_clean_rawdata": Function eegplugin_clean_rawdata does not exist.
+EEGLAB: Could not load "eegplugin_dipfit": Function eegplugin_dipfit does not exist.
+EEGLAB: Could not load "eegplugin_egilegacy": Function eegplugin_egilegacy does not exist.
+EEGLAB: Could not load "eegplugin_firfilt": Function eegplugin_firfilt does not exist.
+EEGLAB: Could not load "eegplugin_iirfilt": Function eegplugin_iirfilt does not exist.
+EEGLAB: Could not load "eegplugin_musedirect": Function eegplugin_musedirect does not exist.
+EEGLAB: Could not load "eegplugin_musemonitor": Function eegplugin_musemonitor does not exist.
+EEGLAB: Could not load "eegplugin_neuroscanio": Function eegplugin_neuroscanio does not exist.
+EEGLAB: Could not load "eegplugin_scd": Function eegplugin_scd does not exist.
+EEGLAB: Could not load "eegplugin_snapmaster": Function eegplugin_snapmaster does not exist.
+EEGLAB: Could not load "eegplugin_xdfimport": Function eegplugin_xdfimport does not exist.
+EEGLAB: Could not load "eegplugin_mffmatlabio": Function eegplugin_mffmatlabio does not exist.
+Cannot find option file 
+Cannot find option file 
+Cannot find option file 
+Warning: Could not check for the latest EEGLAB version (internet may be disconnected).
+To prevent long startup time, disable checking for new EEGLAB versions (File > Preferences).
+MATLAB: 偵測到 Python 新數據，開始處理！
+!!2       ，忽略數據
+!!!2，忽略數據
+MATLAB: 成功找到 EDF 檔案 -> C:\HhsaData\250331o_20250418_184957.edf
+sopen mode is "OVERFLOWDETECTION:OFF"
+@@?@@GG@@HH@@JJ@@II@@KK@@LL@@MM@@NN@@SS@@TTQQQQAQQBQC@@T1@@T2@@T3@@T6@@UU@@VV???Reading data in EDF format...
+Cannot find option file 
+eeg_checkset note: upper time limit (xmax) adjusted so (xmax-xmin)*srate+1 = number of frames
+Extracting events from last EEG channel...
+Cannot find option file 
+Cannot find option file 
+eeg_checkset warning: number of columns in data (6) does not match the number of channels (7): corrected
+Cannot find option file 
+Cannot find option file 
+eeg_checkset note: creating the original event table (EEG.urevent)
+Cannot find option file 
+Cannot find option file 
+Cannot find option file 
+Cannot find option file 
+Cannot find option file 
+Cannot find option file 
+Creating a new ALLEEG dataset 1
+MATLAB: 偵測到 EEG2.data 新數據，開始處理！
+Elapsed time is 11.603696 seconds.
+MATLAB: 偵測到 Python 新數據，開始處理！
+!!2       ，忽略數據
+!!!2，忽略數據
+MATLAB: 成功找到 EDF 檔案 -> C:\HhsaData\fa0019r0_20250418_185040.edf
+sopen mode is "OVERFLOWDETECTION:OFF"
+@@?@@GG@@HH@@JJ@@II@@KK@@LL@@MM@@NN@@OO@@PP@@SS@@TT@@T1@@T2@@T3@@T6@@UU@@VV???Reading data in EDF format...
+Cannot find option file 
+eeg_checkset note: upper time limit (xmax) adjusted so (xmax-xmin)*srate+1 = number of frames
+Detected/removing 'EEG' prefix from channel labels
+Extracting events from last EEG channel...
+Cannot find option file 
+Cannot find option file 
+eeg_checkset warning: number of columns in data (24) does not match the number of channels (25): corrected
+Cannot find option file 
+Cannot find option file 
+eeg_checkset note: creating the original event table (EEG.urevent)
+Cannot find option file 
+Cannot find option file 
+Cannot find option file 
+Cannot find option file 
+Cannot find option file 
+Cannot find option file 
+Creating a new ALLEEG dataset 1
+MATLAB: 偵測到 EEG2.data 新數據，開始處理！
+Elapsed time is 3.440198 seconds.

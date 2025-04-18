@@ -26,8 +26,15 @@ const HoloPlot = ({ holoData, isLoading, userid, token }) => {
   const [inputError, setInputError] = React.useState(false);
   const roiResult = useSelector((state) => state.roi.result);
   const dispatch = useDispatch();
+  const [plotKey, setPlotKey] = useState(0);
 
-  
+
+  useEffect(() => {
+    if (holoData?.data?.length) {
+      // 每次 holoData 改變時更新 key 強制重新 render Plot
+      setPlotKey((prev) => prev + 1);
+    }
+  }, [holoData]);
   const inputRefs = {
     x1: useRef(null),
     x2: useRef(null),
@@ -202,10 +209,11 @@ const HoloPlot = ({ holoData, isLoading, userid, token }) => {
       <div className="md:col-span-2 w-full">
         {isLoading ? (
           <CircularProgress />
-        ) : holoData ? (
+        ) : holoData?.data?.length && holoData?.layout ? (
           <div className="w-full h-full">
             <div className="overflow-x-auto whitespace-nowrap">
               <Plot
+                key={plotKey}
                 ref={plotRef}
                 data={holoData.data}
                 layout={{

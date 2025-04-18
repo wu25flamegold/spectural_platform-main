@@ -315,7 +315,10 @@ class MATLABSharedMemoryClient:
 
     def send_request(self,  UserId, edf_filename="fa0019r0.edf", fs=200, n=10, start_index=220, end_index=240):
         """發送 EDF 文件名稱到 MATLAB 端並觸發計算"""
-        
+        self.mm[5] = 200
+        while struct.unpack("B", self.mm[5:6])[0] != 200:
+            print("🕒 等待 MATLAB server 初始化中...")
+            time.sleep(0.2)
         edf_filename = os.path.abspath(edf_filename)  # 取得完整絕對路徑
 
         #print(f"Python: 發送請求 `{edf_filename}` 給 MATLAB...")
@@ -333,7 +336,6 @@ class MATLABSharedMemoryClient:
         # self.mm[5:] = edf_filename.encode("utf-8") + b"\x00" * (
         #     self.buffer_size - len(edf_filename) - 5
         # )
-        self.mm[0:4] = struct.pack("I", 1)  # 設定 `uint32` 來觸發 MATLAB
         self.mm[5:] = b"\x00" * (self.buffer_size - 5)  # 清空 buffer
 
         offset = 6  # 設定偏移量
@@ -355,35 +357,43 @@ class MATLABSharedMemoryClient:
 
         # **寫入 EDF 檔案名稱**
         self.mm[offset : offset + len(edf_filename)] = edf_filename.encode("utf-8")
+        self.mm[0:4] = struct.pack("I", 1)  # 設定 `uint32` 來觸發 MATLAB
+
         
         def debug_mm_buffer(mm):
             print("\n🧪 Debugging shared memory buffer...")
 
-            offset = 6
-            user_id = mm[offset:offset + 8].decode("utf-8", errors="ignore").replace("\x00", "")
+            offset = 6  # ⬅️ 注意！offset 6 才是 user_id 開始位置（因為 [0:4] 是 trigger，5 是狀態位）
+
+            # ✅ 解析 user_id（固定 8 bytes）
+            user_id = mm[offset : offset + 8].decode("utf-8", errors="ignore").rstrip("\x00")
             print("👤 UserId:", user_id)
             offset += 8
 
-            fs = struct.unpack("<I", mm[offset:offset + 4])[0]
+            # ✅ fs (uint32)
+            fs = struct.unpack("<I", mm[offset : offset + 4])[0]
             offset += 4
             print("🧠 Sampling Rate (fs):", fs)
 
-            n = struct.unpack("<I", mm[offset:offset + 4])[0]
+            # ✅ n (uint32)
+            n = struct.unpack("<I", mm[offset : offset + 4])[0]
             offset += 4
             print("📶 Channel Index (n):", n)
 
-            start_time = struct.unpack("<I", mm[offset:offset + 4])[0]
+            # ✅ start_time (uint32)
+            start_time = struct.unpack("<I", mm[offset : offset + 4])[0]
             offset += 4
             print("⏱️ Start Time:", start_time)
 
-            end_time = struct.unpack("<I", mm[offset:offset + 4])[0]
+            # ✅ end_time (uint32)
+            end_time = struct.unpack("<I", mm[offset : offset + 4])[0]
             offset += 4
             print("⏹️ End Time:", end_time)
 
-            filename = mm[offset:].rstrip(b"\x00").decode("utf-8", errors="ignore")
+            # ✅ 剩下的是 edf_filename
+            filename = mm[offset :].split(b"\x00", 1)[0].decode("utf-8", errors="ignore")
             print("📂 EDF Filename:", filename)
 
-        
         debug_mm_buffer(self.mm)
 
 
