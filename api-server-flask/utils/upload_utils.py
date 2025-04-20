@@ -197,12 +197,12 @@ def write_signal_to_edf(selectedFunction, fs=200, signal_size=4000):
 
 def generate_f1_signal(fs=200, signal_size=400000):
     t = np.arange(signal_size) / fs
-    return (np.sin(2 * np.pi * t / fs) ** 2) * np.cos(16 * np.pi * t / fs)
+    return (np.sin(8.0 * np.pi * t / fs) ** 2) * np.cos(1.0 * 2 * np.pi * t)
 
 
 def generate_f2_signal(fs=200, signal_size=400000):
     t = np.arange(signal_size) / fs
-    return np.sin(8 * 2 * np.pi * t)
+    return np.sin(4 * np.pi * t)
 
 def generate_f3_signal(fs=200, signal_size=400000):
     t = np.arange(signal_size) / fs

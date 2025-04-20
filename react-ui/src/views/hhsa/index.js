@@ -263,7 +263,7 @@ const SamplePage = () => {
                             {/* Header with toggle */}
                             <div className="flex justify-between items-center mb-2 h-6">
                                 <Typography variant="h6" className="text-gray-800">
-                                    Upload & Parameters
+                                    Upload file for Analyzing
                                 </Typography>
                                 <IconButton
                                     onClick={() => setShowInputs(!showInputs)}
@@ -344,7 +344,7 @@ const SamplePage = () => {
                                                         <svg xmlns="http://www.w3.org/2000/svg" className="h-10 w-10 mb-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                                                             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M7 16V4m0 0L3 8m4-4l4 4m5 4v12m0 0l4-4m-4 4l-4-4" />
                                                         </svg>
-                                                        <span className="text-sm">Click or drag file to upload</span>
+                                                        <span className="text-sm">Click or drag .EDF file to upload</span>
                                                         <span className="text-xs text-gray-400 mt-1">(Max file size: 50MB)</span>
 
                                                     </label>
@@ -408,7 +408,7 @@ const SamplePage = () => {
                                                     <button className="bg-primary hover:bg-primary-dark text-white px-4 py-2 rounded w-full" 
                                                             onClick={handleUpload}
                                                             disabled={isLoading}>
-                                                        {isLoading ? 'Analyzing...' : 'Upload and Analyze'}
+                                                        {isLoading ? 'Analyzing...' : 'Run Analysis'}
                                                     </button>
                                                 </div>
                                             </div>

@@ -353,7 +353,7 @@ class SendSimulate(Resource):
         selectedFunction = request.form['selectedFunction']            
         chn = 1
         d_start = 0
-        d_stop = 2
+        d_stop = 20
         sampling_rate = request.form['sampling_rate']  
         email = request.form['email']
         usage = int(request.form['usage'])

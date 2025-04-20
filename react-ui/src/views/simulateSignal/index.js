@@ -37,8 +37,8 @@ const SimulateSignalPage = () => {
 
 
     const functionLatex = {
-        f1: String.raw`F_1(t) = \left(\sin(t)\right)^2 \cdot \cos(8t)`,
-        f2: String.raw`F_2(t) = \sin(8t)`,
+        f1: String.raw`F_1(t) = \sin^2(8t) \cdot \cos(t)`,
+        f2: String.raw`F_2(t) = \sin(2t)`,
         f3: String.raw`F_3(t) = 0.5 \cdot \frac{\sin(t) + 1}{2} \cdot \sin(8t)`,
         f4: String.raw`F_4(t) = \frac{\sin(t) + 1}{2} \cdot \sin(8t)`,
         f5: String.raw`F_5(t) = \frac{\sin(0.25t) + 1}{2} \cdot \sin(2t)`,
@@ -48,8 +48,8 @@ const SimulateSignalPage = () => {
       
     const generateWaveform = () => {
         const functions = {
-            f1: (i) => Math.pow(Math.sin(2 * Math.PI * i / samplingRate), 2) * Math.cos(8 * 2 * Math.PI * i / samplingRate),
-            f2: (i) => 1 * Math.sin(8 * 2 * Math.PI * i / samplingRate),
+            f1: (i) => Math.pow(Math.sin(8 * Math.PI * i / samplingRate), 2) * Math.cos( Math.PI * i / samplingRate),
+            f2: (i) => 1 * Math.sin(2 * 2 * Math.PI * i / samplingRate),
             f3: (i) => 0.5 * (Math.sin(1.0 * 2 * Math.PI * i / samplingRate) + 1) / 2 * Math.sin(8.0 * 2 * Math.PI * i / samplingRate),
             f4: (i) => (Math.sin(1.0 * 2 * Math.PI * i / samplingRate) + 1) / 2 * Math.sin(8.0 * 2 * Math.PI * i / samplingRate),
             f5: (i) => (Math.sin(0.25 * 2 * Math.PI * i / samplingRate) + 1) / 2 * Math.sin(2 * 2 * Math.PI * i / samplingRate),
@@ -133,7 +133,7 @@ const SimulateSignalPage = () => {
 
                     {/* Header */}
                     <div>
-                        <Typography variant="h6" className="text-gray-800">Simulated Signal Settings</Typography>
+                        <Typography variant="h6" className="text-gray-800 mb-4 transform translate-y-[6px]">Simulated Signal Analyze</Typography>
                         <Divider className="mb-6" />
                         {waveform && (
                         <div className="my-6">
@@ -143,7 +143,8 @@ const SimulateSignalPage = () => {
                         <div className="flex flex-col lg:flex-row gap-6">
                             {/* 左側：Function 選擇區 */}
                             <div className="flex-1">
-                                <label variant="subtitle2" className="block font-medium text-xs mb-1">Choose a Signal Pattern:</label>
+                                <label variant="subtitle2" className="block font-medium text-xs mb-1">Choose a Signal Pattern (ω in rad/s):
+                                </label>
                                 <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-x-2 gap-y-2 min-w-0">
                                     {["f1", "f2", "f3", "f4", "f5", "f6"].map((f) => (
                                     <label key={f} className="border p-3 rounded flex flex-col gap-2">
@@ -164,24 +165,38 @@ const SimulateSignalPage = () => {
                             </div>
 
 
-                            {/* 右側：Sampling Rate + 按鈕 */}
-                            <div className="w-full lg:w-[165px] flex flex-col gap-x-3 gap-y-3 -ml-3" >
-                                <div>
-                                    <label variant="subtitle2" className="block font-medium text-xs mb-1">Sampling Rate:</label>
-                                    <input
-                                    type="number"
-                                    className="border p-2 rounded w-full"
-                                    value={samplingRate}
-                                    onChange={(e) => setSamplingRate(e.target.value)}
-                                    />
+                            {/* 右側：固定說明 + 按鈕 */}
+                            <div className="w-full lg:w-[155px] flex flex-col gap-3 -ml-3">
+                            <div className="flex-1 flex flex-col space-y-2">
+                                <div className="flex items-center gap-2">
+                                    <label className="block font-medium text-xs mb-1">Signal Configuration:</label>
                                 </div>
+                                <div className="text-sm space-y-1">
+                                    <div>
+                                        <span className="font-medium font-sans text-xs font-semibold">Duration:</span>{' '}
+                                        <span className="text-blue-600 font-semibold text-xs font-sans">20 s</span>
+                                    </div>
+                                    <div>
+                                        <span className="font-medium font-sans text-xs font-semibold">Sampling Rate:</span>{' '}
+                                        <span className="text-blue-600 font-semibold text-xs font-sans">200 Hz</span>
+                                    </div>
+                                </div>
+
                                 <button
-                                    className="bg-blue-500 text-white px-4 py-2 rounded w-full"
+                                    className="bg-primary hover:bg-primary-dark text-white px-4 py-2 rounded w-full"
                                     onClick={handleUpload}
+                                    disabled={isLoading}
                                 >
-                                    Generate Signal
+                                    {isLoading ? 'Analyzing...' : 'Run Analysis'}
                                 </button>
+
                             </div>
+
+
+
+                            </div>
+
+
                         </div>
                     </div>
 

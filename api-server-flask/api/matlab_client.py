@@ -189,7 +189,7 @@ class HoloVisualizer:
                         colorscale=custom_colorscale,
                         contours=dict(
                             start=0,
-                            end=200,
+                            end=900,
                             size=4,
                             coloring="lines",
                             showlines=True

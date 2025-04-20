@@ -42,8 +42,8 @@ import User0 from './../../../../assets/images/users/user.png';
 const useStyles = makeStyles((theme) => ({
     navContainer: {
         width: '100%',
-        maxWidth: '350px',
-        minWidth: '300px',
+        maxWidth: '250px',
+        minWidth: '200px',
         backgroundColor: theme.palette.background.paper,
         borderRadius: '10px',
         [theme.breakpoints.down('sm')]: {
@@ -86,6 +86,11 @@ const useStyles = makeStyles((theme) => ({
         backgroundColor: theme.palette.primary.light,
         marginBottom: '16px',
         marginTop: '16px'
+    },
+    maincardContent:{
+        width:'250px',
+        marginTop: '-9px',
+        marginRight: '-2px',
     },
     searchControl: {
         width: '100%',
@@ -212,7 +217,7 @@ const ProfileSection = () => {
                     <Transitions in={open} {...TransitionProps}>
                         <Paper>
                             <ClickAwayListener onClickAway={handleClose}>
-                                <MainCard border={false} elevation={16} content={false} boxShadow shadow={theme.shadows[16]}>
+                                <MainCard className={classes.maincardContent} border={false} elevation={8} content={false} boxShadow shadow={theme.shadows[8]}>
                                     <CardContent className={classes.cardContent}>
                                         <Grid container direction="column" spacing={0}>
                                             <Grid item className={classes.flex}>
@@ -225,7 +230,7 @@ const ProfileSection = () => {
                                                 <Typography variant="subtitle2">{account.user?.role}</Typography>
                                             </Grid>
                                         </Grid>
-                                        <OutlinedInput
+                                        {/* <OutlinedInput
                                             className={classes.searchControl}
                                             id="input-search-profile"
                                             value={value}
@@ -241,8 +246,8 @@ const ProfileSection = () => {
                                                 'aria-label': 'weight'
                                             }}
                                         />
-                                        <Divider />
-                                        <Divider />
+                                        <Divider /> */}
+                                        {/* <Divider /> */}
                                         <List component="nav" className={classes.navContainer}>
                                             <ListItemButton
                                                 className={classes.listItem}
