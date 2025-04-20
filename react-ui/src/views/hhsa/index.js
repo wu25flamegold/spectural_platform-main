@@ -6,6 +6,7 @@ import clsx from 'clsx';
 import HoloPlot from './Holoplot';
 import FadeMessage from './FadeMessage';
 import UsageTooltip from './UsageTooltip';
+import { clearRoiResult } from './../../store/roiSlice'; // ← 確保路徑正確
 
 import ROICoordsDisplay from './ROICoordsDisplay';
 
@@ -141,6 +142,7 @@ const SamplePage = () => {
         }
         setErrors({});
         setIsLoading(true);
+        dispatch(clearRoiResult());
         try {
             const formData = new FormData();
             formData.append('file', file);

@@ -427,8 +427,9 @@ class AnalyzeROI(Resource):
         y1, y2 = roi_coords["y1"], roi_coords["y2"]
 
         # 🔁 ROI 座標 → Index 範圍
-        x_idx = np.where((FMscale >= x1) & (FMscale <= x2))[0]
-        y_idx = np.where((AMscale >= y1) & (AMscale <= y2))[0]
+        x_idx = np.where((FMscale >= x1 - 1e-4) & (FMscale <= x2 + 1e-4))[0]
+        y_idx = np.where((AMscale >= y1 - 1e-4) & (AMscale <= y2 + 1e-4))[0]
+
 
         if len(x_idx) == 0 or len(y_idx) == 0:
             return {"error": "ROI範圍不在 HOLO 範圍內"}, 400

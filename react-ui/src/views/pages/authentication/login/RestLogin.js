@@ -216,7 +216,7 @@ const RestLogin = (props, { ...others }) => {
                                 }
                                 label="Remember me"
                             />
-                            <Typography
+                            {/* <Typography
                                 variant="subtitle1"
                                 component={Link}
                                 to={'/pages/forgot-password'}
@@ -224,7 +224,7 @@ const RestLogin = (props, { ...others }) => {
                                 sx={{ textDecoration: 'none' }}
                             >
                                 Forgot Password?
-                            </Typography>
+                            </Typography> */}
                         </Stack>
                         {errors.submit && (
                             <Box

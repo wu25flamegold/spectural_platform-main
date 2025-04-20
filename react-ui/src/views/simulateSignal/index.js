@@ -10,6 +10,7 @@ import 'katex/dist/katex.min.css';
 import HoloPlot from './../hhsa/Holoplot';
 import clsx from 'clsx';
 import ExpandMoreIcon from '@material-ui/icons/ExpandMore';
+import { clearRoiResult } from './../../store/roiSlice'; // ← 確保路徑正確
 
 import {
     Card,
@@ -97,6 +98,7 @@ const SimulateSignalPage = () => {
     const handleUpload = async () => {
         
         setIsLoading(true);
+        dispatch(clearRoiResult());
         try {
             const formData = new FormData();
             formData.append('sampling_rate', samplingRate);
