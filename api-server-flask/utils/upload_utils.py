@@ -9,7 +9,13 @@ from api.models import Users, Patients
 from datetime import datetime
 import pygetwindow as gw
 import tempfile
+from EDFlib import EDFwriter
+import numpy as np
+import os
+from datetime import datetime
+import numpy as np
 
+SAVE_DIR = r"C:\HhsaData"  # ✅ 你指定的資料夾
 def is_valid_edf(file_stream):
     file_stream.seek(0)  # 確保從開頭讀取
     header = file_stream.read(8)
@@ -77,7 +83,7 @@ def prepare_tmapi_data(tmapi, selectedFunction, file_name, cmd, sampling_rate, c
     if selectedFunction == "":
         return tmapi.prepare_data(file_name, cmd, sampling_rate, chn, d_start, d_stop)
     else:
-        return tmapi.prepare_data("", cmd, sampling_rate, chn, d_start, d_stop, 4000, selectedFunction)
+        return tmapi.prepare_data("", cmd, sampling_rate, chn, d_start, d_stop, 1000, selectedFunction)
 
 def open_tmapi_window(UserId):
     exe_path = r"C:\\Users\\admin\\Documents\\2024.0\\matlab_edf_server_for_json.exe"
@@ -142,3 +148,73 @@ def open_tmapi_window(UserId):
 
             except Exception as e:
                 return False, f"Oops! Something went wrong: {e}", None
+
+
+
+def write_signal_to_edf(selectedFunction, fs=200, signal_size=4000):
+    fs = int(fs)
+    generator_map = {
+        'f1': generate_f1_signal,
+        'f2': generate_f2_signal,
+        'f3': generate_f3_signal,
+        'f4': generate_f4_signal,
+        'f5': generate_f5_signal,
+        'f6': generate_f6_signal,
+    }
+
+    if selectedFunction not in generator_map:
+        raise ValueError(f"Unknown function: {selectedFunction}")
+
+    signal = generator_map[selectedFunction](fs=200, signal_size=4000).astype(np.float64)
+
+    # ✅ 建立檔名與儲存路徑
+    timestamp = datetime.now().strftime("%Y%m%d_%H%M%S")
+    filename = f"{selectedFunction}_{timestamp}.edf"
+    file_path = os.path.join(SAVE_DIR, filename)
+
+    writer = EDFwriter(file_path, 1, 1)
+    writer.setSignalLabel(0, selectedFunction)
+    writer.setPhysicalDimension(0, 'uV')
+    writer.setSampleFrequency(0, fs)               # ✅ 每秒 fs 個 sample
+    writer.setDataRecordDuration(1000000)       # ✅ 每筆 record 為 1 秒
+    writer.setPhysicalMinimum(0, -1.0)
+    writer.setPhysicalMaximum(0, 1.0)
+    writer.setDigitalMinimum(0, -32768)
+    writer.setDigitalMaximum(0, 32767)
+    writer.setTransducer(0, '')
+    writer.setPreFilter(0, '')
+    
+    now = datetime.now()
+    writer.setStartDateTime(now.year, now.month, now.day, now.hour, now.minute, now.second, 0)
+    print(f"[INFO] Signal length: {len(signal)} samples")
+    
+    #writer.writeSamples(signal)
+    for i in range(20):
+        writer.writeSamples(signal[i*fs:(i+1)*fs])
+    writer.close()
+    return timestamp, filename, file_path 
+
+
+def generate_f1_signal(fs=200, signal_size=400000):
+    t = np.arange(signal_size) / fs
+    return (np.sin(2 * np.pi * t / fs) ** 2) * np.cos(16 * np.pi * t / fs)
+
+
+def generate_f2_signal(fs=200, signal_size=400000):
+    t = np.arange(signal_size) / fs
+    return np.sin(8 * 2 * np.pi * t)
+
+def generate_f3_signal(fs=200, signal_size=400000):
+    t = np.arange(signal_size) / fs
+    return 0.5 * (np.sin(1.0 * 2 * np.pi * t) + 1) / 2 * np.sin(8.0 * 2 * np.pi * t)
+
+def generate_f4_signal(fs=200, signal_size=400000):
+    t = np.arange(signal_size) / fs
+    return (np.sin(1.0 * 2 * np.pi * t) + 1) / 2 * np.sin(8.0 * 2 * np.pi * t)
+
+def generate_f5_signal(fs=200, signal_size=400000):
+    t = np.arange(signal_size) / fs
+    return (np.sin(0.25 * 2 * np.pi * t) + 1) / 2 * np.sin(2 * 2 * np.pi * t)
+
+def generate_f6_signal(fs=200, signal_size=400000):
+    return generate_f4_signal(fs, signal_size) + generate_f5_signal(fs, signal_size)

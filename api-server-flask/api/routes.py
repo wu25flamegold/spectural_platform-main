@@ -17,7 +17,7 @@ import jwt
 from scipy.fft import fft, fftfreq
 from scipy.signal import hilbert, savgol_filter
 import mne
-from utils.upload_utils import generate_result_image, run_tmapi_processing, save_uploaded_file, prepare_tmapi_data, open_tmapi_window, create_patient_record
+from utils.upload_utils import write_signal_to_edf, generate_result_image, run_tmapi_processing, save_uploaded_file, prepare_tmapi_data, open_tmapi_window, create_patient_record
 from .models import db, Users, JWTTokenBlocklist
 from .config import BaseConfig
 import requests
@@ -291,7 +291,7 @@ class SendCommand(Resource):
         chn = int(request.form['chn'])
         d_start = int(request.form['d_start'])
         d_stop = int(request.form['d_stop'])
-        sampling_rate = float(request.form['sampling_rate'])
+        #sampling_rate = float(request.form['sampling_rate'])
         email = request.form['email']
         usage = int(request.form['usage'])
         cmd=""
@@ -302,7 +302,7 @@ class SendCommand(Resource):
         
         # result = tmapi.send_message(buf, buf_n, UserId)
         # #result = tmapi.process_request(UserId, file_path, fs=sampling_rate, n=chn, start_index=d_start, end_index=d_stop)
-        valid, err_msg = validate_edf_by_header_only(file_path, n=chn, start_index=d_start, end_index=d_stop, fs=sampling_rate)
+        valid, sampling_rate, err_msg = validate_edf_by_header_only(file_path, n=chn, start_index=d_start, end_index=d_stop)
         if not valid:
             print(f"[ERROR] {err_msg}")
             return jsonify({
@@ -337,6 +337,51 @@ class SendCommand(Resource):
 
                 new_patient = create_patient_record(request.form, user.id, file_path, sampling_rate, d_start, d_stop, hhsa_path, formatted_timestamp, chn)
                 new_patient.save()
+                
+                return jsonify({"success": True, "image": img_str, "usage": user.usage})
+            else:
+                return jsonify({"success": False, "message": result})
+            
+
+@rest_api.route('/tmapi/send_simulate', endpoint='tmapi_send_simulate')
+class SendSimulate(Resource):
+    def post(self):
+        UserId = request.headers.get('UserId')
+        from api import get_process_instance
+        instance = get_process_instance(UserId)
+
+        selectedFunction = request.form['selectedFunction']            
+        chn = 1
+        d_start = 0
+        d_stop = 2
+        sampling_rate = request.form['sampling_rate']  
+        email = request.form['email']
+        usage = int(request.form['usage'])
+        cmd=""
+        #fs = 200
+        signal_size = 1000
+        edf_filename = selectedFunction
+        fname = selectedFunction
+        timestamp, filename, file_path = write_signal_to_edf(selectedFunction, sampling_rate, signal_size=1000)
+
+        result = run_tmapi_processing(instance, selectedFunction, filename, file_path, cmd, sampling_rate,
+                                      chn, d_start, d_stop, UserId, filename, timestamp)
+        if result == -1:
+            return jsonify({"success": False, "message": "Send Msg fail: no handle"})
+        elif result == 0:
+            return jsonify({"success": False, "message": "Send Msg fail: no response"})
+        else:
+            if "HOLO_INSTANCES" not in current_app.config:
+                current_app.config["HOLO_INSTANCES"] = {}
+
+            current_app.config["HOLO_INSTANCES"][UserId] = result
+            img_str = generate_result_image(result, instance, fname, timestamp, UserId)
+            if img_str:
+                user = Users.get_by_email(email)
+                user.update_usage(usage)
+                user.save()
+
+
                 
                 return jsonify({"success": True, "image": img_str, "usage": user.usage})
             else:
@@ -418,6 +463,7 @@ class AnalyzeROI(Resource):
 @rest_api.route('/tmapi/validate_edf_metadata', endpoint='validate_edf_metadata')
 class ValidatEdfMetadata(Resource):
     def post(self):
+        print('validate_edf_metadata')
         file = request.files.get('file')
         if not file:
             return jsonify({"message": "❌ No file uploaded"}), 400
@@ -566,7 +612,7 @@ class UploadHHT(Resource):
             except Exception as e:
                 return jsonify({"success": False, "message": str(e)})
 
-def validate_edf_by_header_only(edf_path, n, start_index, end_index, fs):
+def validate_edf_by_header_only(edf_path, n, start_index, end_index):
         if not os.path.exists(edf_path):
             return False, f"❌ 找不到檔案：{edf_path}"
         try:
@@ -588,31 +634,27 @@ def validate_edf_by_header_only(edf_path, n, start_index, end_index, fs):
 
                 if not duration_str or not num_records_str:
                     return False, "❌ EDF 檔案缺少紀錄段資訊（duration 或 record 數）"
-
+                f.seek(256 + num_signals * 216)
+                samples_per_record_all = [int(f.read(8).decode().strip()) for _ in range(num_signals)]
+                fs_detected = samples_per_record_all[0] / float(duration_str)
                 duration_per_record = float(duration_str)
                 num_records = int(num_records_str)
 
             total_duration = duration_per_record * num_records
 
 
-            # 計算可用長度（秒）
-            header_size = 256 + num_signals * 256
-            bytes_per_sample = 2
-            bytes_per_second = fs * num_signals * bytes_per_sample
-            data_bytes = filesize - header_size
-
             print(f"📊 通道數：{num_signals}")
             print(f"⏱️ 檔案總長：約 {total_duration:.2f} 秒")
 
             if n < 1 or n > num_signals:
-                return False, f"❌ 通道 index ({n}) 超出範圍，僅有 {num_signals} 通道"
+                return False, 0, f"❌ 通道 index ({n}) 超出範圍，僅有 {num_signals} 通道"
 
             if start_index < 0 or end_index <= start_index:
-                return False, "❌ 時間區間無效，start_index 必須小於 end_index 且皆為正整數"
+                return False, 0, "❌ 時間區間無效，start_index 必須小於 end_index 且皆為正整數"
 
             if end_index > total_duration:
-                return False, f"❌ 結束時間 {end_index}s 超出檔案總長 {total_duration:.2f}s"
+                return False, 0, f"❌ 結束時間 {end_index}s 超出檔案總長 {total_duration:.2f}s"
 
-            return True, None  # ✅ 驗證成功
+            return True, fs_detected, None  # ✅ 驗證成功
         except Exception as e:
-            return False, f"❌ 驗證時發生錯誤：{str(e)}"
+            return False, 0, f"❌ 驗證時發生錯誤：{str(e)}"

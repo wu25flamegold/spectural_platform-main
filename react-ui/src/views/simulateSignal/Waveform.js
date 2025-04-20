@@ -4,12 +4,12 @@ import Slider from 'rc-slider';
 import 'rc-slider/assets/index.css';
 
 const Waveform = ({ data, title }) => {
-  const [viewWindow, setViewWindow] = useState([data.length*0.4, data.length*0.6]);
-  const [plotSize, setPlotSize] = useState({ width: window.innerWidth*0.5, height: window.innerHeight*0.4 });
+  const [viewWindow, setViewWindow] = useState([0, data.length*0.2]);
+  const [plotSize, setPlotSize] = useState({ width: window.innerWidth*0.6, height: window.innerHeight*0.2 });
 
   useEffect(() => {
     const handleResize = () => {
-      setPlotSize({ width: window.innerWidth*0.5, height: window.innerHeight*0.4 });
+      setPlotSize({ width: window.innerWidth*0.6, height: window.innerHeight*0.2 });
     };
     window.addEventListener('resize', handleResize);
     return () => {
@@ -18,8 +18,18 @@ const Waveform = ({ data, title }) => {
   }, []);
 
   const handleSliderChange = (value) => {
-    setViewWindow(value);
+    const [start, end] = value;
+    const minGap = 4;
+  
+    if (end - start < minGap) {
+      // 根據使用者滑動哪邊來做調整
+      const mid = (start + end) / 2;
+      setViewWindow([Math.max(0, mid - minGap / 2), Math.min(data.length, mid + minGap / 2)]);
+    } else {
+      setViewWindow(value);
+    }
   };
+  
 
   const chartData = data.slice(viewWindow[0], viewWindow[1]).map((y, x) => ({ x: x + viewWindow[0], y }));
 
@@ -30,17 +40,22 @@ const Waveform = ({ data, title }) => {
         <VerticalGridLines />
         <XAxis />
         <YAxis />
-        <LineSeries data={chartData} />
+        <LineSeries
+          data={chartData}
+          style={{
+            stroke: 'blue',
+            fill: 'none',
+            strokeOpacity: 0.8
+          }}
+        />
+
       </XYPlot>
       <Slider
         range
         min={0}
-        max={data.length - 1}
-        defaultValue={[data.length*0.4, data.length*0.6]}
+        max={data.length}
+        defaultValue={[0, Math.floor(data.length*0.2)]}
         onChange={handleSliderChange}
-        trackStyle={[{ backgroundColor: 'blue' }]}
-        handleStyle={[{ borderColor: 'blue' }, { borderColor: 'blue' }]}
-        railStyle={{ backgroundColor: 'grey' }}
         style={{ width: plotSize.width }}
       />
     </div>

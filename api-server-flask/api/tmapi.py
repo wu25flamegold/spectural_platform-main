@@ -13,6 +13,7 @@ from PIL import Image
 import numpy as np
 import base64
 from io import BytesIO
+import math
 
 """
     TMAPI routes
@@ -310,16 +311,21 @@ class TMAPI:
             offset += 8
 
             for i in range(signal_size):
-                if op == "f2":
-                    value = self.f2(i, sampling_rate)
+                if op == "f1":
+                    value = 0.5 * (math.sin(0.5 * 2 * math.pi * i / sampling_rate) + 1) / 2 * math.sin(4 * 2 * math.pi * i / sampling_rate)
+                elif op == "f2":
+                    value = math.sin(8 * 2 * math.pi * i / sampling_rate)
                 elif op == "f3":
-                    value = self.f3(i, sampling_rate)
+                    value = 0.5 * (math.sin(1.0 * 2 * math.pi * i / sampling_rate) + 1) / 2 * math.sin(8.0 * 2 * math.pi * i / sampling_rate)
                 elif op == "f4":
-                    value = self.f4(i, sampling_rate)
+                    value = (math.sin(1.0 * 2 * math.pi * i / sampling_rate) + 1) / 2 * math.sin(8.0 * 2 * math.pi * i / sampling_rate)
                 elif op == "f5":
-                    value = self.f5(i, sampling_rate)
+                    value = (math.sin(0.25 * 2 * math.pi * i / sampling_rate) + 1) / 2 * math.sin(2 * 2 * math.pi * i / sampling_rate)
                 elif op == "f6":
-                    value = self.f6(i, sampling_rate)
+                    f4_val = (math.sin(1.0 * 2 * math.pi * i / sampling_rate) + 1) / 2 * math.sin(8.0 * 2 * math.pi * i / sampling_rate)
+                    f5_val = (math.sin(0.25 * 2 * math.pi * i / sampling_rate) + 1) / 2 * math.sin(2 * 2 * math.pi * i / sampling_rate)
+                    value = f4_val + f5_val
+
                 struct.pack_into('d', buf, offset, value)
                 offset += 8
         

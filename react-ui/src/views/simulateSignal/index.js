@@ -3,43 +3,52 @@ import { useDispatch, useSelector } from 'react-redux';
 import axios from 'axios';
 import { updateUsage } from './../../store/actions';
 import Waveform from './Waveform';
-import { CircularProgress } from '@material-ui/core';
 import '../../assets/scss/style.scss';
 import FadeMessage from './../hhsa/FadeMessage';
+import { BlockMath } from 'react-katex';
+import 'katex/dist/katex.min.css';
+import HoloPlot from './../hhsa/Holoplot';
+
+import {
+    Card,
+    CardContent,
+    Typography,
+    Divider,
+    IconButton,
+    CircularProgress,
+    Collapse,
+  } from '@material-ui/core';
 
 const SimulateSignalPage = () => {
-    const [remoteWndName, setRemoteWndName] = useState("");
-    const [selectedTab, setSelectedTab] = useState(0);
-    const [cmd, setCmd] = useState("");
-    const [file, setFile] = useState(null);
-    const [chn, setChn] = useState("");
-    const [age, setAge] = useState("");
-    const [gender, setGender] = useState("");
-    const [diagnosisCodes, setDiagnosisCodes] = useState("");
-    const [signalSize, setSignalSize] = useState(4000);
+    const [signalSize, setSignalSize] = useState(1000);
     const [samplingRate, setSamplingRate] = useState(200.0);
     const [message, setMessage] = useState(null);
-    const [dStart, setDStart] = useState(0.0);
-    const [dStop, setDStop] = useState(0.0);
     const [image, setImage] = useState(null);
-    const [selectedFunction, setSelectedFunction] = useState('f2');
+    const [selectedFunction, setSelectedFunction] = useState('f1');
     const [waveform, setWaveform] = useState(null);
     const dispatch = useDispatch();
     const [isLoading, setIsLoading] = useState(false);
-    const [errors, setErrors] = useState({});
     const account = useSelector((state) => state.account);
 
-    const handleFileChange = (e) => {
-        setErrors(prev => ({ ...prev, file: "" }));
-        setFile(e.target.files[0]);
-    };
 
     const handleFunctionChange = (event) => {
         setSelectedFunction(event.target.value);
     };
 
+
+    const functionLatex = {
+        f1: String.raw`F_1(t) = \left(\sin(t)\right)^2 \cdot \cos(8t)`,
+        f2: String.raw`F_2(t) = \sin(8t)`,
+        f3: String.raw`F_3(t) = 0.5 \cdot \frac{\sin(t) + 1}{2} \cdot \sin(8t)`,
+        f4: String.raw`F_4(t) = \frac{\sin(t) + 1}{2} \cdot \sin(8t)`,
+        f5: String.raw`F_5(t) = \frac{\sin(0.25t) + 1}{2} \cdot \sin(2t)`,
+        f6: String.raw`F_6(t) = F_4(t) + F_5(t)`,
+      };
+      
+      
     const generateWaveform = () => {
         const functions = {
+            f1: (i) => Math.pow(Math.sin(2 * Math.PI * i / samplingRate), 2) * Math.cos(8 * 2 * Math.PI * i / samplingRate),
             f2: (i) => 1 * Math.sin(8 * 2 * Math.PI * i / samplingRate),
             f3: (i) => 0.5 * (Math.sin(1.0 * 2 * Math.PI * i / samplingRate) + 1) / 2 * Math.sin(8.0 * 2 * Math.PI * i / samplingRate),
             f4: (i) => (Math.sin(1.0 * 2 * Math.PI * i / samplingRate) + 1) / 2 * Math.sin(8.0 * 2 * Math.PI * i / samplingRate),
@@ -57,7 +66,15 @@ const SimulateSignalPage = () => {
     useEffect(() => {
         handleOpenMatlab();
     }, []);
-
+    const functionNames = {
+        f1: "Function 1",
+        f2: "Function 2",
+        f3: "Function 3",
+        f4: "Function 4",
+        f5: "Function 5",
+        f6: "Function 6",
+      };
+      
     const handleOpenMatlab = async () => {
         try {
             const response = await axios.post('http://xds3.cmbm.idv.tw:81/tmapi/open_matlab', {
@@ -75,30 +92,15 @@ const SimulateSignalPage = () => {
     };
 
     const handleUpload = async () => {
-        const errors = validateInputs();
-        if (Object.keys(errors).length > 0) {
-            setErrors(errors);
-            return;
-        }
-        setErrors({});
+        
         setIsLoading(true);
         try {
             const formData = new FormData();
-            formData.append('file', file);
-            formData.append('remote_wnd_name', remoteWndName);
-            formData.append('cmd', cmd);
-            formData.append('chn', chn);
-            formData.append('signal_size', signalSize);
             formData.append('sampling_rate', samplingRate);
-            formData.append('d_start', dStart);
-            formData.append('d_stop', dStop);
             formData.append('selectedFunction', selectedFunction);
             formData.append('email', account.user.email);
             formData.append('usage', account.user.usage);
-            formData.append('age', age);
-            formData.append('gender', gender);
-            formData.append('clinical_diagnosis_code', diagnosisCodes);
-            const response = await axios.post('http://xds3.cmbm.idv.tw:81/tmapi/send_command', formData, {
+            const response = await axios.post('http://xds3.cmbm.idv.tw:81/tmapi/send_simulate', formData, {
                 headers: {
                     Authorization: `${account.token}`,
                     UserId: `${account.user._id}`
@@ -117,22 +119,6 @@ const SimulateSignalPage = () => {
         }
     };
 
-    const validateInputs = () => {
-        const errors = {};
-        if (!gender) errors.gender = "Gender is required.";
-        if (!age || isNaN(age) || age <= 0 || !/^\d+$/.test(age)) errors.age = "Age must be a positive number.";
-        if (!file) errors.file = "Please upload a file.";
-        else {
-            const fileExtension = file.name.slice(file.name.lastIndexOf(".")).toLowerCase();
-            if (fileExtension !== ".edf") errors.file = "Only .edf files are allowed.";
-        }
-        if (!chn || isNaN(chn) || chn <= 0 || !/^\d+$/.test(chn)) errors.chn = "Channel must be a positive number.";
-        if (!samplingRate || isNaN(samplingRate) || samplingRate <= 0 || !/^(0|[1-9]\d*)(\.\d+)?$/.test(samplingRate)) errors.samplingRate = "Sampling Rate must be a positive number.";
-        if (!dStart || isNaN(dStart) || dStart < 0 || !/^(0|[1-9]\d*)(\.\d+)?$/.test(dStart)) errors.dStart = "Start Time must be a non-negative number.";
-        if (!dStop || isNaN(dStop) || dStop <= 0 || dStop <= dStart || !/^(0|[1-9]\d*)(\.\d+)?$/.test(dStop)) errors.dStop = "Stop Time must be greater than Start Time.";
-        return errors;
-    };
-
     return (
         <>
             {message && (
@@ -143,33 +129,76 @@ const SimulateSignalPage = () => {
             />
             )}
             <div className="p-4">
-                
-                <div className="bg-white rounded-lg shadow p-6">
-                    <div className="flex flex-col md:flex-row gap-4">
-                        <div className="flex-1 flex flex-col gap-4">
-                            <label>Signal Size:</label>
-                            <input type="number" className="border p-2 rounded" value={signalSize} onChange={(e) => setSignalSize(e.target.value)} />
-                            <label>Sampling Rate:</label>
-                            <input type="number" className="border p-2 rounded" value={samplingRate} onChange={(e) => setSamplingRate(e.target.value)} />
-                            <div>
-                                <label className="font-semibold">Functions</label>
-                                <div className="flex flex-col gap-2 mt-2">
-                                    {["f2", "f3", "f4", "f5", "f6"].map(f => (
-                                        <label key={f} className="flex items-center gap-2">
-                                            <input type="radio" name="function" value={f} checked={selectedFunction === f} onChange={handleFunctionChange} /> {f}
-                                        </label>
+                <div className="bg-white rounded-lg shadow p-6 flex flex-col gap-10">
+
+                    {/* Header */}
+                    <div>
+                        <Typography variant="h6" className="text-gray-800">Simulated Signal Settings</Typography>
+                        <Divider className="mb-6" />
+                        {waveform && (
+                        <div className="my-6">
+                            <Waveform data={waveform.data} title={waveform.title} />
+                        </div>
+                        )}
+                        <div className="flex flex-col lg:flex-row gap-6">
+                            {/* 左側：Function 選擇區 */}
+                            <div className="flex-1">
+                                <label variant="subtitle2" className="block font-medium text-xs mb-1">Choose a Signal Pattern:</label>
+                                <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-x-2 gap-y-2 min-w-0">
+                                    {["f1", "f2", "f3", "f4", "f5", "f6"].map((f) => (
+                                    <label key={f} className="border p-3 rounded flex flex-col gap-2">
+                                        <div className="flex items-center gap-2">
+                                        <input
+                                            type="radio"
+                                            name="function"
+                                            value={f}
+                                            checked={selectedFunction === f}
+                                            onChange={handleFunctionChange}
+                                        />
+                                        <span className="font-medium text-xs">{functionNames[f]}</span>
+                                        </div>
+                                        <BlockMath math={functionLatex[f]} />
+                                    </label>
                                     ))}
                                 </div>
                             </div>
-                            <button className="bg-blue-500 text-white px-4 py-2 rounded" onClick={handleUpload}>Generate Signal</button>
-                        </div>
-                        <div className="flex-[3]">
-                            {waveform && <Waveform data={waveform.data} title={waveform.title} />}
+
+
+                            {/* 右側：Sampling Rate + 按鈕 */}
+                            <div className="w-full lg:w-[165px] flex flex-col gap-x-3 gap-y-3 -ml-3" >
+                                <div>
+                                    <label variant="subtitle2" className="block font-medium text-xs mb-1">Sampling Rate:</label>
+                                    <input
+                                    type="number"
+                                    className="border p-2 rounded w-full"
+                                    value={samplingRate}
+                                    onChange={(e) => setSamplingRate(e.target.value)}
+                                    />
+                                </div>
+                                <button
+                                    className="bg-blue-500 text-white px-4 py-2 rounded w-full"
+                                    onClick={handleUpload}
+                                >
+                                    Generate Signal
+                                </button>
+                            </div>
                         </div>
                     </div>
+
+                    
+                    <div>
+                        <Typography  variant="h6" className="text-gray-800 mb-2 h-6">
+                                HHSA Spectrum Result
+                            </Typography>
+                            <Divider className="mb-4" />
+                            
+                            <HoloPlot holoData={image} isLoading={isLoading} userid={`${account.user._id}`} token={`${account.token}`}/>
+                    </div>
+                </div>
                 </div>
 
-            </div>
+
+
         </>
     );
 };

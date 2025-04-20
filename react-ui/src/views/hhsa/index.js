@@ -29,7 +29,7 @@ const SamplePage = () => {
     const [age, setAge] = useState("");
     const [gender, setGender] = useState("");
     const [diagnosisCodes, setDiagnosisCodes] = useState("");
-    const [signalSize, setSignalSize] = useState(4000);
+    const [signalSize, setSignalSize] = useState(1000);
     const [samplingRate, setSamplingRate] = useState(200.0);
     const [dStart, setDStart] = useState(0.0);
     const [dStop, setDStop] = useState(0.0);
@@ -49,14 +49,10 @@ const SamplePage = () => {
         duration: null,
         records: null
     });
-    const [roiCoords, setRoiCoords] = useState({
-        x1: '',
-        x2: '',
-        y1: '',
-        y2: ''
-      });
+
     const parseTimeout = useRef(null);
     const handleFileChange = (e) => {
+        
         const selectedFile = e.target.files[0];
         const maxSizeMB = 50;
     
@@ -69,10 +65,11 @@ const SamplePage = () => {
         setFile(selectedFile);
         setErrors(prev => ({ ...prev, file: "" }));
     
-        // ✅ 延遲呼叫 validate API，避免連續操作觸發太快
         clearTimeout(parseTimeout.current);
+
         parseTimeout.current = setTimeout(async () => {
             try {
+                console.log('selectedFile', selectedFile)
                 const formData = new FormData();
                 formData.append('file', selectedFile);
     
@@ -82,12 +79,11 @@ const SamplePage = () => {
                     {
                         headers: {
                             Authorization: `${account.token}`,
-                            UserId: `${account.user._id}`,
-                            'Content-Type': 'multipart/form-data',
+                            UserId: `${account.user._id}`
                         }
                     }
                 );
-    
+                console.log('selectedFile', selectedFile)
                 // ✅ 顯示來自後端的 fs/duration/records 等資訊
                 const { num_signals, fs_detected, duration_str, num_records_str, message } = response.data;
                 console.log("num_signals:", num_signals);
@@ -151,7 +147,7 @@ const SamplePage = () => {
             formData.append('cmd', cmd);
             formData.append('chn', chn);
             formData.append('signal_size', signalSize);
-            formData.append('sampling_rate', edfMeta.fs);
+            formData.append('sampling_rate', '');
             formData.append('d_start', dStart);
             formData.append('d_stop', dStop);
             formData.append('selectedFunction', selectedFunction);
@@ -245,7 +241,9 @@ const SamplePage = () => {
             !/^(0|[1-9]\d*)(\.\d+)?$/.test(dStop)
           ) {
             errors.dStop = "Stop Time must be greater than Start Time.";
-          }
+          } else if (+dStop - +dStart > 30) {
+            errors.dStop = "Time range must be no more than 30 seconds.";
+        }
                   return errors;
     };
 
@@ -303,7 +301,7 @@ const SamplePage = () => {
                                                     <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4 text-gray-500" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                                                         <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 16V4a1 1 0 011-1h7l5 5v8a1 1 0 01-1 1H5a1 1 0 01-1-1z" />
                                                     </svg>
-                                                    <span className="truncate max-w-[120px]">{file.name}</span>
+                                                    <span className="truncate max-w-[120px] text-sm font-medium text-gray-800 font-sans font-semibold">{file.name}</span>
                                                     <button onClick={() => {
                                                         setFile(null);
                                                         setEdfMeta({ num_signals: null, fs: null, duration: null, records: null });
@@ -317,16 +315,16 @@ const SamplePage = () => {
                                                         {edfMeta.fs && (
                                                             <>
                                                             <div>
-                                                                <span className="font-medium">Sample Rate:</span>{' '}
-                                                                <span className="text-blue-600 font-semibold">{edfMeta.fs} Hz</span>
+                                                                <span className="font-medium font-sans font-semibold">Sample Rate:</span>{' '}
+                                                                <span className="text-blue-600 font-semibold font-sans">{edfMeta.fs} Hz</span>
                                                             </div>
                                                             <div>
-                                                                <span className="font-medium">Total Duration:</span>{' '}
-                                                                <span className="text-blue-600 font-semibold">{edfMeta.duration} s</span>
+                                                                <span className="font-medium font-sans font-semibold">Total Duration:</span>{' '}
+                                                                <span className="text-blue-600 font-semibold font-sans">{edfMeta.duration} s</span>
                                                             </div>
                                                             <div>
-                                                                <span className="font-medium">Channel Counts:</span>{' '}
-                                                                <span className="text-blue-600 font-semibold">{edfMeta.num_signals}</span>
+                                                                <span className="font-medium font-sans font-semibold">Channel Counts:</span>{' '}
+                                                                <span className="text-blue-600 font-semibold font-sans">{edfMeta.num_signals}</span>
                                                             </div>
                                                             </>
                                                         )}
