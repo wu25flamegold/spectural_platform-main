@@ -5,7 +5,10 @@ import { updateUsage } from './../../store/actions';
 import clsx from 'clsx';
 import HoloPlot from './Holoplot';
 import FadeMessage from './FadeMessage';
+import UsageTooltip from './UsageTooltip';
+
 import ROICoordsDisplay from './ROICoordsDisplay';
+
 import { useRef } from 'react';
 
 import {
@@ -25,14 +28,12 @@ const SamplePage = () => {
     const [selectedTab, setSelectedTab] = useState(0);
     const [cmd, setCmd] = useState("");
     const [file, setFile] = useState(null);
-    const [chn, setChn] = useState("");
-    const [age, setAge] = useState("");
-    const [gender, setGender] = useState("");
+    const [chn, setChn] = useState(1);
+    const [age, setAge] = useState(30);
+    const [gender, setGender] = useState("M");
     const [diagnosisCodes, setDiagnosisCodes] = useState("");
-    const [signalSize, setSignalSize] = useState(1000);
-    const [samplingRate, setSamplingRate] = useState(200.0);
     const [dStart, setDStart] = useState(0.0);
-    const [dStop, setDStop] = useState(0.0);
+    const [dStop, setDStop] = useState(30.0);
     const [image, setImage] = useState(null);
     const [selectedFunction, setSelectedFunction] = useState('f2');
     const [waveform, setWaveform] = useState(null);
@@ -145,15 +146,14 @@ const SamplePage = () => {
             formData.append('file', file);
             formData.append('remote_wnd_name', remoteWndName);
             formData.append('cmd', cmd);
-            formData.append('chn', chn);
-            formData.append('signal_size', signalSize);
+            formData.append('chn', chn.toString());
             formData.append('sampling_rate', '');
             formData.append('d_start', dStart);
             formData.append('d_stop', dStop);
             formData.append('selectedFunction', selectedFunction);
             formData.append('email', account.user.email);
             formData.append('usage', account.user.usage);
-            formData.append('age', age);
+            formData.append('age', age.toString());
             formData.append('gender', gender);
             formData.append('clinical_diagnosis_code', diagnosisCodes);
             const response = await axios.post('http://xds3.cmbm.idv.tw:81/tmapi/send_command', formData, {
@@ -256,8 +256,8 @@ const SamplePage = () => {
                 onClose={() => setMessage(null)}
             />
             )}
-            <div className="p-4">
-                <div className="bg-white rounded-lg shadow p-1">
+            <div className="px-1 sm:px-4">
+                <div className="bg-white rounded-lg shadow px-0 py-2 flex flex-col gap-6">
                     <Card elevation={0} className="rounded-lg">
                         <CardContent>
                             {/* Header with toggle */}
@@ -279,14 +279,19 @@ const SamplePage = () => {
 
                             {/* Form content (collapsible) */}
                             <Collapse in={showInputs} timeout="auto">
-                                <div className="flex flex-col gap-6">
+                                <div className="flex flex-col gap-6 ">
                                     <div
                                         className={`transition-all duration-500 ease-in-out overflow-hidden ${
                                             showInputs ? 'max-h-[1000px] opacity-100' : 'max-h-0 opacity-0'
                                         }`}
                                     >
 
+                                        <UsageTooltip />
+
                                         <div className="grid grid-cols-1 md:grid-cols-3 gap-6 pt-2">
+                                            
+
+
                                             {/* Left: Upload UI */}
                                             <div className="col-span-1 bg-white border rounded p-4 flex flex-col items-center justify-center">
                                                 {file ? (
@@ -363,8 +368,8 @@ const SamplePage = () => {
                                             </div>
 
                                             {/* Right: Other inputs and submit */}
-                                            <div className="col-span-1 md:col-span-2 grid grid-cols-1 md:grid-cols-2 gap-4 -translate-x-1">
-                                                {/* Gender */}
+                                            <div className="col-span-1 md:col-span-2 grid grid-cols-1 md:grid-cols-2 gap-4 pl-1 md:pl-0">
+                                            {/* Gender */}
                                                 <div className="flex flex-col">
                                                     <label className="mb-1">Gender:</label>
                                                     <div className="flex gap-4">
@@ -413,7 +418,7 @@ const SamplePage = () => {
                                                 </div>
                                             </div>
                                         </div>
-                                        </div>
+                                    </div>
                                 </div>
                             </Collapse>
                             

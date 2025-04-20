@@ -40,7 +40,7 @@ export const other = {
         },
         {
             id: 'hhsa',
-            title: 'HHSA Analyze',
+            title: 'Analyze EEG File',
             type: 'item',
             url: '/hhsa',
             icon: icons['IconBrandChrome'],

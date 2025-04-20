@@ -5,11 +5,11 @@ import 'rc-slider/assets/index.css';
 
 const Waveform = ({ data, title }) => {
   const [viewWindow, setViewWindow] = useState([0, data.length*0.2]);
-  const [plotSize, setPlotSize] = useState({ width: window.innerWidth*0.6, height: window.innerHeight*0.2 });
+  const [plotSize, setPlotSize] = useState({ width: window.innerWidth*0.6, height: window.innerHeight*0.25 });
 
   useEffect(() => {
     const handleResize = () => {
-      setPlotSize({ width: window.innerWidth*0.6, height: window.innerHeight*0.2 });
+      setPlotSize({ width: window.innerWidth*0.6, height: window.innerHeight*0.25 });
     };
     window.addEventListener('resize', handleResize);
     return () => {
@@ -35,11 +35,11 @@ const Waveform = ({ data, title }) => {
 
   return (
     <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
-      <XYPlot height={plotSize.height} width={plotSize.width}>
+      <XYPlot height={plotSize.height} width={plotSize.width} margin={{ left: 50, right: 40, top: 5, bottom: 30 }}>
         <HorizontalGridLines />
         <VerticalGridLines />
-        <XAxis />
-        <YAxis />
+        <XAxis tickTotal={6} />
+        <YAxis tickTotal={6}/>
         <LineSeries
           data={chartData}
           style={{

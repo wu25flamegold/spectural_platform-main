@@ -8,6 +8,8 @@ import FadeMessage from './../hhsa/FadeMessage';
 import { BlockMath } from 'react-katex';
 import 'katex/dist/katex.min.css';
 import HoloPlot from './../hhsa/Holoplot';
+import clsx from 'clsx';
+import ExpandMoreIcon from '@material-ui/icons/ExpandMore';
 
 import {
     Card,
@@ -29,6 +31,7 @@ const SimulateSignalPage = () => {
     const dispatch = useDispatch();
     const [isLoading, setIsLoading] = useState(false);
     const account = useSelector((state) => state.account);
+    const [showInputs, setShowInputs] = useState(true);
 
 
     const handleFunctionChange = (event) => {
@@ -107,6 +110,7 @@ const SimulateSignalPage = () => {
                 }
             });
             if (response.data.success) {
+                setShowInputs(false);
                 setImage(response.data.image);
                 dispatch(updateUsage(response.data.usage));
             } else {
@@ -128,76 +132,100 @@ const SimulateSignalPage = () => {
                 onClose={() => setMessage(null)}
             />
             )}
-            <div className="p-4">
-                <div className="bg-white rounded-lg shadow p-6 flex flex-col gap-10">
+            <div className="px-1 sm:px-4 pb-[100px]">
+                <div className="bg-white rounded-lg shadow p-3 sm:p-6 flex flex-col gap-6">
+
 
                     {/* Header */}
                     <div>
-                        <Typography variant="h6" className="text-gray-800 mb-4 transform translate-y-[6px]">Simulated Signal Analyze</Typography>
+                        {/* <Typography variant="h6" className="text-gray-800 mb-4 transform translate-y-[6px]">Simulated Signal Analyze</Typography> */}
+                        {/* Header with toggle */}
+                        <div className="flex justify-between items-center mb-2 h-6">
+                            <Typography variant="h6" className="text-gray-800">
+                            Simulated Signal Analyze
+                            </Typography>
+                            <IconButton
+                                onClick={() => setShowInputs(!showInputs)}
+                                className={clsx('transition-transform p-1', {
+                                'transform rotate-180': showInputs,
+                                })}
+                            >
+                                <ExpandMoreIcon />
+                            </IconButton>
+                        </div>
                         <Divider className="mb-6" />
-                        {waveform && (
-                        <div className="my-6">
-                            <Waveform data={waveform.data} title={waveform.title} />
-                        </div>
-                        )}
-                        <div className="flex flex-col lg:flex-row gap-6">
-                            {/* 左側：Function 選擇區 */}
-                            <div className="flex-1">
-                                <label variant="subtitle2" className="block font-medium text-xs mb-1">Choose a Signal Pattern (ω in rad/s):
-                                </label>
-                                <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-x-2 gap-y-2 min-w-0">
-                                    {["f1", "f2", "f3", "f4", "f5", "f6"].map((f) => (
-                                    <label key={f} className="border p-3 rounded flex flex-col gap-2">
-                                        <div className="flex items-center gap-2">
-                                        <input
-                                            type="radio"
-                                            name="function"
-                                            value={f}
-                                            checked={selectedFunction === f}
-                                            onChange={handleFunctionChange}
-                                        />
-                                        <span className="font-medium text-xs">{functionNames[f]}</span>
-                                        </div>
-                                        <BlockMath math={functionLatex[f]} />
-                                    </label>
-                                    ))}
-                                </div>
-                            </div>
-
-
-                            {/* 右側：固定說明 + 按鈕 */}
-                            <div className="w-full lg:w-[155px] flex flex-col gap-3 -ml-3">
-                            <div className="flex-1 flex flex-col space-y-2">
-                                <div className="flex items-center gap-2">
-                                    <label className="block font-medium text-xs mb-1">Signal Configuration:</label>
-                                </div>
-                                <div className="text-sm space-y-1">
-                                    <div>
-                                        <span className="font-medium font-sans text-xs font-semibold">Duration:</span>{' '}
-                                        <span className="text-blue-600 font-semibold text-xs font-sans">20 s</span>
-                                    </div>
-                                    <div>
-                                        <span className="font-medium font-sans text-xs font-semibold">Sampling Rate:</span>{' '}
-                                        <span className="text-blue-600 font-semibold text-xs font-sans">200 Hz</span>
-                                    </div>
-                                </div>
-
-                                <button
-                                    className="bg-primary hover:bg-primary-dark text-white px-4 py-2 rounded w-full"
-                                    onClick={handleUpload}
-                                    disabled={isLoading}
+                        {/* Form content (collapsible) */}
+                        <Collapse in={showInputs} timeout="auto">
+                            <div className="flex flex-col gap-6">
+                                <div
+                                    className={`transition-all duration-500 ease-in-out overflow-hidden${
+                                        showInputs ? 'max-h-[1000px] opacity-100' : 'max-h-0 opacity-0'
+                                    }`}
                                 >
-                                    {isLoading ? 'Analyzing...' : 'Run Analysis'}
-                                </button>
+                                    {waveform && (
+                                    <div className="my-6">
+                                        <Waveform data={waveform.data} title={waveform.title} />
+                                    </div>
+                                    )}
+                                    <div className="flex flex-wrap gap-6">
+                                    {/* 左側：Function 選擇區 */}
+                                        <div className="flex-1">
+                                            <label variant="subtitle2" className="block font-medium text-xs mb-1">Choose a Signal Pattern (ω in rad/s):
+                                            </label>
+                                            <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-x-2 gap-y-2 min-w-0">
+                                                {["f1", "f2", "f3", "f4", "f5", "f6"].map((f) => (
+                                                <label key={f} className="border p-3 rounded flex flex-col gap-2">
+                                                    <div className="flex items-center gap-2">
+                                                    <input
+                                                        type="radio"
+                                                        name="function"
+                                                        value={f}
+                                                        checked={selectedFunction === f}
+                                                        onChange={handleFunctionChange}
+                                                    />
+                                                    <span className="font-medium text-xs">{functionNames[f]}</span>
+                                                    </div>
+                                                    <BlockMath math={functionLatex[f]} />
+                                                </label>
+                                                ))}
+                                            </div>
+                                        </div>
 
+
+                                        {/* 右側：固定說明 + 按鈕 */}
+                                        {/* 右側：固定說明 + 按鈕 */}
+                                        <div className="w-full lg:w-[160px] flex flex-col gap-4 pt-1">
+                                        <div>
+                                            <label className="block font-medium text-xs mb-1">Signal Configuration:</label>
+                                            <div className="text-sm space-y-1">
+                                            <div>
+                                                <span className="font-medium font-sans text-xs font-semibold">Duration:</span>{' '}
+                                                <span className="text-blue-600 font-semibold text-xs font-sans">20 s</span>
+                                            </div>
+                                            <div>
+                                                <span className="font-medium font-sans text-xs font-semibold">Sampling Rate:</span>{' '}
+                                                <span className="text-blue-600 font-semibold text-xs font-sans">200 Hz</span>
+                                            </div>
+                                            </div>
+                                        </div>
+
+                                        <div>
+                                            <button
+                                            className="bg-primary hover:bg-primary-dark text-white px-4 py-2 rounded w-full"
+                                            onClick={handleUpload}
+                                            disabled={isLoading}
+                                            >
+                                            {isLoading ? 'Analyzing...' : 'Run Analysis'}
+                                            </button>
+                                        </div>
+                                        </div>
+
+
+
+                                    </div>
+                                 </div>
                             </div>
-
-
-
-                            </div>
-
-
-                        </div>
+                        </Collapse>
                     </div>
 
                     
