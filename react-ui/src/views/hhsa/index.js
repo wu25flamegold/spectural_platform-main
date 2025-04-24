@@ -53,10 +53,70 @@ const SamplePage = () => {
     });
 
     const parseTimeout = useRef(null);
-    const handleFileChange = (e) => {
+    // const handleFileChange = (e) => {
         
+    //     const selectedFile = e.target.files[0];
+    //     const maxSizeMB = 1000;
+    
+    //     if (selectedFile && selectedFile.size > maxSizeMB * 1024 * 1024) {
+    //         setErrors(prev => ({ ...prev, file: `File size exceeds ${maxSizeMB}MB limit.` }));
+    //         setFile(null);
+    //         return;
+    //     }
+    
+    //     setFile(selectedFile);
+    //     setErrors(prev => ({ ...prev, file: "" }));
+    
+    //     clearTimeout(parseTimeout.current);
+
+    //     parseTimeout.current = setTimeout(async () => {
+    //         try {
+    //             console.log('selectedFile', selectedFile)
+    //             const formData = new FormData();
+    //             formData.append('file', selectedFile);
+    
+    //             const response = await axios.post(
+    //                 'http://xds3.cmbm.idv.tw:81/tmapi/validate_edf_metadata',
+    //                 formData,
+    //                 {
+    //                     headers: {
+    //                         Authorization: `${account.token}`,
+    //                         UserId: `${account.user._id}`
+    //                     }
+    //                 }
+    //             );
+    //             console.log('selectedFile', selectedFile)
+    //             // ✅ 顯示來自後端的 fs/duration/records 等資訊
+    //             const { num_signals, fs_detected, duration_str, num_records_str, message } = response.data;
+    //             console.log("num_signals:", num_signals);
+    //             console.log("fs_detected:", fs_detected);
+    //             console.log("duration_str:", duration_str);
+    //             console.log("num_records_str:", num_records_str);
+    //             if (message !== "Header parsed successfully"){
+    //                 setMessage(`❌ ${message}`);    
+    //             }
+                    
+    //             //setMessage(`✅ ${message} (fs: ${fs_detected}, duration: ${duration_str}, records: ${num_records_str})`);
+    //             setEdfMeta({
+    //                 num_signals: num_signals,
+    //                 fs: fs_detected,
+    //                 duration: duration_str,
+    //                 records: num_records_str,
+                    
+    //             });
+    //             // 如果你有狀態欄位也可以 setFS(fs_detected) 之類
+    //         } catch (error) {
+    //             const errMsg = error?.response?.data?.message || error.message;
+    //             console.error("❌ EDF 驗證失敗", errMsg);
+    //             setMessage(`❌ ${errMsg}`);
+    //         }
+    //     }, 500); // 0.5 秒延遲
+
+    // };
+
+    const handleFileChange = (e) => {
         const selectedFile = e.target.files[0];
-        const maxSizeMB = 50;
+        const maxSizeMB = 1000;
     
         if (selectedFile && selectedFile.size > maxSizeMB * 1024 * 1024) {
             setErrors(prev => ({ ...prev, file: `File size exceeds ${maxSizeMB}MB limit.` }));
@@ -68,48 +128,51 @@ const SamplePage = () => {
         setErrors(prev => ({ ...prev, file: "" }));
     
         clearTimeout(parseTimeout.current);
-
+    
         parseTimeout.current = setTimeout(async () => {
             try {
-                console.log('selectedFile', selectedFile)
-                const formData = new FormData();
-                formData.append('file', selectedFile);
+                const sliceSize = 4096; // 足夠讀 header + signal metadata
+                const headerSlice = selectedFile.slice(0, sliceSize);
+                const arrayBuffer = await headerSlice.arrayBuffer();
+                const view = new DataView(arrayBuffer);
+                const decoder = new TextDecoder("ascii");
     
-                const response = await axios.post(
-                    'http://xds3.cmbm.idv.tw:81/tmapi/validate_edf_metadata',
-                    formData,
-                    {
-                        headers: {
-                            Authorization: `${account.token}`,
-                            UserId: `${account.user._id}`
-                        }
-                    }
-                );
-                console.log('selectedFile', selectedFile)
-                // ✅ 顯示來自後端的 fs/duration/records 等資訊
-                const { num_signals, fs_detected, duration_str, num_records_str, message } = response.data;
-                console.log("num_signals:", num_signals);
-                console.log("fs_detected:", fs_detected);
-                console.log("duration_str:", duration_str);
-                console.log("num_records_str:", num_records_str);
+                // EDF Spec: offsets
+                const numSignalsStr = decoder.decode(arrayBuffer.slice(252, 256)).trim();
+                const numSignals = parseInt(numSignalsStr);
     
-                //setMessage(`✅ ${message} (fs: ${fs_detected}, duration: ${duration_str}, records: ${num_records_str})`);
+                const durationStr = decoder.decode(arrayBuffer.slice(244, 252)).trim();
+                const durationPerRecord = parseFloat(durationStr);
+    
+                const numRecordsStr = decoder.decode(arrayBuffer.slice(236, 244)).trim();
+                const numRecords = parseInt(numRecordsStr);
+    
+                const samplesStart = 256 + numSignals * 216;
+                const samplesPerRecord = [];
+                for (let i = 0; i < numSignals; i++) {
+                    const start = samplesStart + i * 8;
+                    const val = decoder.decode(arrayBuffer.slice(start, start + 8)).trim();
+                    samplesPerRecord.push(parseInt(val));
+                }
+    
+                const fs = samplesPerRecord[0] / durationPerRecord;
+                const totalDuration = durationPerRecord * numRecords;
+    
+                // 更新狀態
                 setEdfMeta({
-                    num_signals: num_signals,
-                    fs: fs_detected,
-                    duration: duration_str,
-                    records: num_records_str,
-                    
+                    num_signals: numSignals,
+                    fs: fs,
+                    duration: totalDuration,
+                    records: numRecordsStr
                 });
-                // 如果你有狀態欄位也可以 setFS(fs_detected) 之類
+                setMessage("✅ Header parsed successfully (from frontend)");
             } catch (error) {
-                const errMsg = error?.response?.data?.message || error.message;
-                console.error("❌ EDF 驗證失敗", errMsg);
-                setMessage(`❌ ${errMsg}`);
+                console.error("❌ Failed to parse EDF header:", error);
+                setMessage("❌ Failed to parse EDF header");
             }
         }, 500); // 0.5 秒延遲
-
     };
+    
     
 
 
@@ -134,94 +197,131 @@ const SamplePage = () => {
         }
     };
 
-    const handleUpload = async () => {
-        const errors = validateInputs();
-        if (Object.keys(errors).length > 0) {
-            setErrors(errors);
-            return;
-        }
-        setErrors({});
-        setIsLoading(true);
-        dispatch(clearRoiResult());
-        try {
+
+const handleUpload = async () => {
+    const errors = validateInputs();
+    const CHUNK_SIZE = 25 * 1024 * 1024; // 20MB per chunk
+    const MAX_CONCURRENT_UPLOADS = 2;
+    if (Object.keys(errors).length > 0) {
+        setErrors(errors);
+        return;
+    }
+    setErrors({});
+    setIsLoading(true);
+    dispatch(clearRoiResult());
+
+    try {
+        const totalChunks = Math.ceil(file.size / CHUNK_SIZE);
+        const filename = `${Date.now()}_${file.name}`;
+
+        let currentChunk = 0;
+        const uploadChunk = async (i) => {
+            const chunk = file.slice(i * CHUNK_SIZE, (i + 1) * CHUNK_SIZE);
             const formData = new FormData();
-            formData.append('file', file);
-            formData.append('remote_wnd_name', remoteWndName);
-            formData.append('cmd', cmd);
-            formData.append('chn', chn.toString());
-            formData.append('sampling_rate', '');
-            formData.append('d_start', dStart);
-            formData.append('d_stop', dStop);
-            formData.append('selectedFunction', selectedFunction);
-            formData.append('email', account.user.email);
-            formData.append('usage', account.user.usage);
-            formData.append('age', age.toString());
-            formData.append('gender', gender);
-            formData.append('clinical_diagnosis_code', diagnosisCodes);
-            const response = await axios.post('http://xds3.cmbm.idv.tw:81/tmapi/send_command', formData, {
-                headers: {
-                    Authorization: `${account.token}`,
-                    UserId: `${account.user._id}`
+            formData.append("chunk", chunk);
+            formData.append("filename", filename);
+            formData.append("chunkIndex", i);
+            formData.append("totalChunks", totalChunks);
+            await axios.post("http://xds3.cmbm.idv.tw:81/tmapi/upload_chunk", formData);
+        };
+
+        const parallelUploads = async () => {
+            while (currentChunk < totalChunks) {
+                const uploads = [];
+                for (let i = 0; i < MAX_CONCURRENT_UPLOADS && currentChunk < totalChunks; i++, currentChunk++) {
+                    uploads.push(uploadChunk(currentChunk));
                 }
-            });
-            if (response.data.success) {
-                setShowInputs(false);
-                setImage(response.data.image);
-                dispatch(updateUsage(response.data.usage));
-            } else {
-                alert(response.data.message);
+                await Promise.all(uploads);
             }
-        } catch (error) {
-            setImage(null);
-            alert(error?.response?.data?.message || error);
-        } finally {
-            setIsLoading(false);
+        };
+
+        await parallelUploads();
+
+        // 所有 chunks 上傳完畢後呼叫 send_command
+        const sendFormData = new FormData();
+        sendFormData.append("filename", filename);
+        sendFormData.append("remote_wnd_name", remoteWndName);
+        sendFormData.append("cmd", cmd);
+        sendFormData.append("totalChunks", totalChunks);
+        sendFormData.append("chn", chn.toString());
+        sendFormData.append("sampling_rate", "");
+        sendFormData.append("d_start", dStart);
+        sendFormData.append("d_stop", dStop);
+        sendFormData.append("selectedFunction", selectedFunction);
+        sendFormData.append("email", account.user.email);
+        sendFormData.append("usage", account.user.usage);
+        sendFormData.append("age", age.toString());
+        sendFormData.append("gender", gender);
+        sendFormData.append("clinical_diagnosis_code", diagnosisCodes);
+
+        const response = await axios.post("http://xds3.cmbm.idv.tw:81/tmapi/send_command", sendFormData, {
+            headers: {
+                Authorization: `${account.token}`,
+                UserId: `${account.user._id}`
+            }
+        });
+
+        if (response.data.success) {
+            setShowInputs(false);
+            setImage(response.data.image);
+            dispatch(updateUsage(response.data.usage));
+        } else {
+            alert(response.data.message);
+        }
+    } catch (error) {
+        setImage(null);
+        alert(error?.response?.data?.message || error);
+    } finally {
+        setIsLoading(false);
+    }
+};
+
+    // const handleUpload = async () => {
+    //     const errors = validateInputs();
+    //     if (Object.keys(errors).length > 0) {
+    //         setErrors(errors);
+    //         return;
+    //     }
+    //     setErrors({});
+    //     setIsLoading(true);
+    //     dispatch(clearRoiResult());
+    //     try {
+    //         const formData = new FormData();
+    //         formData.append('file', file);
+    //         formData.append('remote_wnd_name', remoteWndName);
+    //         formData.append('cmd', cmd);
+    //         formData.append('chn', chn.toString());
+    //         formData.append('sampling_rate', '');
+    //         formData.append('d_start', dStart);
+    //         formData.append('d_stop', dStop);
+    //         formData.append('selectedFunction', selectedFunction);
+    //         formData.append('email', account.user.email);
+    //         formData.append('usage', account.user.usage);
+    //         formData.append('age', age.toString());
+    //         formData.append('gender', gender);
+    //         formData.append('clinical_diagnosis_code', diagnosisCodes);
+    //         const response = await axios.post('http://xds3.cmbm.idv.tw:81/tmapi/send_command', formData, {
+    //             headers: {
+    //                 Authorization: `${account.token}`,
+    //                 UserId: `${account.user._id}`
+    //             }
+    //         });
+    //         if (response.data.success) {
+    //             setShowInputs(false);
+    //             setImage(response.data.image);
+    //             dispatch(updateUsage(response.data.usage));
+    //         } else {
+    //             alert(response.data.message);
+    //         }
+    //     } catch (error) {
+    //         setImage(null);
+    //         alert(error?.response?.data?.message || error);
+    //     } finally {
+    //         setIsLoading(false);
             
-        }
-    };
+    //     }
+    // };
 
-    const toFreqLabel = (val) => {
-        const floatVal = parseFloat(val);
-        if (isNaN(floatVal)) return '';
-        const freq = Math.pow(2, Math.abs(floatVal)).toFixed(3);
-        if (floatVal < 0) return `≈ 1/${freq} (${(1 / freq).toFixed(3)} Hz)`;
-        return `${freq} Hz`;
-    };
-    
-      
-    const handleAnalyzeROI = async (coords) => {
-          // 安全地轉成 log2（避免 0 或 NaN）
-        const safeLog2 = (val) => {
-            const parsed = parseFloat(val);
-            return parsed > 0 ? Math.log2(parsed) : null; // 避免 log2(0) or 負值
-        };
-
-        const logCoords = {
-            x1: safeLog2(coords.x1),
-            x2: safeLog2(coords.x2),
-            y1: safeLog2(coords.y1),
-            y2: safeLog2(coords.y2),
-        };
-
-        console.log("分析 ROI 區域（對數座標）:", logCoords);
-        console.log("分析 ROI 區域:", coords);
-        try {
-            const response = await axios.post('http://xds3.cmbm.idv.tw:81/tmapi/analyze_roi', 
-                { roi_coords: logCoords },
-                {
-                  headers: {
-                    Authorization: `${account.token}`,
-                    UserId: `${account.user._id}`
-                  }
-                }
-              );
-          
-              const data = response.data;
-              console.log("ROI 分析結果：", data);
-        } catch (error) {
-            console.error('分析 ROI 時發生錯誤:', error);
-        }
-      };
 
     const validateInputs = () => {
         const errors = {};
@@ -335,7 +435,7 @@ const SamplePage = () => {
                                                             </div>
                                                             </>
                                                         )}
-                                                        </div>
+                                                    </div>
 
 
 

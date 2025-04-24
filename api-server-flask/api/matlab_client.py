@@ -14,6 +14,12 @@ import matplotlib
 import subprocess
 import plotly.graph_objs as go
 from flask import jsonify
+import psutil
+import ctypes
+import pygetwindow as gw
+from .config import BaseConfig
+import tempfile
+from datetime import datetime
 
 matplotlib.use('Agg')  # 使用非 GUI 後端
 
@@ -449,10 +455,74 @@ class MATLABSharedMemoryClient:
             self.wait_for_matlab()
             return self.read_data()
         except TimeoutError:
-            print("Timeout: MATLAB did not respond in time.")
-            return 0     
+            print("⚠️ Timeout: MATLAB did not respond in time.")
+            print("🔁 Restarting MATLAB Runtime...")
+            return 0   
+    
+    def process_request_restart(self, UserId, edf_filename="fa0019r0.edf", fs=200, n=10, start_index=220, end_index=240):
+        """完整流程：發送請求 -> 等待 MATLAB -> 讀取數據"""
+        self.restart_tmapi_window(UserId)
+        self.send_request(UserId, edf_filename, fs, n, start_index, end_index)
+        try:
+            self.wait_for_matlab()
+            return self.read_data()
+        except TimeoutError:
+            print("⚠️ Timeout: MATLAB did not respond in time.")
+            return 0   
+
+    def restart_tmapi_window(self, UserId):
+        exe_path = r"C:\\Users\\admin\\Documents\\2024.0\\matlab_edf_server_for_json.exe"
+        user32 = ctypes.WinDLL('user32', use_last_error=True)
+        if BaseConfig.PROCESSING_MODE == "process_request":
+            new_title = f"MATLAB_Server_{UserId}"
+            windows = gw.getWindowsWithTitle(new_title)
+            if windows:
+                try:
+                    # 取得舊視窗的 process id
+                    hwnd = windows[0]._hWnd
+                    pid = ctypes.c_ulong()
+                    user32.GetWindowThreadProcessId(hwnd, ctypes.byref(pid))
+                    p = psutil.Process(pid.value)
+                    p.kill()
+                    print(f"✅ Killed old MATLAB process for {UserId}")
+                    time.sleep(1)  # 稍等一下釋放資源
+                except Exception as e:
+                    print(f"⚠️ Failed to kill old MATLAB: {e}")
+                try:
+                    # 建立唯一 cache 資料夾
+                    unique_cache_path = os.path.join(
+                        tempfile.gettempdir(),
+                        f"mcrCache_{UserId}_{datetime.now().strftime('%Y%m%d_%H%M%S_%f')}"
+                    )
+                    os.makedirs(unique_cache_path, exist_ok=True)
+
+                    # 設定環境變數
+                    env = os.environ.copy()
+                    env["MCR_CACHE_ROOT"] = unique_cache_path
+
+                    # 啟動 MATLAB .exe 並給 cmd window 設標題
+                    process = subprocess.Popen(
+                        f'start cmd /k "title {new_title} & {exe_path} {UserId}"',
+                        shell=True,
+                        env=env
+                    )
+
+                    time.sleep(1)
+                    window_str = r"C:\WINDOWS\system32\cmd.exe - " + exe_path
+                    hwnd_cmd = user32.FindWindowW("ConsoleWindowClass", window_str)
+                    hwnd_child = user32.FindWindowExW(hwnd_cmd, 0, None, None)
+                    if hwnd_child:
+                        user32.SetWindowTextW(hwnd_child, new_title)
+                    return True, f"Analysis tool launched.", process
+                except Exception as e:
+                    return False, f"Oops! Something went wrong: {e}", None
+            else:
+                return True, f"Analysis tool launched.", None
 
 
+
+
+           
 def split_specific_time_range():
     UserId = "0"
     exe_path = r"C:\Users\admin\Documents\2024\matlab_edf_server_for_json.exe"

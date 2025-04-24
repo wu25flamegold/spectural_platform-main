@@ -1,9 +1,9 @@
+import ctypes
 import os
 import subprocess
 import time
 from ctypes import WinDLL, c_wchar_p
 from api.config import BaseConfig
-from datetime import datetime
 import os
 from api.models import Users, Patients
 from datetime import datetime
@@ -14,6 +14,7 @@ import numpy as np
 import os
 from datetime import datetime
 import numpy as np
+import psutil
 
 SAVE_DIR = r"C:\HhsaData"  # ✅ 你指定的資料夾
 def is_valid_edf(file_stream):
@@ -32,20 +33,21 @@ def save_uploaded_file(file, save_dir):
     file.save(file_path)
     return file_path, fname, timestamp
 
-def run_tmapi_processing(instance, selectedFunction, file, file_path, cmd, sampling_rate,
+def run_tmapi_processing(instance, selectedFunction, file_path, cmd, sampling_rate,
                          chn, d_start, d_stop, UserId, fname, timestamp):
     print('BaseConfig.PROCESSING_MODE', BaseConfig.PROCESSING_MODE)
     if BaseConfig.PROCESSING_MODE == "TMAPI":
         buf, buf_n = prepare_tmapi_data(
             instance, selectedFunction,
-            file.filename if file_path else "",
+            fname if file_path else "",
             cmd, sampling_rate, chn, d_start, d_stop
         )
         result = instance.send_message(buf, buf_n, UserId)
 
     elif BaseConfig.PROCESSING_MODE == "process_request":
         result = instance.process_request(UserId, file_path, fs=sampling_rate, n=chn, start_index=d_start, end_index=d_stop)
-
+        if result == 0:
+            result = instance.process_request_restart(UserId, file_path, fs=sampling_rate, n=chn, start_index=d_start, end_index=d_stop)
     else:
         raise ValueError(f"Unknown PROCESSING_MODE: {BaseConfig.PROCESSING_MODE}")
 

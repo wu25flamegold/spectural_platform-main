@@ -273,17 +273,28 @@ class OpenMatlab(Resource):
         # except Exception as e:
         #     return jsonify({"success": False, "message": f"Failed to open MATLAB: {e}"})
 
-           
+CHUNK_DIR = r"C:\Chunks"
+os.makedirs(CHUNK_DIR, exist_ok=True)
+
 @rest_api.route('/tmapi/send_command', endpoint='tmapi_send_command')
 class SendCommand(Resource):
     def post(self):
         UserId = request.headers.get('UserId')
         from api import get_process_instance
         instance = get_process_instance(UserId)
-        if 'file' in request.files:
-            file = request.files['file']
+        filename = request.form.get("filename")
+        total_chunks = int(request.form.get("totalChunks", 0)) 
+        file_path = os.path.join(CHUNK_DIR, filename)
+        if not os.path.exists(file_path):
+            print(f"[INFO] Merging {total_chunks} chunks for {filename} in {file_path}")
+            file_path = merge_chunks(filename, total_chunks)
+        if filename:
+            file_path = os.path.join(CHUNK_DIR, filename)
+            #file = open(file_path, 'rb')  # 用來後面 run_tmapi_processing 用
+            fname = filename
             selectedFunction = ''
-            file_path, fname, timestamp = save_uploaded_file(file, SAVE_DIR)
+            #file_path, fname, timestamp = save_uploaded_file(file, SAVE_DIR)
+            timestamp = datetime.now().strftime("%Y%m%d_%H%M%S")
         else:
             selectedFunction = request.form['selectedFunction']
             file_path, fname, timestamp = "", "", datetime.now().strftime("%Y%m%d_%H%M%S")
@@ -309,7 +320,7 @@ class SendCommand(Resource):
                 "success": False,
                 "message": f"{err_msg}"
             })
-        result = run_tmapi_processing(instance, selectedFunction, file, file_path, cmd, sampling_rate,
+        result = run_tmapi_processing(instance, selectedFunction, file_path, cmd, sampling_rate,
                                       chn, d_start, d_stop, UserId, fname, timestamp)
         if result == -1:
             return jsonify({"success": False, "message": "Send Msg fail: no handle"})
@@ -341,7 +352,40 @@ class SendCommand(Resource):
                 return jsonify({"success": True, "image": img_str, "usage": user.usage})
             else:
                 return jsonify({"success": False, "message": result})
+
+
+
+def merge_chunks(filename, total_chunks):
+    final_path = os.path.join(CHUNK_DIR, filename)
+    with open(final_path, 'wb') as outfile:
+        for i in range(total_chunks):
+            chunk_path = os.path.join(CHUNK_DIR, f"{filename}.part{i}")
+            with open(chunk_path, 'rb') as infile:
+                outfile.write(infile.read())
+            os.remove(chunk_path)  # 清除已合併的分塊
+    return final_path
+
+@rest_api.route('/tmapi/upload_chunk', endpoint='tmapi_upload_chunk')
+class UploadChunk(Resource):
+    def post(self):
+        try:
+            chunk = request.files['chunk']
+            filename = request.form['filename']
+            chunk_index = int(request.form['chunkIndex'])
+            total_chunks = int(request.form['totalChunks'])
+
+            chunk.save(os.path.join(CHUNK_DIR, f"{filename}.part{chunk_index}"))
+
+            # 確認是否為最後一個 chunk
+            if chunk_index == total_chunks - 1:
+                final_path = merge_chunks(filename, total_chunks)
+                return jsonify({"success": True, "merged": True, "filename": filename, "path": final_path})
+            return jsonify({"success": True, "merged": False})
+
             
+
+        except Exception as e:
+            return jsonify({"success": False, "message": str(e)})
 
 @rest_api.route('/tmapi/send_simulate', endpoint='tmapi_send_simulate')
 class SendSimulate(Resource):
@@ -364,7 +408,7 @@ class SendSimulate(Resource):
         fname = selectedFunction
         timestamp, filename, file_path = write_signal_to_edf(selectedFunction, sampling_rate, signal_size=1000)
 
-        result = run_tmapi_processing(instance, selectedFunction, filename, file_path, cmd, sampling_rate,
+        result = run_tmapi_processing(instance, selectedFunction, file_path, cmd, sampling_rate,
                                       chn, d_start, d_stop, UserId, filename, timestamp)
         if result == -1:
             return jsonify({"success": False, "message": "Send Msg fail: no handle"})
@@ -465,34 +509,45 @@ class AnalyzeROI(Resource):
 class ValidatEdfMetadata(Resource):
     def post(self):
         print('validate_edf_metadata')
-        file = request.files.get('file')
-        if not file:
-            return jsonify({"message": "❌ No file uploaded"}), 400
-
-        
-        timestamp = datetime.now().strftime("%Y%m%d%H%M%S")
-        original_filename = secure_filename(file.filename)
-        filename = f"{timestamp}_{original_filename}"
-        save_dir = "C:\\HHSA_shared\\Temp"
-        os.makedirs(save_dir, exist_ok=True)  # 若資料夾不存在就自動建立
-        save_path = f"{save_dir}\\{filename}"
-
-        file.save(save_path)
-
+        try:
+            print('fvalidate_edf_metadata')
+            file = request.files.get('file')
+            if not file:
+                return jsonify({"message": "❌ No file uploaded"}), 400
+            print('avalidate_edf_metadata')
+            timestamp = datetime.now().strftime("%Y%m%d%H%M%S")
+            original_filename = secure_filename(file.filename)
+            filename = f"{timestamp}_{original_filename}"
+            print('svalidate_edf_metadata')
+            save_dir = "C:\\HHSA_shared\\Temp"
+            os.makedirs(save_dir, exist_ok=True)  # 若資料夾不存在就自動建立
+            print('dvalidate_edf_metadata')
+            save_path = f"{save_dir}\\{filename}"
+            file.save(save_path)
+            print('save_path', save_path)
+        except Exception as e:
+            return jsonify({"message": f"❌ Failed to parse EDF: {str(e)}"}), 500
+        print('ttsave_path', save_path)
         try:
             with open(save_path, 'rb') as f:
+                print('252save_path', save_path)
                 f.seek(252)
                 num_signals = int(f.read(4).decode().strip())
+                print('252')
                 f.seek(244)
                 duration_str = f.read(8).decode().strip()
+                print('244')
                 f.seek(236)
                 num_records_str = f.read(8).decode().strip()
+                print('236')
                 f.seek(256 + num_signals * 216)
+                print('256')
                 samples_per_record_all = [int(f.read(8).decode().strip()) for _ in range(num_signals)]
                 fs_detected = samples_per_record_all[0] / float(duration_str)
                 duration_per_record = float(duration_str)
                 num_records = int(num_records_str)
             total_duration = duration_per_record * num_records
+            print(num_signals, fs_detected, total_duration, num_records_str)
 
             return jsonify({
                 "message": "Header parsed successfully",
@@ -502,7 +557,11 @@ class ValidatEdfMetadata(Resource):
                 "num_records_str": num_records_str
             })
         except Exception as e:
-            return jsonify({"message": f"❌ Failed to parse EDF: {str(e)}"}), 500
+            return jsonify({"message": f"Failed to parse EDF",
+                            "num_signals": None,
+                            "fs_detected": None,
+                            "duration_str": None,
+                            "num_records_str": None})
 
 @rest_api.route('/upload_for_fft', endpoint='upload_for_fft')
 class UploadFFT(Resource):
@@ -653,8 +712,9 @@ def validate_edf_by_header_only(edf_path, n, start_index, end_index):
             if start_index < 0 or end_index <= start_index:
                 return False, 0, "❌ 時間區間無效，start_index 必須小於 end_index 且皆為正整數"
 
-            if end_index > total_duration:
-                return False, 0, f"❌ 結束時間 {end_index}s 超出檔案總長 {total_duration:.2f}s"
+            if total_duration != -1:
+                if end_index > total_duration:
+                    return False, 0, f"❌ 結束時間 {end_index}s 超出檔案總長 {total_duration:.2f}s"
 
             return True, fs_detected, None  # ✅ 驗證成功
         except Exception as e:

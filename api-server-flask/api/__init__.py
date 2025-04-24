@@ -9,6 +9,7 @@ from .matlab_client import MATLABSharedMemoryClient  # 確保 MATLABSharedMemory
 from .config import BaseConfig
 
 app = Flask(__name__)
+app.config['MAX_CONTENT_LENGTH'] = 2000 * 1024 * 1024  # 2000 MB
 app.config.from_object('api.config.BaseConfig')
 
 CORS(app, resources={r"/tmapi/*": {"origins": ["http://localhost:3000", "http://xds3.cmbm.idv.tw:81/"]}})
@@ -16,7 +17,6 @@ db.init_app(app)
 rest_api.init_app(app)
 app.config["TMAPI_INSTANCES"] = {} 
 app.config["HOLO_INSTANCES"] = {} 
-app.config['MAX_CONTENT_LENGTH'] = 500 * 1024 * 1024  # 500MB
 
 def get_process_instance(user_id):
     """ 確保每個 UserId 只創建一個 TMAPI """
