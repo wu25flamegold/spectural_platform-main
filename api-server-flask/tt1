@@ -1,4 +1,4 @@
-    "MATLAB 伺服器視窗已改名為: "    "MATLAB_Server_2"
+    "MATLAB 伺服器視窗已改名為: "    "MATLAB_Server_19"
 
 MATLAB: buffer 狀態正常，開始執行...
 Cannot find option file 
@@ -27,3 +27,872 @@ Cannot find option file
 Cannot find option file 
 Warning: Could not check for the latest EEGLAB version (internet may be disconnected).
 To prevent long startup time, disable checking for new EEGLAB versions (File > Preferences).
+MATLAB: 偵測到 Python 新數據，開始處理！
+!!19      ，忽略數據
+!!!19，忽略數據
+MATLAB: 成功找到 EDF 檔案 -> C:\EDFData\19\1745580193745_250414a.EDF
+sopen mode is "OVERFLOWDETECTION:OFF"
+@@?@@GG@@HH@@JJ@@II@@KK@@LL@@MM@@NN@@SS@@TTQQQQAQQBQC@@T1@@T2@@T3@@T6@@UU@@VV???Reading data in EDF format...
+Cannot find option file 
+eeg_checkset note: upper time limit (xmax) adjusted so (xmax-xmin)*srate+1 = number of frames
+Detected/removing 'EEG' prefix from channel labels
+Extracting events from last EEG channel...
+Warning: event extraction failure, the last channel contains data
+Cannot find option file 
+Cannot find option file 
+Warning: no event found. Events might be embedded in a data channel.
+         To extract events, use menu File > Import Event Info > From data channel
+Cannot find option file 
+Cannot find option file 
+Cannot find option file 
+Cannot find option file 
+Cannot find option file 
+Cannot find option file 
+Creating a new ALLEEG dataset 1
+MATLAB: 偵測到 EEG2.data 新數據，開始處理！
+Elapsed time is 7.433407 seconds.
+MATLAB: 偵測到 Python 新數據，開始處理！
+!!19      ，忽略數據
+!!!19，忽略數據
+MATLAB: 成功找到 EDF 檔案 -> C:\EDFData\19\1745580193745_250414a.EDF
+sopen mode is "OVERFLOWDETECTION:OFF"
+@@?@@GG@@HH@@JJ@@II@@KK@@LL@@MM@@NN@@SS@@TT@@T1@@T2@@T3@@T6@@UU@@VV???Reading data in EDF format...
+Cannot find option file 
+eeg_checkset note: upper time limit (xmax) adjusted so (xmax-xmin)*srate+1 = number of frames
+Detected/removing 'EEG' prefix from channel labels
+Extracting events from last EEG channel...
+Warning: event extraction failure, the last channel contains data
+Cannot find option file 
+Cannot find option file 
+Warning: no event found. Events might be embedded in a data channel.
+         To extract events, use menu File > Import Event Info > From data channel
+Cannot find option file 
+Cannot find option file 
+Cannot find option file 
+Cannot find option file 
+Cannot find option file 
+Cannot find option file 
+Creating a new ALLEEG dataset 1
+MATLAB: 偵測到 EEG2.data 新數據，開始處理！
+Elapsed time is 6.462792 seconds.
+MATLAB: 偵測到 Python 新數據，開始處理！
+!!19      ，忽略數據
+!!!19，忽略數據
+MATLAB: 成功找到 EDF 檔案 -> C:\EDFData\19\1745580193745_250414a.EDF
+sopen mode is "OVERFLOWDETECTION:OFF"
+@@?@@GG@@HH@@JJ@@II@@KK@@LL@@MM@@NN@@SS@@TT@@T1@@T2@@T3@@T6@@UU@@VV???Reading data in EDF format...
+Cannot find option file 
+eeg_checkset note: upper time limit (xmax) adjusted so (xmax-xmin)*srate+1 = number of frames
+Detected/removing 'EEG' prefix from channel labels
+Extracting events from last EEG channel...
+Warning: event extraction failure, the last channel contains data
+Cannot find option file 
+Cannot find option file 
+Warning: no event found. Events might be embedded in a data channel.
+         To extract events, use menu File > Import Event Info > From data channel
+Cannot find option file 
+Cannot find option file 
+Cannot find option file 
+Cannot find option file 
+Cannot find option file 
+Cannot find option file 
+Creating a new ALLEEG dataset 1
+MATLAB: 偵測到 EEG2.data 新數據，開始處理！
+Elapsed time is 4.801599 seconds.
+MATLAB: 偵測到 Python 新數據，開始處理！
+!!19      ，忽略數據
+!!!19，忽略數據
+MATLAB: 成功找到 EDF 檔案 -> C:\EDFData\19\1745580193745_250414a.EDF
+sopen mode is "OVERFLOWDETECTION:OFF"
+@@?@@GG@@HH@@JJ@@II@@KK@@LL@@MM@@NN@@SS@@TT@@T1@@T2@@T3@@T6@@UU@@VV???Reading data in EDF format...
+Cannot find option file 
+eeg_checkset note: upper time limit (xmax) adjusted so (xmax-xmin)*srate+1 = number of frames
+Detected/removing 'EEG' prefix from channel labels
+Extracting events from last EEG channel...
+Warning: event extraction failure, the last channel contains data
+Cannot find option file 
+Cannot find option file 
+Warning: no event found. Events might be embedded in a data channel.
+         To extract events, use menu File > Import Event Info > From data channel
+Cannot find option file 
+Cannot find option file 
+Cannot find option file 
+Cannot find option file 
+Cannot find option file 
+Cannot find option file 
+Creating a new ALLEEG dataset 1
+MATLAB: 偵測到 EEG2.data 新數據，開始處理！
+Elapsed time is 6.230049 seconds.
+MATLAB: 偵測到 Python 新數據，開始處理！
+!!19      ，忽略數據
+!!!19，忽略數據
+MATLAB: 成功找到 EDF 檔案 -> C:\EDFData\19\1745581068453_250423B.EDF
+sopen mode is "OVERFLOWDETECTION:OFF"
+@@?@@GG@@HH@@JJ@@II@@KK@@LL@@MM@@NN@@SS@@TT@@T1@@T2@@T3@@T6@@UU@@VV???Reading data in EDF format...
+Cannot find option file 
+eeg_checkset note: upper time limit (xmax) adjusted so (xmax-xmin)*srate+1 = number of frames
+Detected/removing 'EEG' prefix from channel labels
+Extracting events from last EEG channel...
+Cannot find option file 
+Cannot find option file 
+eeg_checkset warning: number of columns in data (6) does not match the number of channels (7): corrected
+Cannot find option file 
+Cannot find option file 
+eeg_checkset note: creating the original event table (EEG.urevent)
+Cannot find option file 
+Cannot find option file 
+Cannot find option file 
+Cannot find option file 
+Cannot find option file 
+Cannot find option file 
+Creating a new ALLEEG dataset 1
+MATLAB: 偵測到 EEG2.data 新數據，開始處理！
+Elapsed time is 6.439535 seconds.
+MATLAB: 偵測到 Python 新數據，開始處理！
+!!19      �MATLAB: 偵測到 Python 新數據，開始處理！
+!!2       ，忽略數據
+!!!2，忽略數據
+MATLAB: 成功找到 EDF 檔案 -> C:\EDFData\2\1745566876754_FA00143K.edf
+sopen mode is "OVERFLOWDETECTION:OFF"
+@@?@@GG@@HH@@JJ@@II@@KK@@LL@@MM@@NN@@OO@@PP@@SS@@TT@@T1@@T2@@T3@@T6@@UU@@VV???Reading data in EDF format...
+Cannot find option file 
+eeg_checkset note: upper time limit (xmax) adjusted so (xmax-xmin)*srate+1 = number of frames
+Detected/removing 'EEG' prefix from channel labels
+Extracting events from last EEG channel...
+Cannot find option file 
+Cannot find option file 
+eeg_checkset warning: number of columns in data (24) does not match the number of channels (25): corrected
+Cannot find option file 
+Cannot find option file 
+eeg_checkset note: creating the original event table (EEG.urevent)
+Cannot find option file 
+Cannot find option file 
+Cannot find option file 
+Cannot find option file 
+Cannot find option file 
+Cannot find option file 
+Creating a new ALLEEG dataset 1
+MATLAB: 偵測到 EEG2.data 新數據，開始處理！
+Elapsed time is 4.756605 seconds.
+MATLAB: 偵測到 Python 新數據，開始處理！
+!!2       ，忽略數據
+!!!2，忽略數據
+MATLAB: 成功找到 EDF 檔案 -> C:\EDFData\2\1745566876754_FA00143K.edf
+sopen mode is "OVERFLOWDETECTION:OFF"
+@@?@@GG@@HH@@JJ@@II@@KK@@LL@@MM@@NN@@OO@@PP@@SS@@TT@@T1@@T2@@T3@@T6@@UU@@VV???Reading data in EDF format...
+Cannot find option file 
+eeg_checkset note: upper time limit (xmax) adjusted so (xmax-xmin)*srate+1 = number of frames
+Detected/removing 'EEG' prefix from channel labels
+Extracting events from last EEG channel...
+Cannot find option file 
+Cannot find option file 
+eeg_checkset warning: number of columns in data (24) does not match the number of channels (25): corrected
+Cannot find option file 
+Cannot find option file 
+eeg_checkset note: creating the original event table (EEG.urevent)
+Cannot find option file 
+Cannot find option file 
+Cannot find option file 
+Cannot find option file 
+Cannot find option file 
+Cannot find option file 
+Creating a new ALLEEG dataset 1
+MATLAB: 偵測到 EEG2.data 新數據，開始處理！
+Elapsed time is 4.742111 seconds.
+MATLAB: 偵測到 Python 新數據，開始處理！
+!!2       ，忽略數據
+!!!2，忽略數據
+MATLAB: 成功找到 EDF 檔案 -> C:\EDFData\2\1745566876754_FA00143K.edf
+sopen mode is "OVERFLOWDETECTION:OFF"
+@@?@@GG@@HH@@JJ@@II@@KK@@LL@@MM@@NN@@OO@@PP@@SS@@TT@@T1@@T2@@T3@@T6@@UU@@VV???Reading data in EDF format...
+Cannot find option file 
+eeg_checkset note: upper time limit (xmax) adjusted so (xmax-xmin)*srate+1 = number of frames
+Detected/removing 'EEG' prefix from channel labels
+Extracting events from last EEG channel...
+Cannot find option file 
+Cannot find option file 
+eeg_checkset warning: number of columns in data (24) does not match the number of channels (25): corrected
+Cannot find option file 
+Cannot find option file 
+eeg_checkset note: creating the original event table (EEG.urevent)
+Cannot find option file 
+Cannot find option file 
+Cannot find option file 
+Cannot find option file 
+Cannot find option file 
+Cannot find option file 
+Creating a new ALLEEG dataset 1
+MATLAB: 偵測到 EEG2.data 新數據，開始處理！
+Elapsed time is 4.761461 seconds.
+MATLAB: 偵測到 Python 新數據，開始處理！
+!!2       ，忽略數據
+!!!2，忽略數據
+MATLAB: 成功找到 EDF 檔案 -> C:\EDFData\2\1745566876754_FA00143K.edf
+sopen mode is "OVERFLOWDETECTION:OFF"
+@@?@@GG@@HH@@JJ@@II@@KK@@LL@@MM@@NN@@OO@@PP@@SS@@TT@@T1@@T2@@T3@@T6@@UU@@VV???Reading data in EDF format...
+Cannot find option file 
+eeg_checkset note: upper time limit (xmax) adjusted so (xmax-xmin)*srate+1 = number of frames
+Detected/removing 'EEG' prefix from channel labels
+Extracting events from last EEG channel...
+Cannot find option file 
+Cannot find option file 
+eeg_checkset warning: number of columns in data (24) does not match the number of channels (25): corrected
+Cannot find option file 
+Cannot find option file 
+eeg_checkset note: creating the original event table (EEG.urevent)
+Cannot find option file 
+Cannot find option file 
+Cannot find option file 
+Cannot find option file 
+Cannot find option file 
+Cannot find option file 
+Creating a new ALLEEG dataset 1
+MATLAB: 偵測到 EEG2.data 新數據，開始處理！
+Elapsed time is 4.767633 seconds.
+MATLAB: 偵測到 Python 新數據，開始處理！
+!!2       ，忽略數據
+!!!2，忽略數據
+MATLAB: 成功找到 EDF 檔案 -> C:\EDFData\2\1745566876754_FA00143K.edf
+sopen mode is "OVERFLOWDETECTION:OFF"
+@@?@@GG@@HH@@JJ@@II@@KK@@LL@@MM@@NN@@OO@@PP@@SS@@TT@@T1@@T2@@T3@@T6@@UU@@VV???Reading data in EDF format...
+Cannot find option file 
+eeg_checkset note: upper time limit (xmax) adjusted so (xmax-xmin)*srate+1 = number of frames
+Detected/removing 'EEG' prefix from channel labels
+Extracting events from last EEG channel...
+Cannot find option file 
+Cannot find option file 
+eeg_checkset warning: number of columns in data (24) does not match the number of channels (25): corrected
+Cannot find option file 
+Cannot find option file 
+eeg_checkset note: creating the original event table (EEG.urevent)
+Cannot find option file 
+Cannot find option file 
+Cannot find option file 
+Cannot find option file 
+Cannot find option file 
+Cannot find option file 
+Creating a new ALLEEG dataset 1
+MATLAB: 偵測到 EEG2.data 新數據，開始處理！
+Elapsed time is 4.729852 seconds.
+MATLAB: 偵測到 Python 新數據，開始處理！
+!!2       ，忽略數據
+!!!2，忽略數據
+MATLAB: 成功找到 EDF 檔案 -> C:\EDFData\2\1745566876754_FA00143K.edf
+sopen mode is "OVERFLOWDETECTION:OFF"
+@@?@@GG@@HH@@JJ@@II@@KK@@LL@@MM@@NN@@OO@@PP@@SS@@TT@@T1@@T2@@T3@@T6@@UU@@VV???Reading data in EDF format...
+Cannot find option file 
+eeg_checkset note: upper time limit (xmax) adjusted so (xmax-xmin)*srate+1 = number of frames
+Detected/removing 'EEG' prefix from channel labels
+Extracting events from last EEG channel...
+Cannot find option file 
+Cannot find option file 
+eeg_checkset warning: number of columns in data (24) does not match the number of channels (25): corrected
+Cannot find option file 
+Cannot find option file 
+eeg_checkset note: creating the original event table (EEG.urevent)
+Cannot find option file 
+Cannot find option file 
+Cannot find option file 
+Cannot find option file 
+Cannot find option file 
+Cannot find option file 
+Creating a new ALLEEG dataset 1
+MATLAB: 偵測到 EEG2.data 新數據，開始處理！
+Elapsed time is 4.758968 seconds.
+MATLAB: 偵測到 Python 新數據，開始處理！
+!!2       ，忽略數據
+!!!2，忽略數據
+MATLAB: 成功找到 EDF 檔案 -> C:\EDFData\2\1745566876754_FA00143K.edf
+sopen mode is "OVERFLOWDETECTION:OFF"
+@@?@@GG@@HH@@JJ@@II@@KK@@LL@@MM@@NN@@OO@@PP@@SS@@TT@@T1@@T2@@T3@@T6@@UU@@VV???Reading data in EDF format...
+Cannot find option file 
+eeg_checkset note: upper time limit (xmax) adjusted so (xmax-xmin)*srate+1 = number of frames
+Detected/removing 'EEG' prefix from channel labels
+Extracting events from last EEG channel...
+Cannot find option file 
+Cannot find option file 
+eeg_checkset warning: number of columns in data (24) does not match the number of channels (25): corrected
+Cannot find option file 
+Cannot find option file 
+eeg_checkset note: creating the original event table (EEG.urevent)
+Cannot find option file 
+Cannot find option file 
+Cannot find option file 
+Cannot find option file 
+Cannot find option file 
+Cannot find option file 
+Creating a new ALLEEG dataset 1
+MATLAB: 偵測到 EEG2.data 新數據，開始處理！
+Elapsed time is 4.773779 seconds.
+MATLAB: 偵測到 Python 新數據，開始處理！
+!!2       ，忽略數據
+!!!2，忽略數據
+MATLAB: 成功找到 EDF 檔案 -> C:\EDFData\2\1745593920438_fa0019r0.edf
+sopen mode is "OVERFLOWDETECTION:OFF"
+@@?@@GG@@HH@@JJ@@II@@KK@@LL@@MM@@NN@@OO@@PP@@SS@@TT@@T1@@T2@@T3@@T6@@UU@@VV???Reading data in EDF format...
+Cannot find option file 
+eeg_checkset note: upper time limit (xmax) adjusted so (xmax-xmin)*srate+1 = number of frames
+Detected/removing 'EEG' prefix from channel labels
+Extracting events from last EEG channel...
+Cannot find option file 
+Cannot find option file 
+eeg_checkset warning: number of columns in data (24) does not match the number of channels (25): corrected
+Cannot find option file 
+Cannot find option file 
+eeg_checkset note: creating the original event table (EEG.urevent)
+Cannot find option file 
+Cannot find option file 
+Cannot find option file 
+Cannot find option file 
+Cannot find option file 
+Cannot find option file 
+Creating a new ALLEEG dataset 1
+MATLAB: 偵測到 EEG2.data 新數據，開始處理！
+Elapsed time is 4.711588 seconds.
+MATLAB: 偵測到 Python 新數據，開始處理！
+!!2       ，忽略數據
+!!!2，忽略數據
+MATLAB: 成功找到 EDF 檔案 -> C:\EDFData\2\1745566876754_FA00143K.edf
+sopen mode is "OVERFLOWDETECTION:OFF"
+@@?@@GG@@HH@@JJ@@II@@KK@@LL@@MM@@NN@@OO@@PP@@SS@@TT@@T1@@T2@@T3@@T6@@UU@@VV???Reading data in EDF format...
+Cannot find option file 
+eeg_checkset note: upper time limit (xmax) adjusted so (xmax-xmin)*srate+1 = number of frames
+Detected/removing 'EEG' prefix from channel labels
+Extracting events from last EEG channel...
+Cannot find option file 
+Cannot find option file 
+eeg_checkset warning: number of columns in data (24) does not match the number of channels (25): corrected
+Cannot find option file 
+Cannot find option file 
+eeg_checkset note: creating the original event table (EEG.urevent)
+Cannot find option file 
+Cannot find option file 
+Cannot find option file 
+Cannot find option file 
+Cannot find option file 
+Cannot find option file 
+Creating a new ALLEEG dataset 1
+MATLAB: 偵測到 EEG2.data 新數據，開始處理！
+Elapsed time is 4.774730 seconds.
+MATLAB: 偵測到 Python 新數據，開始處理！
+!!2       ，忽略數據
+!!!2，忽略數據
+MATLAB: 成功找到 EDF 檔案 -> C:\EDFData\2\1745566876754_FA00143K.edf
+sopen mode is "OVERFLOWDETECTION:OFF"
+@@?@@GG@@HH@@JJ@@II@@KK@@LL@@MM@@NN@@OO@@PP@@SS@@TT@@T1@@T2@@T3@@T6@@UU@@VV???Reading data in EDF format...
+Cannot find option file 
+eeg_checkset note: upper time limit (xmax) adjusted so (xmax-xmin)*srate+1 = number of frames
+Detected/removing 'EEG' prefix from channel labels
+Extracting events from last EEG channel...
+Cannot find option file 
+Cannot find option file 
+eeg_checkset warning: number of columns in data (24) does not match the number of channels (25): corrected
+Cannot find option file 
+Cannot find option file 
+eeg_checkset note: creating the original event table (EEG.urevent)
+Cannot find option file 
+Cannot find option file 
+Cannot find option file 
+Cannot find option file 
+Cannot find option file 
+Cannot find option file 
+Creating a new ALLEEG dataset 1
+MATLAB: 偵測到 EEG2.data 新數據，開始處理！
+Elapsed time is 4.749654 seconds.
+MATLAB: 偵測到 Python 新數據，開始處理！
+!!2       ，忽略數據
+!!!2，忽略數據
+MATLAB: 成功找到 EDF 檔案 -> C:\EDFData\2\1745566876754_FA00143K.edf
+sopen mode is "OVERFLOWDETECTION:OFF"
+@@?@@GG@@HH@@JJ@@II@@KK@@LL@@MM@@NN@@OO@@PP@@SS@@TT@@T1@@T2@@T3@@T6@@UU@@VV???Reading data in EDF format...
+Cannot find option file 
+eeg_checkset note: upper time limit (xmax) adjusted so (xmax-xmin)*srate+1 = number of frames
+Detected/removing 'EEG' prefix from channel labels
+Extracting events from last EEG channel...
+Cannot find option file 
+Cannot find option file 
+eeg_checkset warning: number of columns in data (24) does not match the number of channels (25): corrected
+Cannot find option file 
+Cannot find option file 
+eeg_checkset note: creating the original event table (EEG.urevent)
+Cannot find option file 
+Cannot find option file 
+Cannot find option file 
+Cannot find option file 
+Cannot find option file 
+Cannot find option file 
+Creating a new ALLEEG dataset 1
+MATLAB: 偵測到 EEG2.data 新數據，開始處理！
+Elapsed time is 4.758978 seconds.
+MATLAB: 偵測到 Python 新數據，開始處理！
+!!2       ，忽略數據
+!!!2，忽略數據
+MATLAB: 成功找到 EDF 檔案 -> C:\EDFData\2\1745566876754_FA00143K.edf
+sopen mode is "OVERFLOWDETECTION:OFF"
+@@?@@GG@@HH@@JJ@@II@@KK@@LL@@MM@@NN@@OO@@PP@@SS@@TT@@T1@@T2@@T3@@T6@@UU@@VV???Reading data in EDF format...
+Cannot find option file 
+eeg_checkset note: upper time limit (xmax) adjusted so (xmax-xmin)*srate+1 = number of frames
+Detected/removing 'EEG' prefix from channel labels
+Extracting events from last EEG channel...
+Cannot find option file 
+Cannot find option file 
+eeg_checkset warning: number of columns in data (24) does not match the number of channels (25): corrected
+Cannot find option file 
+Cannot find option file 
+eeg_checkset note: creating the original event table (EEG.urevent)
+Cannot find option file 
+Cannot find option file 
+Cannot find option file 
+Cannot find option file 
+Cannot find option file 
+Cannot find option file 
+Creating a new ALLEEG dataset 1
+MATLAB: 偵測到 EEG2.data 新數據，開始處理！
+Elapsed time is 4.782256 seconds.
+MATLAB: 偵測到 Python 新數據，開始處理！
+!!2       ，忽略數據
+!!!2，忽略數據
+MATLAB: 成功找到 EDF 檔案 -> C:\EDFData\2\1745566876754_FA00143K.edf
+sopen mode is "OVERFLOWDETECTION:OFF"
+@@?@@GG@@HH@@JJ@@II@@KK@@LL@@MM@@NN@@OO@@PP@@SS@@TT@@T1@@T2@@T3@@T6@@UU@@VV???Reading data in EDF format...
+Cannot find option file 
+eeg_checkset note: upper time limit (xmax) adjusted so (xmax-xmin)*srate+1 = number of frames
+Detected/removing 'EEG' prefix from channel labels
+Extracting events from last EEG channel...
+Cannot find option file 
+Cannot find option file 
+eeg_checkset warning: number of columns in data (24) does not match the number of channels (25): corrected
+Cannot find option file 
+Cannot find option file 
+eeg_checkset note: creating the original event table (EEG.urevent)
+Cannot find option file 
+Cannot find option file 
+Cannot find option file 
+Cannot find option file 
+Cannot find option file 
+Cannot find option file 
+Creating a new ALLEEG dataset 1
+MATLAB: 偵測到 EEG2.data 新數據，開始處理！
+Elapsed time is 4.739169 seconds.
+MATLAB: 偵測到 Python 新數據，開始處理！
+!!2       ，忽略數據
+!!!2，忽略數據
+MATLAB: 成功找到 EDF 檔案 -> C:\EDFData\2\1745566876754_FA00143K.edf
+sopen mode is "OVERFLOWDETECTION:OFF"
+@@?@@GG@@HH@@JJ@@II@@KK@@LL@@MM@@NN@@OO@@PP@@SS@@TT@@T1@@T2@@T3@@T6@@UU@@VV???Reading data in EDF format...
+Cannot find option file 
+eeg_checkset note: upper time limit (xmax) adjusted so (xmax-xmin)*srate+1 = number of frames
+Detected/removing 'EEG' prefix from channel labels
+Extracting events from last EEG channel...
+Cannot find option file 
+Cannot find option file 
+eeg_checkset warning: number of columns in data (24) does not match the number of channels (25): corrected
+Cannot find option file 
+Cannot find option file 
+eeg_checkset note: creating the original event table (EEG.urevent)
+Cannot find option file 
+Cannot find option file 
+Cannot find option file 
+Cannot find option file 
+Cannot find option file 
+Cannot find option file 
+Creating a new ALLEEG dataset 1
+MATLAB: 偵測到 EEG2.data 新數據，開始處理！
+Elapsed time is 4.775579 seconds.
+MATLAB: 偵測到 Python 新數據，開始處理！
+!!2       ，忽略數據
+!!!2，忽略數據
+MATLAB: 成功找到 EDF 檔案 -> C:\EDFData\2\1745566876754_FA00143K.edf
+sopen mode is "OVERFLOWDETECTION:OFF"
+@@?@@GG@@HH@@JJ@@II@@KK@@LL@@MM@@NN@@OO@@PP@@SS@@TT@@T1@@T2@@T3@@T6@@UU@@VV???Reading data in EDF format...
+Cannot find option file 
+eeg_checkset note: upper time limit (xmax) adjusted so (xmax-xmin)*srate+1 = number of frames
+Detected/removing 'EEG' prefix from channel labels
+Extracting events from last EEG channel...
+Cannot find option file 
+Cannot find option file 
+eeg_checkset warning: number of columns in data (24) does not match the number of channels (25): corrected
+Cannot find option file 
+Cannot find option file 
+eeg_checkset note: creating the original event table (EEG.urevent)
+Cannot find option file 
+Cannot find option file 
+Cannot find option file 
+Cannot find option file 
+Cannot find option file 
+Cannot find option file 
+Creating a new ALLEEG dataset 1
+MATLAB: 偵測到 EEG2.data 新數據，開始處理！
+Elapsed time is 4.771833 seconds.
+MATLAB: 偵測到 Python 新數據，開始處理！
+!!2       ，忽略數據
+!!!2，忽略數據
+MATLAB: 成功找到 EDF 檔案 -> C:\EDFData\2\1745566876754_FA00143K.edf
+sopen mode is "OVERFLOWDETECTION:OFF"
+@@?@@GG@@HH@@JJ@@II@@KK@@LL@@MM@@NN@@OO@@PP@@SS@@TT@@T1@@T2@@T3@@T6@@UU@@VV???Reading data in EDF format...
+Cannot find option file 
+eeg_checkset note: upper time limit (xmax) adjusted so (xmax-xmin)*srate+1 = number of frames
+Detected/removing 'EEG' prefix from channel labels
+Extracting events from last EEG channel...
+Cannot find option file 
+Cannot find option file 
+eeg_checkset warning: number of columns in data (24) does not match the number of channels (25): corrected
+Cannot find option file 
+Cannot find option file 
+eeg_checkset note: creating the original event table (EEG.urevent)
+Cannot find option file 
+Cannot find option file 
+Cannot find option file 
+Cannot find option file 
+Cannot find option file 
+Cannot find option file 
+Creating a new ALLEEG dataset 1
+MATLAB: 偵測到 EEG2.data 新數據，開始處理！
+Elapsed time is 4.748198 seconds.
+MATLAB: 偵測到 Python 新數據，開始處理！
+!!2       ，忽略數據
+!!!2，忽略數據
+MATLAB: 成功找到 EDF 檔案 -> C:\EDFData\2\1745566876754_FA00143K.edf
+sopen mode is "OVERFLOWDETECTION:OFF"
+@@?@@GG@@HH@@JJ@@II@@KK@@LL@@MM@@NN@@OO@@PP@@SS@@TT@@T1@@T2@@T3@@T6@@UU@@VV???Reading data in EDF format...
+Cannot find option file 
+eeg_checkset note: upper time limit (xmax) adjusted so (xmax-xmin)*srate+1 = number of frames
+Detected/removing 'EEG' prefix from channel labels
+Extracting events from last EEG channel...
+Cannot find option file 
+Cannot find option file 
+eeg_checkset warning: number of columns in data (24) does not match the number of channels (25): corrected
+Cannot find option file 
+Cannot find option file 
+eeg_checkset note: creating the original event table (EEG.urevent)
+Cannot find option file 
+Cannot find option file 
+Cannot find option file 
+Cannot find option file 
+Cannot find option file 
+Cannot find option file 
+Creating a new ALLEEG dataset 1
+MATLAB: 偵測到 EEG2.data 新數據，開始處理！
+Elapsed time is 4.725764 seconds.
+MATLAB: 偵測到 Python 新數據，開始處理！
+!!2       ，忽略數據
+!!!2，忽略數據
+MATLAB: 成功找到 EDF 檔案 -> C:\EDFData\2\1745566876754_FA00143K.edf
+sopen mode is "OVERFLOWDETECTION:OFF"
+@@?@@GG@@HH@@JJ@@II@@KK@@LL@@MM@@NN@@OO@@PP@@SS@@TT@@T1@@T2@@T3@@T6@@UU@@VV???Reading data in EDF format...
+Cannot find option file 
+eeg_checkset note: upper time limit (xmax) adjusted so (xmax-xmin)*srate+1 = number of frames
+Detected/removing 'EEG' prefix from channel labels
+Extracting events from last EEG channel...
+Cannot find option file 
+Cannot find option file 
+eeg_checkset warning: number of columns in data (24) does not match the number of channels (25): corrected
+Cannot find option file 
+Cannot find option file 
+eeg_checkset note: creating the original event table (EEG.urevent)
+Cannot find option file 
+Cannot find option file 
+Cannot find option file 
+Cannot find option file 
+Cannot find option file 
+Cannot find option file 
+Creating a new ALLEEG dataset 1
+MATLAB: 偵測到 EEG2.data 新數據，開始處理！
+Elapsed time is 4.772473 seconds.
+MATLAB: 偵測到 Python 新數據，開始處理！
+!!2       ，忽略數據
+!!!2，忽略數據
+MATLAB: 成功找到 EDF 檔案 -> C:\EDFData\2\1745566876754_FA00143K.edf
+sopen mode is "OVERFLOWDETECTION:OFF"
+@@?@@GG@@HH@@JJ@@II@@KK@@LL@@MM@@NN@@OO@@PP@@SS@@TT@@T1@@T2@@T3@@T6@@UU@@VV???Reading data in EDF format...
+Cannot find option file 
+eeg_checkset note: upper time limit (xmax) adjusted so (xmax-xmin)*srate+1 = number of frames
+Detected/removing 'EEG' prefix from channel labels
+Extracting events from last EEG channel...
+Cannot find option file 
+Cannot find option file 
+eeg_checkset warning: number of columns in data (24) does not match the number of channels (25): corrected
+Cannot find option file 
+Cannot find option file 
+eeg_checkset note: creating the original event table (EEG.urevent)
+Cannot find option file 
+Cannot find option file 
+Cannot find option file 
+Cannot find option file 
+Cannot find option file 
+Cannot find option file 
+Creating a new ALLEEG dataset 1
+MATLAB: 偵測到 EEG2.data 新數據，開始處理！
+Elapsed time is 4.740990 seconds.
+MATLAB: 偵測到 Python 新數據，開始處理！
+!!2       ，忽略數據
+!!!2，忽略數據
+MATLAB: 成功找到 EDF 檔案 -> C:\EDFData\2\1745566876754_FA00143K.edf
+sopen mode is "OVERFLOWDETECTION:OFF"
+@@?@@GG@@HH@@JJ@@II@@KK@@LL@@MM@@NN@@OO@@PP@@SS@@TT@@T1@@T2@@T3@@T6@@UU@@VV???Reading data in EDF format...
+Cannot find option file 
+eeg_checkset note: upper time limit (xmax) adjusted so (xmax-xmin)*srate+1 = number of frames
+Detected/removing 'EEG' prefix from channel labels
+Extracting events from last EEG channel...
+Cannot find option file 
+Cannot find option file 
+eeg_checkset warning: number of columns in data (24) does not match the number of channels (25): corrected
+Cannot find option file 
+Cannot find option file 
+eeg_checkset note: creating the original event table (EEG.urevent)
+Cannot find option file 
+Cannot find option file 
+Cannot find option file 
+Cannot find option file 
+Cannot find option file 
+Cannot find option file 
+Creating a new ALLEEG dataset 1
+MATLAB: 偵測到 EEG2.data 新數據，開始處理！
+Elapsed time is 4.734441 seconds.
+MATLAB: 偵測到 Python 新數據，開始處理！
+!!2       ，忽略數據
+!!!2，忽略數據
+MATLAB: 成功找到 EDF 檔案 -> C:\EDFData\2\1745566876754_FA00143K.edf
+sopen mode is "OVERFLOWDETECTION:OFF"
+@@?@@GG@@HH@@JJ@@II@@KK@@LL@@MM@@NN@@OO@@PP@@SS@@TT@@T1@@T2@@T3@@T6@@UU@@VV???Reading data in EDF format...
+Cannot find option file 
+eeg_checkset note: upper time limit (xmax) adjusted so (xmax-xmin)*srate+1 = number of frames
+Detected/removing 'EEG' prefix from channel labels
+Extracting events from last EEG channel...
+Cannot find option file 
+Cannot find option file 
+eeg_checkset warning: number of columns in data (24) does not match the number of channels (25): corrected
+Cannot find option file 
+Cannot find option file 
+eeg_checkset note: creating the original event table (EEG.urevent)
+Cannot find option file 
+Cannot find option file 
+Cannot find option file 
+Cannot find option file 
+Cannot find option file 
+Cannot find option file 
+Creating a new ALLEEG dataset 1
+MATLAB: 偵測到 EEG2.data 新數據，開始處理！
+Elapsed time is 4.736643 seconds.
+MATLAB: 偵測到 Python 新數據，開始處理！
+!!2       ，忽略數據
+!!!2，忽略數據
+MATLAB: 成功找到 EDF 檔案 -> C:\EDFData\2\1745567228549_Fa0019r1.edf
+sopen mode is "OVERFLOWDETECTION:OFF"
+@@?@@GG@@HH@@JJ@@II@@KK@@LL@@MM@@NN@@OO@@PP@@SS@@TT@@T1@@T2@@T3@@T6@@UU@@VV???Reading data in EDF format...
+Cannot find option file 
+eeg_checkset note: upper time limit (xmax) adjusted so (xmax-xmin)*srate+1 = number of frames
+Detected/removing 'EEG' prefix from channel labels
+Extracting events from last EEG channel...
+Cannot find option file 
+Cannot find option file 
+eeg_checkset warning: number of columns in data (24) does not match the number of channels (25): corrected
+Cannot find option file 
+Cannot find option file 
+eeg_checkset note: creating the original event table (EEG.urevent)
+Cannot find option file 
+Cannot find option file 
+Cannot find option file 
+Cannot find option file 
+Cannot find option file 
+Cannot find option file 
+Creating a new ALLEEG dataset 1
+MATLAB: 偵測到 EEG2.data 新數據，開始處理！
+Elapsed time is 4.243574 seconds.
+MATLAB: 偵測到 Python 新數據，開始處理！
+!!2       ，忽略數據
+!!!2，忽略數據
+MATLAB: 成功找到 EDF 檔案 -> C:\EDFData\2\1745566876754_FA00143K.edf
+sopen mode is "OVERFLOWDETECTION:OFF"
+@@?@@GG@@HH@@JJ@@II@@KK@@LL@@MM@@NN@@OO@@PP@@SS@@TT@@T1@@T2@@T3@@T6@@UU@@VV???Reading data in EDF format...
+Cannot find option file 
+eeg_checkset note: upper time limit (xmax) adjusted so (xmax-xmin)*srate+1 = number of frames
+Detected/removing 'EEG' prefix from channel labels
+Extracting events from last EEG channel...
+Cannot find option file 
+Cannot find option file 
+eeg_checkset warning: number of columns in data (24) does not match the number of channels (25): corrected
+Cannot find option file 
+Cannot find option file 
+eeg_checkset note: creating the original event table (EEG.urevent)
+Cannot find option file 
+Cannot find option file 
+Cannot find option file 
+Cannot find option file 
+Cannot find option file 
+Cannot find option file 
+Creating a new ALLEEG dataset 1
+MATLAB: 偵測到 EEG2.data 新數據，開始處理！
+Elapsed time is 4.895143 seconds.
+MATLAB: 偵測到 Python 新數據，開始處理！
+!!2       ，忽略數據
+!!!2，忽略數據
+MATLAB: 成功找到 EDF 檔案 -> C:\EDFData\2\1745679513866_250414a.EDF
+sopen mode is "OVERFLOWDETECTION:OFF"
+@@?@@GG@@HH@@JJ@@II@@KK@@LL@@MM@@NN@@SS@@TT@@T1@@T2@@T3@@T6@@UU@@VV???Reading data in EDF format...
+Cannot find option file 
+eeg_checkset note: upper time limit (xmax) adjusted so (xmax-xmin)*srate+1 = number of frames
+Detected/removing 'EEG' prefix from channel labels
+Extracting events from last EEG channel...
+Warning: event extraction failure, the last channel contains data
+Cannot find option file 
+Cannot find option file 
+Warning: no event found. Events might be embedded in a data channel.
+         To extract events, use menu File > Import Event Info > From data channel
+Cannot find option file 
+Cannot find option file 
+Cannot find option file 
+Cannot find option file 
+Cannot find option file 
+Cannot find option file 
+Creating a new ALLEEG dataset 1
+MATLAB: 偵測到 EEG2.data 新數據，開始處理！
+Elapsed time is 5.326259 seconds.
+MATLAB: 偵測到 Python 新數據，開始處理！
+!!2       ，忽略數據
+!!!2，忽略數據
+MATLAB: 成功找到 EDF 檔案 -> C:\EDFData\2\1745566876754_FA00143K.edf
+sopen mode is "OVERFLOWDETECTION:OFF"
+@@?@@GG@@HH@@JJ@@II@@KK@@LL@@MM@@NN@@OO@@PP@@SS@@TT@@T1@@T2@@T3@@T6@@UU@@VV???Reading data in EDF format...
+Cannot find option file 
+eeg_checkset note: upper time limit (xmax) adjusted so (xmax-xmin)*srate+1 = number of frames
+Detected/removing 'EEG' prefix from channel labels
+Extracting events from last EEG channel...
+Cannot find option file 
+Cannot find option file 
+eeg_checkset warning: number of columns in data (24) does not match the number of channels (25): corrected
+Cannot find option file 
+Cannot find option file 
+eeg_checkset note: creating the original event table (EEG.urevent)
+Cannot find option file 
+Cannot find option file 
+Cannot find option file 
+Cannot find option file 
+Cannot find option file 
+Cannot find option file 
+Creating a new ALLEEG dataset 1
+MATLAB: 偵測到 EEG2.data 新數據，開始處理！
+Elapsed time is 4.749317 seconds.
+MATLAB: 偵測到 Python 新數據，開始處理！
+!!2       ，忽略數據
+!!!2，忽略數據
+MATLAB: 成功找到 EDF 檔案 -> C:\EDFData\2\1745679513866_250414a.EDF
+sopen mode is "OVERFLOWDETECTION:OFF"
+@@?@@GG@@HH@@JJ@@II@@KK@@LL@@MM@@NN@@SS@@TT@@T1@@T2@@T3@@T6@@UU@@VV???Reading data in EDF format...
+Cannot find option file 
+eeg_checkset note: upper time limit (xmax) adjusted so (xmax-xmin)*srate+1 = number of frames
+Detected/removing 'EEG' prefix from channel labels
+Extracting events from last EEG channel...
+Warning: event extraction failure, the last channel contains data
+Cannot find option file 
+Cannot find option file 
+Warning: no event found. Events might be embedded in a data channel.
+         To extract events, use menu File > Import Event Info > From data channel
+Cannot find option file 
+Cannot find option file 
+Cannot find option file 
+Cannot find option file 
+Cannot find option file 
+Cannot find option file 
+Creating a new ALLEEG dataset 1
+MATLAB: 偵測到 EEG2.data 新數據，開始處理！
+Elapsed time is 5.352932 seconds.
+MATLAB: 偵測到 Python 新數據，開始處理！
+!!2       ，忽略數據
+!!!2，忽略數據
+MATLAB: 成功找到 EDF 檔案 -> C:\EDFData\2\1745593920438_fa0019r0.edf
+sopen mode is "OVERFLOWDETECTION:OFF"
+@@?@@GG@@HH@@JJ@@II@@KK@@LL@@MM@@NN@@OO@@PP@@SS@@TT@@T1@@T2@@T3@@T6@@UU@@VV???Reading data in EDF format...
+Cannot find option file 
+eeg_checkset note: upper time limit (xmax) adjusted so (xmax-xmin)*srate+1 = number of frames
+Detected/removing 'EEG' prefix from channel labels
+Extracting events from last EEG channel...
+Cannot find option file 
+Cannot find option file 
+eeg_checkset warning: number of columns in data (24) does not match the number of channels (25): corrected
+Cannot find option file 
+Cannot find option file 
+eeg_checkset note: creating the original event table (EEG.urevent)
+Cannot find option file 
+Cannot find option file 
+Cannot find option file 
+Cannot find option file 
+Cannot find option file 
+Cannot find option file 
+Creating a new ALLEEG dataset 1
+MATLAB: 偵測到 EEG2.data 新數據，開始處理！
+Elapsed time is 5.150064 seconds.
+MATLAB: 偵測到 Python 新數據，開始處理！
+!!2       ，忽略數據
+!!!2，忽略數據
+MATLAB: 成功找到 EDF 檔案 -> C:\EDFData\2\1745566876754_FA00143K.edf
+sopen mode is "OVERFLOWDETECTION:OFF"
+@@?@@GG@@HH@@JJ@@II@@KK@@LL@@MM@@NN@@OO@@PP@@SS@@TT@@T1@@T2@@T3@@T6@@UU@@VV???Reading data in EDF format...
+Cannot find option file 
+eeg_checkset note: upper time limit (xmax) adjusted so (xmax-xmin)*srate+1 = number of frames
+Detected/removing 'EEG' prefix from channel labels
+Extracting events from last EEG channel...
+Cannot find option file 
+Cannot find option file 
+eeg_checkset warning: number of columns in data (24) does not match the number of channels (25): corrected
+Cannot find option file 
+Cannot find option file 
+eeg_checkset note: creating the original event table (EEG.urevent)
+Cannot find option file 
+Cannot find option file 
+Cannot find option file 
+Cannot find option file 
+Cannot find option file 
+Cannot find option file 
+Creating a new ALLEEG dataset 1
+MATLAB: 偵測到 EEG2.data 新數據，開始處理！
+Elapsed time is 4.738772 seconds.
+MATLAB: 偵測到 Python 新數據，開始處理！
+!!2       ，忽略數據
+!!!2，忽略數據
+MATLAB: 成功找到 EDF 檔案 -> C:\EDFData\2\1745566876754_FA00143K.edf
+sopen mode is "OVERFLOWDETECTION:OFF"
+@@?@@GG@@HH@@JJ@@II@@KK@@LL@@MM@@NN@@OO@@PP@@SS@@TT@@T1@@T2@@T3@@T6@@UU@@VV???Reading data in EDF format...
+Cannot find option file 
+eeg_checkset note: upper time limit (xmax) adjusted so (xmax-xmin)*srate+1 = number of frames
+Detected/removing 'EEG' prefix from channel labels
+Extracting events from last EEG channel...
+Cannot find option file 
+Cannot find option file 
+eeg_checkset warning: number of columns in data (24) does not match the number of channels (25): corrected
+Cannot find option file 
+Cannot find option file 
+eeg_checkset note: creating the original event table (EEG.urevent)
+Cannot find option file 
+Cannot find option file 
+Cannot find option file 
+Cannot find option file 
+Cannot find option file 
+Cannot find option file 
+Creating a new ALLEEG dataset 1
+MATLAB: 偵測到 EEG2.data 新數據，開始處理！
+Elapsed time is 4.740053 seconds.
+MATLAB: 偵測到 Python 新數據，開始處理！
+!!2       ，忽略數據
+!!!2，忽略數據
+MATLAB: 成功找到 EDF 檔案 -> C:\EDFData\2\1745679513866_250414a.EDF
+sopen mode is "OVERFLOWDETECTION:OFF"
+@@?@@GG@@HH@@JJ@@II@@KK@@LL@@MM@@NN@@SS@@TT@@T1@@T2@@T3@@T6@@UU@@VV???Reading data in EDF format...
+Cannot find option file 
+eeg_checkset note: upper time limit (xmax) adjusted so (xmax-xmin)*srate+1 = number of frames
+Detected/removing 'EEG' prefix from channel labels
+Extracting events from last EEG channel...
+Warning: event extraction failure, the last channel contains data
+Cannot find option file 
+Cannot find option file 
+Warning: no event found. Events might be embedded in a data channel.
+         To extract events, use menu File > Import Event Info > From data channel
+Cannot find option file 
+Cannot find option file 
+Cannot find option file 
+Cannot find option file 
+Cannot find option file 
+Cannot find option file 
+Creating a new ALLEEG dataset 1
+MATLAB: 偵測到 EEG2.data 新數據，開始處理！
+Elapsed time is 5.393907 seconds.

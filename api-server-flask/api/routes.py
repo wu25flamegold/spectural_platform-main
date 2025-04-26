@@ -17,7 +17,7 @@ import jwt
 from scipy.fft import fft, fftfreq
 from scipy.signal import hilbert, savgol_filter
 import mne
-from utils.upload_utils import write_signal_to_edf, generate_result_image, run_tmapi_processing, save_uploaded_file, prepare_tmapi_data, open_tmapi_window, create_patient_record
+from utils.upload_utils import write_signal_to_edf, generate_result_image, run_tmapi_processing, prepare_tmapi_data, open_tmapi_window, create_patient_record
 from .models import db, Users, JWTTokenBlocklist
 from .config import BaseConfig
 import requests
@@ -31,13 +31,12 @@ from .tmapi import TMAPI
 import api.matlab_client
 
 rest_api = Api(version="1.0", title="Users API")
-IMAGE_SAVE_PATH = 'saved_images'
-UPLOAD_FOLDER = "C:/HHSA_shared/uploads"
 SAVE_DIR = r"C:\HhsaData"
-os.makedirs(UPLOAD_FOLDER, exist_ok=True)
+CHUNK_DIR = r"C:\Chunks"
+os.makedirs(CHUNK_DIR, exist_ok=True)
+SAVE_EDF_DIR = r"C:\EDFData"
+
 process = None
-if not os.path.exists(IMAGE_SAVE_PATH):
-    os.makedirs(IMAGE_SAVE_PATH)
 
 signup_model = rest_api.model('SignUpModel', {"username": fields.String(required=True, min_length=2, max_length=32),
                                               "email": fields.String(required=True, min_length=4, max_length=64),
@@ -273,8 +272,7 @@ class OpenMatlab(Resource):
         # except Exception as e:
         #     return jsonify({"success": False, "message": f"Failed to open MATLAB: {e}"})
 
-CHUNK_DIR = r"C:\Chunks"
-os.makedirs(CHUNK_DIR, exist_ok=True)
+
 
 @rest_api.route('/tmapi/send_command', endpoint='tmapi_send_command')
 class SendCommand(Resource):
@@ -282,23 +280,23 @@ class SendCommand(Resource):
         UserId = request.headers.get('UserId')
         from api import get_process_instance
         instance = get_process_instance(UserId)
-        filename = request.form.get("filename")
-        total_chunks = int(request.form.get("totalChunks", 0)) 
-        file_path = os.path.join(CHUNK_DIR, filename)
-        if not os.path.exists(file_path):
-            print(f"[INFO] Merging {total_chunks} chunks for {filename} in {file_path}")
-            file_path = merge_chunks(filename, total_chunks)
-        if filename:
-            file_path = os.path.join(CHUNK_DIR, filename)
-            #file = open(file_path, 'rb')  # 用來後面 run_tmapi_processing 用
-            fname = filename
-            selectedFunction = ''
-            #file_path, fname, timestamp = save_uploaded_file(file, SAVE_DIR)
-            timestamp = datetime.now().strftime("%Y%m%d_%H%M%S")
+        history_file_path = request.form.get("history_file_path")
+        timestamp = datetime.now().strftime("%Y%m%d_%H%M%S")
+
+        if history_file_path:
+            file_path = history_file_path
+            fname = os.path.basename(history_file_path)
         else:
-            selectedFunction = request.form['selectedFunction']
-            file_path, fname, timestamp = "", "", datetime.now().strftime("%Y%m%d_%H%M%S")
-            
+            filename = request.form.get("filename")
+            total_chunks = int(request.form.get("totalChunks", 0))
+            user_dir = os.path.join(SAVE_EDF_DIR, UserId)
+            file_path = os.path.join(user_dir, filename)
+            if not os.path.exists(file_path):
+                print(f"[INFO] Merging {total_chunks} chunks for {filename} in {file_path}")
+                file_path = merge_chunks(filename, total_chunks, UserId)
+            fname = filename
+
+        selectedFunction = ''
         chn = int(request.form['chn'])
         d_start = int(request.form['d_start'])
         d_stop = int(request.form['d_stop'])
@@ -313,7 +311,7 @@ class SendCommand(Resource):
         
         # result = tmapi.send_message(buf, buf_n, UserId)
         # #result = tmapi.process_request(UserId, file_path, fs=sampling_rate, n=chn, start_index=d_start, end_index=d_stop)
-        valid, sampling_rate, err_msg = validate_edf_by_header_only(file_path, n=chn, start_index=d_start, end_index=d_stop)
+        valid, sampling_rate, labels, err_msg = validate_edf_by_header_only(file_path, n=chn, start_index=d_start, end_index=d_stop)
         if not valid:
             print(f"[ERROR] {err_msg}")
             return jsonify({
@@ -349,41 +347,39 @@ class SendCommand(Resource):
                 new_patient = create_patient_record(request.form, user.id, file_path, sampling_rate, d_start, d_stop, hhsa_path, formatted_timestamp, chn)
                 new_patient.save()
                 
-                return jsonify({"success": True, "image": img_str, "usage": user.usage})
+                return jsonify({"success": True, "image": img_str, "usage": user.usage, "label": labels})
             else:
                 return jsonify({"success": False, "message": result})
 
 
-
-def merge_chunks(filename, total_chunks):
-    final_path = os.path.join(CHUNK_DIR, filename)
+def merge_chunks(filename, total_chunks, UserId):
+    user_dir = os.path.join(SAVE_EDF_DIR, UserId)
+    os.makedirs(user_dir, exist_ok=True) 
+    final_path = os.path.join(user_dir, filename)    
     with open(final_path, 'wb') as outfile:
         for i in range(total_chunks):
             chunk_path = os.path.join(CHUNK_DIR, f"{filename}.part{i}")
             with open(chunk_path, 'rb') as infile:
                 outfile.write(infile.read())
-            os.remove(chunk_path)  # 清除已合併的分塊
+            os.remove(chunk_path)
     return final_path
 
 @rest_api.route('/tmapi/upload_chunk', endpoint='tmapi_upload_chunk')
 class UploadChunk(Resource):
     def post(self):
         try:
+            UserId = request.headers.get('UserId')
             chunk = request.files['chunk']
             filename = request.form['filename']
             chunk_index = int(request.form['chunkIndex'])
             total_chunks = int(request.form['totalChunks'])
-
             chunk.save(os.path.join(CHUNK_DIR, f"{filename}.part{chunk_index}"))
 
-            # 確認是否為最後一個 chunk
+            # Confirm if this chunk is the last one
             if chunk_index == total_chunks - 1:
-                final_path = merge_chunks(filename, total_chunks)
+                final_path = merge_chunks(filename, total_chunks, UserId)
                 return jsonify({"success": True, "merged": True, "filename": filename, "path": final_path})
             return jsonify({"success": True, "merged": False})
-
-            
-
         except Exception as e:
             return jsonify({"success": False, "message": str(e)})
 
@@ -406,7 +402,7 @@ class SendSimulate(Resource):
         signal_size = 1000
         edf_filename = selectedFunction
         fname = selectedFunction
-        timestamp, filename, file_path = write_signal_to_edf(selectedFunction, sampling_rate, signal_size=1000)
+        timestamp, filename, file_path = write_signal_to_edf(selectedFunction, sampling_rate, UserId)
 
         result = run_tmapi_processing(instance, selectedFunction, file_path, cmd, sampling_rate,
                                       chn, d_start, d_stop, UserId, filename, timestamp)
@@ -424,9 +420,6 @@ class SendSimulate(Resource):
                 user = Users.get_by_email(email)
                 user.update_usage(usage)
                 user.save()
-
-
-                
                 return jsonify({"success": True, "image": img_str, "usage": user.usage})
             else:
                 return jsonify({"success": False, "message": result})
@@ -504,64 +497,6 @@ class AnalyzeROI(Resource):
             "am_axis": am_axis,
             "roi_coords": roi_coords
         })
-
-@rest_api.route('/tmapi/validate_edf_metadata', endpoint='validate_edf_metadata')
-class ValidatEdfMetadata(Resource):
-    def post(self):
-        print('validate_edf_metadata')
-        try:
-            print('fvalidate_edf_metadata')
-            file = request.files.get('file')
-            if not file:
-                return jsonify({"message": "❌ No file uploaded"}), 400
-            print('avalidate_edf_metadata')
-            timestamp = datetime.now().strftime("%Y%m%d%H%M%S")
-            original_filename = secure_filename(file.filename)
-            filename = f"{timestamp}_{original_filename}"
-            print('svalidate_edf_metadata')
-            save_dir = "C:\\HHSA_shared\\Temp"
-            os.makedirs(save_dir, exist_ok=True)  # 若資料夾不存在就自動建立
-            print('dvalidate_edf_metadata')
-            save_path = f"{save_dir}\\{filename}"
-            file.save(save_path)
-            print('save_path', save_path)
-        except Exception as e:
-            return jsonify({"message": f"❌ Failed to parse EDF: {str(e)}"}), 500
-        print('ttsave_path', save_path)
-        try:
-            with open(save_path, 'rb') as f:
-                print('252save_path', save_path)
-                f.seek(252)
-                num_signals = int(f.read(4).decode().strip())
-                print('252')
-                f.seek(244)
-                duration_str = f.read(8).decode().strip()
-                print('244')
-                f.seek(236)
-                num_records_str = f.read(8).decode().strip()
-                print('236')
-                f.seek(256 + num_signals * 216)
-                print('256')
-                samples_per_record_all = [int(f.read(8).decode().strip()) for _ in range(num_signals)]
-                fs_detected = samples_per_record_all[0] / float(duration_str)
-                duration_per_record = float(duration_str)
-                num_records = int(num_records_str)
-            total_duration = duration_per_record * num_records
-            print(num_signals, fs_detected, total_duration, num_records_str)
-
-            return jsonify({
-                "message": "Header parsed successfully",
-                "num_signals": num_signals,
-                "fs_detected": fs_detected,
-                "duration_str": total_duration,
-                "num_records_str": num_records_str
-            })
-        except Exception as e:
-            return jsonify({"message": f"Failed to parse EDF",
-                            "num_signals": None,
-                            "fs_detected": None,
-                            "duration_str": None,
-                            "num_records_str": None})
 
 @rest_api.route('/upload_for_fft', endpoint='upload_for_fft')
 class UploadFFT(Resource):
@@ -672,50 +607,125 @@ class UploadHHT(Resource):
             except Exception as e:
                 return jsonify({"success": False, "message": str(e)})
 
+
+@rest_api.route('/tmapi/list_history_files', endpoint='list_history_files')
+class ListHistoryFiles(Resource):
+    def post(self):
+        user_id = request.headers.get('UserId')
+        if not user_id:
+            return {'message': 'Missing UserId'}, 400
+
+        user_dir = os.path.join(SAVE_EDF_DIR, user_id)
+        print('user_dir', user_dir )
+        if not os.path.exists(user_dir):
+            return {'files': []}
+
+        files = []
+        for filename in os.listdir(user_dir):
+            filepath = os.path.join(user_dir, filename)
+            if filename.lower().endswith('.edf'):
+                files.append({
+                    'stored_name': filename,
+                    'original_name': filename.split('_', 1)[1],
+                    'timestamp': os.path.getmtime(filepath)
+                })
+
+        return {'files': files}
+    
+@rest_api.route('/tmapi/delete_history_file', endpoint='delete_history_file')
+class DeleteHistoryFile(Resource):
+    def post(self):
+        user_id = request.headers.get("UserId")
+        data = request.get_json()
+        filename = data.get("filename")
+
+        user_dir = os.path.join(SAVE_EDF_DIR, user_id)
+        file_path = os.path.join(user_dir, filename)
+
+        if not os.path.exists(file_path):
+            return {"message": "File not found."}, 404
+
+        os.remove(file_path)
+        return {"message": "File deleted successfully."}
+
+@rest_api.route('/tmapi/get-history-file', endpoint='get_history_file')
+class GetHistoryFile(Resource):
+    def post(self):
+        user_id = request.headers.get('UserId')
+        data = request.get_json()
+        filename = data.get('filename')
+
+        if not user_id or not filename:
+            return {'message': 'Missing userId or filename'}, 400
+
+        file_path = os.path.join(SAVE_EDF_DIR, user_id, filename)
+        if not os.path.exists(file_path):
+            return {'message': 'File not found'}, 404
+
+        return {'file_path': file_path}
+
 def validate_edf_by_header_only(edf_path, n, start_index, end_index):
-        if not os.path.exists(edf_path):
-            return False, f"❌ 找不到檔案：{edf_path}"
-        try:
-            # 取得檔案大小
-            filesize = os.path.getsize(edf_path)
+    if not os.path.exists(edf_path):
+        return False, 0, f"❌ 找不到檔案：{edf_path}"
 
-            with open(edf_path, 'rb') as f:
-                # 通道數
-                f.seek(252)
-                num_signals = int(f.read(4).decode().strip())
+    try:
+        filesize = os.path.getsize(edf_path)
 
-                # 每段紀錄時間
-                f.seek(244)
-                duration_str = f.read(8).decode().strip()
+        with open(edf_path, 'rb') as f:
+            f.seek(252)
+            num_signals = int(f.read(4).decode().strip())
 
-                # 紀錄段數
-                f.seek(236)
-                num_records_str = f.read(8).decode().strip()
+            f.seek(244)
+            duration_str = f.read(8).decode().strip()
 
-                if not duration_str or not num_records_str:
-                    return False, "❌ EDF 檔案缺少紀錄段資訊（duration 或 record 數）"
-                f.seek(256 + num_signals * 216)
-                samples_per_record_all = [int(f.read(8).decode().strip()) for _ in range(num_signals)]
-                fs_detected = samples_per_record_all[0] / float(duration_str)
-                duration_per_record = float(duration_str)
-                num_records = int(num_records_str)
+            f.seek(236)
+            num_records_str = f.read(8).decode().strip()
 
-            total_duration = duration_per_record * num_records
+            if not duration_str or not num_records_str:
+                return False, 0, [],"❌ EDF 檔案缺少紀錄段資訊（duration 或 record 數）"
 
+            duration_per_record = float(duration_str)
+            num_records = int(num_records_str)
 
-            print(f"📊 通道數：{num_signals}")
-            print(f"⏱️ 檔案總長：約 {total_duration:.2f} 秒")
+            possible_header_sizes = [256, 216, 192]
+            fs_detected = None
 
-            if n < 1 or n > num_signals:
-                return False, 0, f"❌ 通道 index ({n}) 超出範圍，僅有 {num_signals} 通道"
+            for header_size in possible_header_sizes:
+                try:
+                    f.seek(256 + num_signals * header_size)
+                    samples_per_record_all = [int(f.read(8).decode().strip()) for _ in range(num_signals)]
+                    fs_guess = samples_per_record_all[0] / duration_per_record
 
-            if start_index < 0 or end_index <= start_index:
-                return False, 0, "❌ 時間區間無效，start_index 必須小於 end_index 且皆為正整數"
+                    if 0 < fs_guess < 10000:
+                        fs_detected = fs_guess
+                        break
+                except:
+                    continue
 
-            if total_duration != -1:
-                if end_index > total_duration:
-                    return False, 0, f"❌ 結束時間 {end_index}s 超出檔案總長 {total_duration:.2f}s"
+            if fs_detected is None:
+                return False, 0,[], "❌ 無法解析 EDF headers 中的 sample rate"
+            f.seek(256)
+            labels = []
+            for _ in range(num_signals):
+                label = f.read(16).decode('ascii').strip()
+                labels.append(label)
 
-            return True, fs_detected, None  # ✅ 驗證成功
-        except Exception as e:
-            return False, 0, f"❌ 驗證時發生錯誤：{str(e)}"
+        total_duration = duration_per_record * num_records
+
+        print(f"📊 通道數：{num_signals}")
+        print(f"⏱️ 檔案總長：約 {total_duration:.2f} 秒")
+
+        if n < 1 or n > num_signals:
+            return False, 0,[], f"❌ 通道 index ({n}) 超出範圍，僅有 {num_signals} 通道"
+
+        if start_index < 0 or end_index <= start_index:
+            return False, 0,[], "❌ 時間區間無效，start_index 必須小於 end_index 且皆為正整數"
+
+        if total_duration != -1:
+            if end_index > total_duration:
+                return False, 0, [],f"❌ 結束時間 {end_index}s 超出檔案總長 {total_duration:.2f}s"
+
+        return True, fs_detected, labels, None  # ✅ 驗證成功
+
+    except Exception as e:
+        return False, 0,[], f"❌ 驗證時發生錯誤：{str(e)}"

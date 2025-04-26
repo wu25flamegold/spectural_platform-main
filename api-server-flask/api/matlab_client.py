@@ -207,6 +207,12 @@ class HoloVisualizer:
                 
             ],
             layout=go.Layout(
+                title=dict(
+                    text=save_path,
+                    x=0.5,
+                    xanchor='center',
+                    yanchor='top'
+                ),
                 xaxis=dict(
                     title="FM (Hz)",
                     tickvals=xtick_value.tolist(),  # Tick 的實際位置
@@ -225,7 +231,7 @@ class HoloVisualizer:
                     zeroline=False,
                     constraintoward='center',
                 ),
-                width=540,
+                width=510,
                 height=480,
                 shapes=[diag_line, horizontal_line],
                 plot_bgcolor='white',
@@ -233,7 +239,7 @@ class HoloVisualizer:
                 margin=dict(
                     l=70,   # left
                     r=0,   # right
-                    t=30,   # top（這裡設定小一點會往上）
+                    t=50,   # top（這裡設定小一點會往上）
                     b=50    # bottom
                 )
             )
@@ -267,7 +273,7 @@ class MATLABSharedMemoryClient:
         self.user_id = user_id
         self.buffer_size = 1024000
         self.file_path = rf"C:\HHSA_shared\buffer_{user_id}.dat"
-        self.timeout = 60
+        self.timeout = 120
         os.makedirs(os.path.dirname(self.file_path), exist_ok=True)
 
         # 初始化共享記憶體文件

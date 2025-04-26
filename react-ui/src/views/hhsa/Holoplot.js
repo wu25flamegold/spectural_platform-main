@@ -22,7 +22,7 @@ const Plot = createPlotlyComponent(Plotly);
 
 
 
-const HoloPlot = ({ holoData, isLoading, userid, token }) => {
+const HoloPlot = ({ holoData, isLoading, userid, token, fileName }) => {
   const plotRef = useRef(null);
   const roiCoordsRef = useRef({x1: null, x2: null, y1: null, y2: null});
   const [inputError, setInputError] = React.useState(false);
@@ -37,6 +37,7 @@ const HoloPlot = ({ holoData, isLoading, userid, token }) => {
       setPlotKey((prev) => prev + 1);
     }
   }, [holoData]);
+
   const inputRefs = {
     x1: useRef(null),
     x2: useRef(null),
@@ -246,7 +247,32 @@ const HoloPlot = ({ holoData, isLoading, userid, token }) => {
                   template: 'plotly_white',
                   dragmode: 'pan',
                   selections: undefined,
-                  fixedrange: true
+                  fixedrange: true,
+                  annotations: [
+                    {
+                      text: "Powered by Lab 906",
+                      font: {
+                        size: 10,
+                        color: "gray"
+                      },
+                      x: 1.2,
+                      y: -0.135,
+                      xref: "paper",
+                      yref: "paper",
+                      xanchor: "right",
+                      yanchor: "bottom",
+                      showarrow: false
+                    }
+                  ],
+                  title: {
+                    text: fileName,
+                    x: 0.5,
+                    xanchor: 'center',
+                    yanchor: 'top',
+                    font: {
+                      size: 12
+                    }
+                  },
                 }}
                 config={{
                   responsive: true,
@@ -315,7 +341,7 @@ const HoloPlot = ({ holoData, isLoading, userid, token }) => {
             tool to select Region of Interest (ROI) on the HHSA Spectrum.
           </p>
 
-          <div className="pl-3 space-y-2">
+          <div className="pl-1 space-y-2">
             {/* FM 區 */}
             <div>
               <div className="text-gray-700 mb-1">X axis:</div>

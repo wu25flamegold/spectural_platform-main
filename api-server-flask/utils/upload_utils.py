@@ -16,22 +16,12 @@ from datetime import datetime
 import numpy as np
 import psutil
 
-SAVE_DIR = r"C:\HhsaData"  # ✅ 你指定的資料夾
+SAVE_EDF_DIR = r"C:\EDFData"
 def is_valid_edf(file_stream):
-    file_stream.seek(0)  # 確保從開頭讀取
+    file_stream.seek(0)
     header = file_stream.read(8)
-    file_stream.seek(0)  # 讀完後重置位置以免影響後續儲存
+    file_stream.seek(0) 
     return header.strip() in [b'0', b'EDF', b'EDF+C', b'EDF+D']
-
-def save_uploaded_file(file, save_dir):
-    if not is_valid_edf(file.stream):
-        raise ValueError("Invalid EDF file: Not a valid EDF header.")
-    timestamp = datetime.now().strftime("%Y%m%d_%H%M%S")
-    fname = file.filename[:-4]
-    custom_filename = f"{fname}_{timestamp}.edf"
-    file_path = os.path.join(save_dir, custom_filename)
-    file.save(file_path)
-    return file_path, fname, timestamp
 
 def run_tmapi_processing(instance, selectedFunction, file_path, cmd, sampling_rate,
                          chn, d_start, d_stop, UserId, fname, timestamp):
@@ -153,7 +143,7 @@ def open_tmapi_window(UserId):
 
 
 
-def write_signal_to_edf(selectedFunction, fs=200, signal_size=4000):
+def write_signal_to_edf(selectedFunction, fs, UserId):
     fs = int(fs)
     generator_map = {
         'f1': generate_f1_signal,
@@ -172,7 +162,7 @@ def write_signal_to_edf(selectedFunction, fs=200, signal_size=4000):
     # ✅ 建立檔名與儲存路徑
     timestamp = datetime.now().strftime("%Y%m%d_%H%M%S")
     filename = f"{selectedFunction}_{timestamp}.edf"
-    file_path = os.path.join(SAVE_DIR, filename)
+    file_path = os.path.join(SAVE_EDF_DIR, filename)
 
     writer = EDFwriter(file_path, 1, 1)
     writer.setSignalLabel(0, selectedFunction)
