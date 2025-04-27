@@ -50,7 +50,7 @@ export const other = {
         //     id: 'documentation',
         //     title: 'Documentation',
         //     type: 'item',
-        //     url: 'https://docs.appseed.us/products/react/flask-berry-dashboard',
+        //     url: 'https://docs.appseed.us/products/react/',
         //     icon: icons['IconHelp'],
         //     external: true,
         //     target: true
