@@ -64,7 +64,7 @@ const NotLoginCard = ({ isLoading }) => {
                         style={{
                         fontWeight: 500,
                         marginBottom: 12,
-                        color: '#013674' // 深藍色一點點（清楚層次）
+                        color: '#013d8b' // 深藍色一點點（清楚層次）
                         }}
                     >
                         Ready to dive deeper?
@@ -73,7 +73,7 @@ const NotLoginCard = ({ isLoading }) => {
                     <Typography
                         variant="h3" // <-- body1 換成 h6，看起來更飽滿
                         color="textSecondary"
-                        style={{ marginBottom: 20, fontWeight: 400, color: '#54668e' }}
+                        style={{ marginBottom: 20, fontWeight: 400, color: '#506186' }}
                     >
                         Your journey with HHSA starts here. Please sign in to continue.
                     </Typography>
@@ -83,7 +83,7 @@ const NotLoginCard = ({ isLoading }) => {
                         onClick={handleLogin}
                         size="medium"
                         style={{
-                            backgroundColor: '#0072bc',
+                            backgroundColor: '#0058bc',
                             color: '#ffffff',
                             fontWeight: 500,
                             fontSize: '1.2rem',
@@ -92,10 +92,10 @@ const NotLoginCard = ({ isLoading }) => {
                             transition: 'all 0.3s ease',
                         }}
                         onMouseOver={(e) => {
-                            e.currentTarget.style.backgroundColor = '#0265a5';
+                            e.currentTarget.style.backgroundColor = '#014797';
                         }}
                         onMouseOut={(e) => {
-                            e.currentTarget.style.backgroundColor = '#0072bc';
+                            e.currentTarget.style.backgroundColor = '#0058bc';
                         }}
                         >
                         Sign In

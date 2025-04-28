@@ -7,8 +7,20 @@ from .models import db
 from .tmapi import TMAPI
 from .matlab_client import MATLABSharedMemoryClient  # 確保 MATLABSharedMemoryClient 有正確導入
 from .config import BaseConfig
+from flask_mail import Mail
 
 app = Flask(__name__)
+app.config['MAIL_SERVER'] = os.getenv('MAIL_SERVER')
+app.config['MAIL_PORT'] = 587
+app.config['MAIL_USE_TLS'] = True  # ✅ 用 TLS，不是 SSL
+app.config['MAIL_USE_SSL'] = False
+app.config['MAIL_USERNAME'] = os.getenv('MAIL_USERNAME')
+app.config['MAIL_DEFAULT_SENDER'] = ('LAB 906', os.getenv('MAIL_USERNAME'))
+app.config['MAIL_PASSWORD'] = os.getenv('MAIL_PASSWORD')
+app.config['SECRET_KEY'] = os.getenv('SECRET_KEY')
+app.config['SECURITY_PASSWORD_SALT'] = os.getenv('SECURITY_PASSWORD_SALT')
+mail = Mail()
+mail.init_app(app)
 app.config['MAX_CONTENT_LENGTH'] = 2000 * 1024 * 1024  # 2000 MB
 app.config.from_object('api.config.BaseConfig')
 

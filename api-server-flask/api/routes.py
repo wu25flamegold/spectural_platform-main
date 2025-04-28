@@ -7,7 +7,7 @@ import psutil
 from flask import current_app
 import pygetwindow as gw
 from werkzeug.utils import secure_filename
-
+from flask_mail import Message
 from ctypes import WinDLL
 from ctypes import WINFUNCTYPE, c_long, Structure, c_void_p, wintypes, c_int, c_wchar_p, c_ulong, byref
 import ctypes
@@ -29,6 +29,7 @@ import numpy as np
 from io import BytesIO
 from .tmapi import TMAPI
 import api.matlab_client
+from .reset_password import generate_reset_token, verify_reset_token
 
 rest_api = Api(version="1.0", title="Users API")
 SAVE_DIR = r"C:\HhsaData"
@@ -51,6 +52,11 @@ user_edit_model = rest_api.model('UserEditModel', {"userID": fields.String(requi
                                                    "username": fields.String(required=True, min_length=2, max_length=32),
                                                    "email": fields.String(required=True, min_length=4, max_length=64)
                                                    })
+
+reset_password_model = rest_api.model('ResetPassword', {
+                                                            'token': fields.String(required=True, description='The password reset token'),
+                                                            'new_password': fields.String(required=True, description='The new password'),
+                                                        })
 
 def token_required(f):
     """
@@ -85,6 +91,8 @@ def token_required(f):
                 return {"success": False, "msg": "Token expired."}, 400
 
         except:
+            if request.endpoint == "logout":
+                return f(current_user=None, *args, **kwargs)
             return {"success": False, "msg": "Token is invalid"}, 400
 
         return f(current_user, *args, **kwargs)
@@ -95,6 +103,59 @@ def token_required(f):
 """
     Flask-Restx routes
 """
+@rest_api.route('/api/users/fotgot-password')
+class ForgotPassword(Resource):
+    """
+       Creates a new user by taking 'signup_model' input
+    """
+    def post(self):
+        req_data = request.get_json()
+        _email = req_data.get("email")
+        user_exists = Users.get_by_email(_email)
+        if user_exists:
+            try:
+                from . import mail
+                token = generate_reset_token(user_exists.id)
+                reset_link = f"http://xds3.cmbm.idv.tw:81/reset-password?token={token}"
+
+                msg = Message(
+                    subject="Reset Your Password",
+                    sender=os.getenv('MAIL_USERNAME'),
+                    recipients=[_email]
+                )
+                msg.body = (
+                    "Hi,\n\n"
+                    "We received a request to reset your password.\n\n"
+                    f"Please click the link below to reset it:\n{reset_link}\n\n"
+                    "If you did not request a password reset, please ignore this email.\n\n"
+                    "Thanks,\n"
+                    "NYCU IBS K&Y Lab"
+                )
+
+                mail.send(msg)
+            except Exception as e:
+                return {"success": False, "msg": f"Failed to send email: {str(e)}"}
+
+        return {"success": True,
+                "msg": "If the email is registered, we have sent a reset link."}, 200
+
+@rest_api.route('/api/users/reset-password')
+class ResetPassword(Resource):
+    def post(self):
+        req_data = request.get_json()
+        token = req_data.get('token')
+        new_password = req_data.get('password')
+
+        user_id = verify_reset_token(token)
+        if not user_id:
+            return {"success": False, "msg": "Invalid or expired token."}, 400
+
+        user = Users.get_by_id(user_id)
+        user.set_password(new_password)
+        user.save()
+
+        return {"success": True, "msg": "Password has been reset."}
+
 @rest_api.route('/api/users/register')
 class Register(Resource):
     """
@@ -169,22 +230,23 @@ class EditUser(Resource):
         return {"success": True}, 200
 
 
-@rest_api.route('/api/users/logout')
+@rest_api.route('/api/users/logout', endpoint='logout')
 class LogoutUser(Resource):
     """
        Logs out User using 'logout_model' input
     """
     @token_required
     def post(self, current_user):
-        _jwt_token = request.headers["authorization"]
+        _jwt_token = request.headers.get("Authorization")
         existing = JWTTokenBlocklist.query.filter_by(jwt_token=_jwt_token).first()
         if not existing:
             jwt_block = JWTTokenBlocklist(jwt_token=_jwt_token, created_at=datetime.now(timezone.utc))
             jwt_block.save()
 
         # 正確對 current_user 設定登出狀態
-        self.set_jwt_auth_active(False)
-        self.save()
+        if current_user:
+            current_user.set_jwt_auth_active(False)
+            current_user.save()
 
         return {"success": True}, 200
 

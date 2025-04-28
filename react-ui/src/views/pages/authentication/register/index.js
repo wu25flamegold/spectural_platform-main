@@ -79,9 +79,6 @@ const Register = () => {
                         </Grid>
                     </Grid>
                 </Grid>
-                <Grid item xs={12} sx={{ m: 3, mt: 1 }}>
-                    <AuthFooter />
-                </Grid>
             </Grid>
         </AuthWrapper1>
     );

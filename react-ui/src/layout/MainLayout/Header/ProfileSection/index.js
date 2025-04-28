@@ -1,6 +1,7 @@
 import React from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import configData from '../../../../config';
+import { useHistory } from 'react-router-dom';
 
 // material-ui
 import { makeStyles, useTheme } from '@material-ui/styles';
@@ -34,7 +35,7 @@ import Transitions from '../../../../ui-component/extended/Transitions';
 import { LOGOUT } from './../../../../store/actions';
 
 // assets
-import { IconLogout, IconSearch, IconSettings } from '@tabler/icons';
+import { IconLogout, IconLogin, IconSettings } from '@tabler/icons';
 import User1 from './../../../../assets/images/users/user-round.svg';
 import User0 from './../../../../assets/images/users/user.png';
 
@@ -128,6 +129,8 @@ const ProfileSection = () => {
     const theme = useTheme();
     const customization = useSelector((state) => state.customization);
     const account = useSelector((state) => state.account);
+    const { isLoggedIn } = account;
+    
     const dispatcher = useDispatch();
 
     const [value, setValue] = React.useState('');
@@ -136,6 +139,11 @@ const ProfileSection = () => {
 
     const [open, setOpen] = React.useState(false);
     const anchorRef = React.useRef(null);
+    const history = useHistory();
+
+    const handleLogin = () => {
+        history.push('/login');
+    };
     const handleLogout = () => {
         axios
             .post( configData.API_SERVER + 'users/logout', {token: `${account.token}`}, { headers: { Authorization: `${account.token}` } })
@@ -144,9 +152,11 @@ const ProfileSection = () => {
                 // Force the LOGOUT
                 //if (response.data.success) {
                     dispatcher({ type: LOGOUT });
+                    window.location.href = '/dashboard/default';
                 //} else {
                 //    console.log('response - ', response.data.msg);
                 //}
+
             })
             .catch(function (error) {
                 console.log('error - ', error);
@@ -220,47 +230,45 @@ const ProfileSection = () => {
                                 <MainCard className={classes.maincardContent} border={false} elevation={8} content={false} boxShadow shadow={theme.shadows[8]}>
                                     <CardContent className={classes.cardContent}>
                                         <Grid container direction="column" spacing={0}>
-                                            <Grid item className={classes.flex}>
-                                                <Typography variant="h4">Hello,</Typography>
+                                            <Grid item className={classes.flex} sx={{paddingTop:'8px'}}>
+                                                <Typography variant="h4" sx={{fontWeight:400}}>Hello,</Typography>
                                                 <Typography component="span" variant="h4" className={classes.name}>
-                                                    {account.user?.username}
+                                                    {isLoggedIn ? account.user?.username:'Guest'}
                                                 </Typography>
                                             </Grid>
                                             <Grid item>
                                                 <Typography variant="subtitle2">{account.user?.role}</Typography>
                                             </Grid>
                                         </Grid>
-                                        {/* <OutlinedInput
-                                            className={classes.searchControl}
-                                            id="input-search-profile"
-                                            value={value}
-                                            onChange={(e) => setValue(e.target.value)}
-                                            placeholder="Search profile options"
-                                            startAdornment={
-                                                <InputAdornment position="start">
-                                                    <IconSearch stroke={1.5} size="1.3rem" className={classes.startAdornment} />
-                                                </InputAdornment>
-                                            }
-                                            aria-describedby="search-helper-text"
-                                            inputProps={{
-                                                'aria-label': 'weight'
-                                            }}
-                                        />
-                                        <Divider /> */}
-                                        {/* <Divider /> */}
-                                        <List component="nav" className={classes.navContainer}>
-                                            <ListItemButton
-                                                className={classes.listItem}
-                                                sx={{ borderRadius: customization.borderRadius + 'px' }}
-                                                selected={selectedIndex === 4}
-                                                onClick={handleLogout}
-                                            >
-                                                <ListItemIcon>
-                                                    <IconLogout stroke={1.5} size="1.3rem" />
-                                                </ListItemIcon>
-                                                <ListItemText primary={<Typography variant="body2">Logout</Typography>} />
-                                            </ListItemButton>
-                                        </List>
+
+                                        {isLoggedIn ? 
+                                            <List component="nav" className={classes.navContainer}>
+                                                <ListItemButton
+                                                    className={classes.listItem}
+                                                    sx={{ borderRadius: customization.borderRadius + 'px' }}
+                                                    selected={selectedIndex === 4}
+                                                    onClick={handleLogout}
+                                                >
+                                                    <ListItemIcon>
+                                                        <IconLogout stroke={1.5} size="1.3rem" />
+                                                    </ListItemIcon>
+                                                    <ListItemText primary={<Typography variant="body2">Logout</Typography>} />
+                                                </ListItemButton>
+                                            </List>:
+                                            <List component="nav" className={classes.navContainer}>
+                                                <ListItemButton
+                                                    className={classes.listItem}
+                                                    sx={{ borderRadius: customization.borderRadius + 'px' }}
+                                                    selected={selectedIndex === 4}
+                                                    onClick={handleLogin}
+                                                >
+                                                    <ListItemIcon>
+                                                        <IconLogin stroke={1.5} size="1.3rem" />
+                                                    </ListItemIcon>
+                                                    <ListItemText primary={<Typography variant="body2">Login</Typography>} />
+                                                </ListItemButton>
+                                            </List>
+                                        }
                                     </CardContent>
                                 </MainCard>
                             </ClickAwayListener>

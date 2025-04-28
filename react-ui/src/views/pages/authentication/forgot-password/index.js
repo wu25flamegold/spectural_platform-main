@@ -7,16 +7,16 @@ import { Divider, Grid, Stack, Typography, useMediaQuery } from '@material-ui/co
 
 // project imports
 import AuthWrapper1 from './../AuthWrapper1';
-import Logo from './../../../../ui-component/Logo';
 import AuthCardWrapper from './../AuthCardWrapper';
-import RestLogin from './RestLogin';
+import Logo from './../../../../ui-component/Logo';
+import RestResetpassword from './RestResetpassword';
 import AuthFooter from './../../../../ui-component/cards/AuthFooter';
 
 // assets
 
-//================================|| LOGIN MAIN ||================================//
+//===============================|| AUTH3 - REGISTER ||===============================//
 
-const Login = () => {
+const ForgotPassword = () => {
     const theme = useTheme();
     const matchDownSM = useMediaQuery(theme.breakpoints.down('sm'));
 
@@ -28,7 +28,7 @@ const Login = () => {
                         <Grid item sx={{ m: { xs: 1, sm: 3 }, mb: 0 }}>
                             <AuthCardWrapper>
                                 <Grid container spacing={2} alignItems="center" justifyContent="center">
-                                    <Grid item sx={{ mb: 1 }}>
+                                    <Grid item sx={{ mb: 3 }}>
                                         <RouterLink to="#">
                                             <Logo />
                                         </RouterLink>
@@ -41,24 +41,35 @@ const Login = () => {
                                             justifyContent="center"
                                         >
                                             <Grid item>
-                                                <Stack alignItems="center" justifyContent="center" spacing={2}>
+                                                <Stack alignItems="center" justifyContent="center" spacing={1}>
                                                     <Typography
                                                         color={theme.palette.secondary.main}
                                                         gutterBottom
                                                         variant={matchDownSM ? 'h3' : 'h2'}
                                                     >
-                                                        Hi, Welcome to HHSA Platform
+                                                        Hi, Welcome to HHSA platform
                                                     </Typography>
                                                     <Typography variant="caption" fontSize="16px" textAlign={matchDownSM ? 'center' : ''}>
-                                                        Log in to your account
+                                                        Forgot your password?
                                                     </Typography>
                                                 </Stack>
                                             </Grid>
                                         </Grid>
                                     </Grid>
                                     <Grid item xs={12}>
-                                        <RestLogin />
+                                        <RestResetpassword />
                                     </Grid>
+                                    <Grid item xs={12}>
+                                        <Typography
+                                            variant="caption"
+                                            fontSize="16px"
+                                            textAlign={matchDownSM ? 'center' : ''}
+                                        >
+                                            Please Enter your email. We'll send a reset link if your account exists.
+                                        </Typography>
+                                    </Grid>
+
+
                                     <Grid item xs={12}>
                                         <Divider />
                                     </Grid>
@@ -66,11 +77,11 @@ const Login = () => {
                                         <Grid item container direction="column" alignItems="center" xs={12}>
                                             <Typography
                                                 component={RouterLink}
-                                                to="/register"
+                                                to="/login"
                                                 variant="subtitle1"
                                                 sx={{ textDecoration: 'none' }}
                                             >
-                                                Don't have an account? Create one
+                                                Have an account? Login
                                             </Typography>
                                         </Grid>
                                     </Grid>
@@ -84,4 +95,4 @@ const Login = () => {
     );
 };
 
-export default Login;
+export default ForgotPassword;

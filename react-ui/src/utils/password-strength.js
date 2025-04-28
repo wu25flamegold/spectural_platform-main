@@ -21,11 +21,10 @@ const hasSpecial = (value) => {
 
 // set color based on password strength
 export const strengthColor = (count) => {
-    if (count < 2) return { label: 'Poor', color: value.errorMain };
-    if (count < 3) return { label: 'Weak', color: value.warningDark };
-    if (count < 4) return { label: 'Normal', color: value.orangeMain };
-    if (count < 5) return { label: 'Good', color: value.successMain };
-    if (count < 6) return { label: 'Strong', color: value.successDark };
+    if (count < 2) return { label: 'Normal', color: value.warningDark };
+    if (count < 3) return { label: 'Moderate', color: value.orangeMain };
+    if (count < 4) return { label: 'Good', color: value.successMain };
+    if (count < 5) return { label: 'Strong', color: value.successDark };
 };
 
 // password strength indicator

@@ -1,6 +1,6 @@
-import React from 'react';
-import { Link, useHistory, useLocation } from 'react-router-dom'; 
-import { useDispatch } from 'react-redux';
+import React, { useEffect } from 'react';
+import { Link, useHistory } from 'react-router-dom';
+import { useLocation } from 'react-router-dom';
 
 import configData from '../../../../config';
 
@@ -13,12 +13,14 @@ import {
     FormControl,
     FormControlLabel,
     FormHelperText,
+    Grid,
     IconButton,
     InputAdornment,
     InputLabel,
     OutlinedInput,
-    Stack,
-    Typography
+    TextField,
+    Typography,
+    useMediaQuery
 } from '@material-ui/core';
 
 // third party
@@ -28,8 +30,8 @@ import axios from 'axios';
 
 // project imports
 import useScriptRef from '../../../../hooks/useScriptRef';
-import AnimateButton from '../../../../ui-component/extended/AnimateButton';
-import { ACCOUNT_INITIALIZE } from './../../../../store/actions';
+import AnimateButton from './../../../../ui-component/extended/AnimateButton';
+import { strengthColor, strengthIndicator } from '../../../../utils/password-strength';
 
 // assets
 import Visibility from '@material-ui/icons/Visibility';
@@ -74,18 +76,22 @@ const useStyles = makeStyles((theme) => ({
     }
 }));
 
-//============================|| API JWT - LOGIN ||============================//
+//===========================|| API JWT - REGISTER ||===========================//
 
-const RestLogin = (props, { ...others }) => {
+const RestReCreatePassword = ({ ...others }) => {
     const classes = useStyles();
-    const dispatcher = useDispatch();
-
+    let history = useHistory();
     const scriptedRef = useScriptRef();
-    const [checked, setChecked] = React.useState(true);
-    const history = useHistory();
-    const location = useLocation(); // 🔥 新增
-
+    const matchDownSM = useMediaQuery((theme) => theme.breakpoints.down('sm'));
     const [showPassword, setShowPassword] = React.useState(false);
+    const [checked, setChecked] = React.useState(true);
+    const location = useLocation();
+    const searchParams = new URLSearchParams(location.search);
+    const token = searchParams.get('token');  // 抓到 token
+    
+    const [strength, setStrength] = React.useState(0);
+    const [level, setLevel] = React.useState('');
+
     const handleClickShowPassword = () => {
         setShowPassword(!showPassword);
     };
@@ -94,39 +100,36 @@ const RestLogin = (props, { ...others }) => {
         event.preventDefault();
     };
 
+    const changePassword = (value) => {
+        const temp = strengthIndicator(value);
+        setStrength(temp);
+        setLevel(strengthColor(temp));
+    };
+
+    useEffect(() => {
+        changePassword('');
+    }, []);
+
     return (
         <React.Fragment>
             <Formik
                 initialValues={{
-                    email: '',
                     password: '',
                     submit: null
                 }}
                 validationSchema={Yup.object().shape({
-                    email: Yup.string().email('Must be a valid email').max(255).required('Email is required'),
                     password: Yup.string().max(255).required('Password is required')
                 })}
                 onSubmit={(values, { setErrors, setStatus, setSubmitting }) => {
                     try {
                         axios
-                            .post( configData.API_SERVER + 'users/login', {
+                            .post( configData.API_SERVER + 'users/reset-password', {
                                 password: values.password,
-                                email: values.email
+                                token: token,
                             })
                             .then(function (response) {
                                 if (response.data.success) {
-                                    console.log('RL', response.data);
-                                    dispatcher({
-                                        type: ACCOUNT_INITIALIZE,
-                                        payload: { isLoggedIn: true, user: response.data.user, token: response.data.token }
-                                    });
-                                    if (scriptedRef.current) {
-                                        setStatus({ success: true });
-                                        setSubmitting(false);
-                                    }
-                                    const params = new URLSearchParams(location.search);
-                                    const redirectPath = params.get('redirect') || '/dashboard/default';
-                                    history.replace(redirectPath);
+                                    history.push('/login');
                                 } else {
                                     setStatus({ success: false });
                                     setErrors({ submit: response.data.msg });
@@ -150,39 +153,20 @@ const RestLogin = (props, { ...others }) => {
             >
                 {({ errors, handleBlur, handleChange, handleSubmit, isSubmitting, touched, values }) => (
                     <form noValidate onSubmit={handleSubmit} {...others}>
-                        <FormControl fullWidth error={Boolean(touched.email && errors.email)} className={classes.loginInput}>
-                            <InputLabel htmlFor="outlined-adornment-email-login">Email</InputLabel>
-                            <OutlinedInput
-                                id="outlined-adornment-email-login"
-                                type="email"
-                                value={values.email}
-                                name="email"
-                                onBlur={handleBlur}
-                                onChange={handleChange}
-                                label="Email Address"
-                                inputProps={{
-                                    classes: {
-                                        notchedOutline: classes.notchedOutline
-                                    }
-                                }}
-                            />
-                            {touched.email && errors.email && (
-                                <FormHelperText error id="standard-weight-helper-text-email-login">
-                                    {' '}
-                                    {errors.email}{' '}
-                                </FormHelperText>
-                            )}
-                        </FormControl>
 
                         <FormControl fullWidth error={Boolean(touched.password && errors.password)} className={classes.loginInput}>
-                            <InputLabel htmlFor="outlined-adornment-password-login">Password</InputLabel>
+                            <InputLabel htmlFor="outlined-adornment-password-register">Enter your new password</InputLabel>
                             <OutlinedInput
-                                id="outlined-adornment-password-login"
+                                id="outlined-adornment-password-register"
                                 type={showPassword ? 'text' : 'password'}
                                 value={values.password}
                                 name="password"
+                                label="Password"
                                 onBlur={handleBlur}
-                                onChange={handleChange}
+                                onChange={(e) => {
+                                    handleChange(e);
+                                    changePassword(e.target.value);
+                                }}
                                 endAdornment={
                                     <InputAdornment position="end">
                                         <IconButton
@@ -195,7 +179,6 @@ const RestLogin = (props, { ...others }) => {
                                         </IconButton>
                                     </InputAdornment>
                                 }
-                                label="Password"
                                 inputProps={{
                                     classes: {
                                         notchedOutline: classes.notchedOutline
@@ -203,34 +186,40 @@ const RestLogin = (props, { ...others }) => {
                                 }}
                             />
                             {touched.password && errors.password && (
-                                <FormHelperText error id="standard-weight-helper-text-password-login">
-                                    {' '}
-                                    {errors.password}{' '}
+                                <FormHelperText error id="standard-weight-helper-text-password-register">
+                                    {errors.password}
                                 </FormHelperText>
                             )}
                         </FormControl>
-                        <Stack direction="row" alignItems="center" justifyContent="space-between" spacing={1}>
-                            {/* <FormControlLabel
-                                control={
-                                    <Checkbox
-                                        checked={checked}
-                                        onChange={(event) => setChecked(event.target.checked)}
-                                        name="checked"
-                                        color="primary"
-                                    />
-                                }
-                                label="Remember me"
-                            /> */}
-                            <Typography
-                                variant="subtitle1"
-                                component={Link}
-                                to={'/forgot-password'}
-                                color="secondary"
-                                sx={{ textDecoration: 'none' }}
-                            >
-                                Forgot Password?
-                            </Typography>
-                        </Stack>
+
+                        {strength !== 0 && (
+                            <FormControl fullWidth>
+                                <Box
+                                    sx={{
+                                        mb: 2
+                                    }}
+                                >
+                                    <Grid container spacing={2} alignItems="center">
+                                        <Grid item>
+                                            <Box
+                                                backgroundColor={level.color}
+                                                sx={{
+                                                    width: 85,
+                                                    height: 8,
+                                                    borderRadius: '7px'
+                                                }}
+                                            ></Box>
+                                        </Grid>
+                                        <Grid item>
+                                            <Typography variant="subtitle1" fontSize="0.75rem">
+                                                {level.label}
+                                            </Typography>
+                                        </Grid>
+                                    </Grid>
+                                </Box>
+                            </FormControl>
+                        )}
+
                         {errors.submit && (
                             <Box
                                 sx={{
@@ -264,7 +253,7 @@ const RestLogin = (props, { ...others }) => {
                                         },
                                       }}
                                 >
-                                    Sign in
+                                    Reset
                                 </Button>
                             </AnimateButton>
                         </Box>
@@ -275,4 +264,4 @@ const RestLogin = (props, { ...others }) => {
     );
 };
 
-export default RestLogin;
+export default RestReCreatePassword;
