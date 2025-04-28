@@ -103,7 +103,7 @@ const RestRegister = ({ ...others }) => {
     };
 
     useEffect(() => {
-        changePassword('123456');
+        changePassword('');
     }, []);
 
     return (

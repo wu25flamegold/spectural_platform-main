@@ -6,6 +6,7 @@ import { Player } from '@lottiefiles/react-lottie-player';
 import { motion } from 'framer-motion';
 import MainCard from './../../../ui-component/cards/MainCard';
 import backgroundAnimation from './../../../assets/lottie/Animation0.json';
+import circlebackground from './../../../assets/images/circle-background.png';
 import { useTheme } from '@material-ui/core/styles';
 import useMediaQuery from '@material-ui/core/useMediaQuery';
 
@@ -28,21 +29,45 @@ const NotLoginCard = ({ isLoading }) => {
           }}>
             <Grid container alignItems="center" spacing={2}>
                 {/* 動畫區 */}
+                {/* 動畫區 */}
                 <Grid item xs={12} sm={5} md={4}>
-                    <motion.div
-                        initial={{ opacity: 0, x: -30 }}
-                        animate={{ opacity: 1, x: 0 }}
-                        transition={{ duration: 0.8 }}
-                    >
-                        
+                <motion.div
+                    initial={{ opacity: 0, x: -30 }}
+                    animate={{ opacity: 1, x: 0 }}
+                    transition={{ duration: 0.8 }}
+                >
+                    {/* 包一個外層 */}
+                    <div style={{ position: 'relative', width: '100%', height: 'auto' }}>
+                    
+                    {/* 背景圖片 */}
+                    <img 
+                        src={circlebackground} 
+                        alt="background" 
+                        style={{
+                        position: 'absolute',
+                        top: '0%',
+                        left: '28%',
+                        width: '100%',    // 👉 圖片整體放大，原本是120%，現在改200%
+                        height: '100%',
+                        transform: 'translate(-30%, 0%)', // 👉 水平垂直都居中
+                        zIndex: 1
+                        }}
+                    />
+
+                    {/* 前景動畫 */}
+                    <div style={{ position: 'relative', zIndex: 2 }}>
                         <Player
-                            autoplay
-                            loop
-                            src={backgroundAnimation}
-                            style={{ width: '100%', height: 'auto' }}
+                        autoplay
+                        loop
+                        src={backgroundAnimation}
+                        style={{ width: '90%', height: '90%' }}
                         />
-                    </motion.div>
+                    </div>
+
+                    </div>
+                </motion.div>
                 </Grid>
+
 
                 {/* 文字 + 按鈕 */}
                 <Grid item xs={12} sm={7} md={8}>
@@ -60,18 +85,18 @@ const NotLoginCard = ({ isLoading }) => {
                     px={2}
                     >
                     <Typography
-                        variant="h2" // <-- 字體大一階
+                        variant="h3" // <-- 字體大一階
                         style={{
                         fontWeight: 500,
                         marginBottom: 12,
                         color: '#013d8b' // 深藍色一點點（清楚層次）
                         }}
                     >
-                        Ready to dive deeper?
+                        Explore your brainwaves with HHSA
                     </Typography>
 
                     <Typography
-                        variant="h3" // <-- body1 換成 h6，看起來更飽滿
+                        variant="h4" // <-- body1 換成 h6，看起來更飽滿
                         color="textSecondary"
                         style={{ marginBottom: 20, fontWeight: 400, color: '#506186' }}
                     >
@@ -86,7 +111,7 @@ const NotLoginCard = ({ isLoading }) => {
                             backgroundColor: '#0058bc',
                             color: '#ffffff',
                             fontWeight: 500,
-                            fontSize: '1.2rem',
+                            fontSize: '1rem',
                             padding: '6px 24px',
                             borderRadius: '12px',
                             transition: 'all 0.3s ease',
@@ -98,7 +123,7 @@ const NotLoginCard = ({ isLoading }) => {
                             e.currentTarget.style.backgroundColor = '#0058bc';
                         }}
                         >
-                        Sign In
+                        Sign In to Analyze
                         </Button>
 
 

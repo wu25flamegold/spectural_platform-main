@@ -85,6 +85,8 @@ def token_required(f):
             token_expired = db.session.query(JWTTokenBlocklist.id).filter_by(jwt_token=token).scalar()
 
             if token_expired is not None:
+                if request.endpoint == "logout":
+                    return f(current_user=None, *args, **kwargs)
                 return {"success": False, "msg": "Token revoked."}, 400
 
             if not current_user.check_jwt_auth_active():
