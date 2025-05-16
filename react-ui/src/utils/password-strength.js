@@ -6,7 +6,7 @@ import value from '../assets/scss/_themes-vars.module.scss';
 
 // has number
 const hasNumber = (value) => {
-    return new RegExp(/[0-9]/).test(value);
+    return new RegExp(/[a-zA-Z0-9]/).test(value);
 };
 
 // has mix of small and capitals

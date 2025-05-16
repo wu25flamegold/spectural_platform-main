@@ -96,7 +96,8 @@ const TotalIncomeLightCard = ({ isLoading }) => {
                             <ListItemText
                                 sx={{
                                     mt: 0.45,
-                                    mb: 0.45
+                                    mb: 0.45,
+                                    zIndex: 1
                                 }}
                                 className={classes.padding}
                                 primary={

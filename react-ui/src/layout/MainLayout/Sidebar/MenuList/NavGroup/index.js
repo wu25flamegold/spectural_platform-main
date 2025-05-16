@@ -64,7 +64,7 @@ const NavGroup = ({ item }) => {
             </List>
 
             {/* group divider */}
-            <Divider className={classes.menuDivider} />
+            {/* <Divider className={classes.menuDivider} /> */}
         </React.Fragment>
     );
 };

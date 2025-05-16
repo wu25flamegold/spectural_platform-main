@@ -1,11 +1,12 @@
 // assets
-import { IconBrandChrome, IconHelp, IconSitemap } from '@tabler/icons';
+import { IconBrandChrome, IconHelp, IconSitemap, IconApiApp } from '@tabler/icons';
 
 // constant
 const icons = {
     IconBrandChrome: IconBrandChrome,
     IconHelp: IconHelp,
-    IconSitemap: IconSitemap
+    IconSitemap: IconSitemap,
+    IconApiApp: IconApiApp
 };
 
 //-----------------------|| SAMPLE PAGE & DOCUMENTATION MENU ITEMS ||-----------------------//
@@ -13,47 +14,8 @@ const icons = {
 export const other = {
     id: 'sample-docs-roadmap',
     type: 'group',
+    title: 'Support',
     children: [
-        // {
-        //     id: 'fft',
-        //     title: 'FFT',
-        //     type: 'item',
-        //     url: '/fft',
-        //     icon: icons['IconBrandChrome'],
-        //     breadcrumbs: false
-        // },
-        // {
-        //     id: 'hht',
-        //     title: 'HHT',
-        //     type: 'item',
-        //     url: '/hht',
-        //     icon: icons['IconBrandChrome'],
-        //     breadcrumbs: false
-        // },
-        {
-            id: 'simulateSignal',
-            title: 'Simulate Signal',
-            type: 'item',
-            url: '/simulateSignal',
-            icon: icons['IconBrandChrome'],
-            breadcrumbs: false
-        },
-        {
-            id: 'hhsa',
-            title: 'Analyze EEG File',
-            type: 'item',
-            url: '/hhsa',
-            icon: icons['IconBrandChrome'],
-            breadcrumbs: false
-        },
-        // {
-        //     id: 'documentation',
-        //     title: 'Documentation',
-        //     type: 'item',
-        //     url: 'https://docs.appseed.us/products/react/',
-        //     icon: icons['IconHelp'],
-        //     external: true,
-        //     target: true
-        // }
+       
     ]
 };

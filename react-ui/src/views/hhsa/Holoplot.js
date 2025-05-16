@@ -286,7 +286,8 @@ const HoloPlot = ({ holoData, isLoading, userid, token, fileName }) => {
                   if (!eventData?.range) return;
 
                   const { x, y } = eventData.range;
-
+                  console.log('xyxy', x);
+                  console.log('xyxy', y);
                   const pos = {
                     x1: Math.max(x[0], -3),
                     x2: Math.min(x[1], 6),

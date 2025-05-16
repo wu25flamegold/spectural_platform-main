@@ -52,6 +52,7 @@ const NavItem = ({ item, level }) => {
     const dispatch = useDispatch();
     const customization = useSelector((state) => state.customization);
     const matchesSM = useMediaQuery((theme) => theme.breakpoints.down('md'));
+    const [disableHover, setDisableHover] = React.useState(false);
 
     const Icon = item.icon;
     const itemIcon = item.icon ? (
@@ -99,10 +100,17 @@ const NavItem = ({ item, level }) => {
         <ListItemButton
             {...listItemProps}
             disabled={item.disabled}
-            className={level > 1 ? classes.listItemNoBack : classes.listItem}
+            className={`${level > 1 ? classes.listItemNoBack : classes.listItem} ${disableHover ? 'no-hover' : ''}`}
             sx={{ borderRadius: customization.borderRadius + 'px' }}
             selected={customization.isOpen.findIndex((id) => id === item.id) > -1}
-            onClick={() => itemHandler(item.id)}
+            onClick={(e) => {
+                itemHandler(item.id);
+                if (item.external) {
+                    setDisableHover(true);
+                    setTimeout(() => setDisableHover(false), 500); // 恢復 hover 行為
+                }
+            }}
+            
             target={itemTarget}
             style={{ paddingLeft: level * 12 + 'px' }}
         >

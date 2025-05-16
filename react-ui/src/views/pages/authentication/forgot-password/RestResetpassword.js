@@ -168,12 +168,12 @@ const RestResetpassword = ({ ...others }) => {
                                     type="submit"
                                     variant="contained"
                                     sx={{
-                                        backgroundColor: '#673ab7 !important',
+                                        backgroundColor: '#0058bc !important',
                                         color: '#fff !important',
                                         borderRadius: '4px',
                                         fontWeight: 600,
                                         '&:hover': {
-                                          backgroundColor: '#4527a0 !important',
+                                          backgroundColor: '#014797 !important',
                                         },
                                       }}
                                 >

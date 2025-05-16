@@ -1,5 +1,5 @@
 // assets
-import { IconBrandFramer, IconTypography, IconPalette, IconShadow, IconWindmill, IconLayoutGridAdd } from '@tabler/icons';
+import { IconBrandFramer, IconTypography, IconApiApp, IconPalette, IconShadow, IconWindmill, IconLayoutGridAdd } from '@tabler/icons';
 
 // constant
 const icons = {
@@ -8,7 +8,8 @@ const icons = {
     IconShadow: IconShadow,
     IconWindmill: IconWindmill,
     IconBrandFramer: IconBrandFramer,
-    IconLayoutGridAdd: IconLayoutGridAdd
+    IconLayoutGridAdd: IconLayoutGridAdd,
+    IconApiApp: IconApiApp
 };
 
 //-----------------------|| UTILITIES MENU ITEMS ||-----------------------//
@@ -18,14 +19,22 @@ export const utilities = {
     title: 'HHSA utilities',
     type: 'group',
     children: [
-        // {
-        //     id: 'util-typography',
-        //     title: 'Typography',
-        //     type: 'item',
-        //     url: '/utils/util-typography',
-        //     icon: icons['IconTypography'],
-        //     breadcrumbs: false
-        // },
+        {
+            id: 'simulateSignal',
+            title: 'Simulate Signal',
+            type: 'item',
+            url: '/simulateSignal',
+            icon: icons['IconApiApp'],
+            breadcrumbs: false
+        },
+        {
+            id: 'hhsa',
+            title: 'Analyze EEG File',
+            type: 'item',
+            url: '/hhsa',
+            icon: icons['IconApiApp'],
+            breadcrumbs: false
+        },
         // {
         //     id: 'util-color',
         //     title: 'Color',

@@ -7,7 +7,7 @@ import { Grid } from '@material-ui/core';
 // project imports
 import EarningCard from './EarningCard';
 import PopularCard from './PopularCard';
-import TotalOrderLineChartCard from './TotalOrderLineChartCard';
+import WatchVideoCard from './WatchVideoCard';
 import TotalIncomeDarkCard from './TotalIncomeDarkCard';
 import TotalIncomeLightCard from './TotalIncomeLightCard';
 import NotLoginCard from './NotLoginCard';
@@ -35,11 +35,14 @@ const Dashboard = () => {
                         <Grid container spacing={gridSpacing}>
                             {isLoggedIn ? (
                             <>
-                                <Grid item sm={6} xs={6} md={6} lg={6}>
-                                <TotalIncomeDarkCard isLoading={isLoading} />
+                                <Grid item sm={12} xs={12} md={4} lg={4}>
+                                    <TotalIncomeDarkCard isLoading={isLoading} />
                                 </Grid>
-                                <Grid item sm={6} xs={6} md={6} lg={6}>
-                                <TotalIncomeLightCard isLoading={isLoading} />
+                                <Grid item sm={12} xs={12} md={4} lg={4}>
+                                    <TotalIncomeLightCard isLoading={isLoading} />
+                                </Grid>
+                                <Grid item sm={12} xs={12} md={4} lg={4}>
+                                    <WatchVideoCard isLoading={isLoading} />
                                 </Grid>
                             </>
                             ) : (

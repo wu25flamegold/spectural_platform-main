@@ -21,7 +21,6 @@ export default function UsageTooltip() {
         className="inline-flex items-center gap-1 px-3 py-1 rounded-full bg-blue-50 border border-blue-100 text-xs text-blue-700 cursor-pointer hover:bg-blue-100 transition"
         onClick={() => setShowTooltip(!showTooltip)}
       >
-        
         <svg
           className="w-4 h-4 text-blue-500"
           xmlns="http://www.w3.org/2000/svg"
@@ -40,7 +39,7 @@ export default function UsageTooltip() {
         <div
           ref={tooltipRef}
           className="absolute left-0 mt-2 z-30 w-72 bg-white border border-gray-200 shadow-lg rounded-md p-3 text-xs text-gray-800 leading-relaxed"
-          >
+        >
           <div className="flex justify-between items-start mb-1">
             <strong className="text-gray-600">💡 初次使用者導覽</strong>
             <button
@@ -68,6 +67,9 @@ export default function UsageTooltip() {
             >
               📁 下載範例檔案 (.edf)
             </a>
+            <p className="text-gray-500 text-[11px] mt-1">
+              ⚠ 若瀏覽器跳出提示，請點選「保留」以完成安全下載。
+            </p>
           </div>
         </div>
       )}

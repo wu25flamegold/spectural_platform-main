@@ -57,14 +57,12 @@ reset_password_model = rest_api.model('ResetPassword', {
                                                             'token': fields.String(required=True, description='The password reset token'),
                                                             'new_password': fields.String(required=True, description='The new password'),
                                                         })
-
 def token_required(f):
     """
     Helper function for JWT token required
     """
     @wraps(f)
     def decorator(*args, **kwargs):
-
         token = None
 
         if "authorization" in request.headers:
@@ -74,6 +72,7 @@ def token_required(f):
 
         if not token:
             return {"success": False, "msg": "Valid JWT token is missing"}, 400
+
         try:
             data = jwt.decode(token, BaseConfig.SECRET_KEY, algorithms=["HS256"])
             current_user = Users.get_by_email(data["email"])
@@ -86,7 +85,7 @@ def token_required(f):
 
             if token_expired is not None:
                 if request.endpoint == "logout":
-                    return f(current_user=None, *args, **kwargs)
+                    return f(*args, current_user=None, **kwargs)
                 return {"success": False, "msg": "Token revoked."}, 400
 
             if not current_user.check_jwt_auth_active():
@@ -94,10 +93,14 @@ def token_required(f):
 
         except:
             if request.endpoint == "logout":
-                return f(current_user=None, *args, **kwargs)
+                return f(*args, current_user=None, **kwargs)
             return {"success": False, "msg": "Token is invalid"}, 400
 
-        return f(current_user, *args, **kwargs)
+        # ✅ 正確支援 class method（self）或一般 function
+        if args:
+            return f(args[0], current_user, *args[1:], **kwargs)
+        else:
+            return f(current_user, *args, **kwargs)
 
     return decorator
 
@@ -105,6 +108,39 @@ def token_required(f):
 """
     Flask-Restx routes
 """
+@rest_api.route('/api/users/report')
+class Report(Resource):
+    """
+       Creates a new user by taking 'signup_model' input
+    """
+    def post(self):
+        message = request.form.get('message')
+        files = request.files.getlist('files[]')
+
+        try:
+            from . import mail
+            msg = Message(
+                subject="New Issue Reported",
+                sender=os.getenv('MAIL_USERNAME'),
+                recipients=[os.getenv('MAIL_USERNAME')]  # or another recipient
+            )
+
+            msg.body = (
+                f"Issue Description:\n{message}"
+            )
+
+            for f in files:
+                msg.attach(f.filename, f.content_type, f.read())
+            mail.send(msg)
+            return {"success": True,
+                    "msg": "Thanks for responsing!"}, 200
+
+        except Exception as e:
+            return {'success': False, 'msg': str(e)}, 500
+
+        
+
+
 @rest_api.route('/api/users/fotgot-password')
 class ForgotPassword(Resource):
     """
@@ -131,7 +167,7 @@ class ForgotPassword(Resource):
                     f"Please click the link below to reset it:\n{reset_link}\n\n"
                     "If you did not request a password reset, please ignore this email.\n\n"
                     "Thanks,\n"
-                    "NYCU IBS K&Y Lab"
+                    "Lab 906, HHSA Team @ NYCU IBS​"
                 )
 
                 mail.send(msg)

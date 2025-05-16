@@ -94,7 +94,8 @@ const TotalIncomeDarkCard = ({ isLoading }) => {
                                 className={classes.padding}
                                 sx={{
                                     mt: 0.45,
-                                    mb: 0.45
+                                    mb: 0.45,
+                                    zIndex: 1
                                 }}
                                 primary={
                                     <Typography variant="h4" className={classes.primary}>

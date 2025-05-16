@@ -325,7 +325,7 @@ const SamplePage = () => {
                     finalFileName = parts[parts.length - 1] || "";
                 }
                 const cleanedFileName = finalFileName.includes('_') ? finalFileName.split('_').slice(1).join('_') : finalFileName;
-                const plotTitle = `${cleanedFileName} (${lebal_name[chn - 1]}) [${dStart.toFixed(1)}s–${dStop.toFixed(1)}s]`;
+                const plotTitle = `${cleanedFileName} (${lebal_name[chn - 1]}) [${Number(dStart).toFixed(1)}s–${Number(dStop).toFixed(1)}s]`;
                 setFinalFilename(plotTitle); 
 
             } else {

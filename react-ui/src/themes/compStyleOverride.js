@@ -72,7 +72,7 @@ export function ComponentStyleOverrides(theme) {
                         },
                         '& .MuiListItemIcon-root': {
                             color: theme.menuSelected
-                        }
+                        },
                     },
                     '&:hover': {
                         backgroundColor: theme.menuSelectedBack,
@@ -80,7 +80,8 @@ export function ComponentStyleOverrides(theme) {
                         '& .MuiListItemIcon-root': {
                             color: theme.menuSelected
                         }
-                    }
+                    },
+                    
                 }
             }
         },

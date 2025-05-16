@@ -10,20 +10,21 @@ import AnimateButton from './../../../../ui-component/extended/AnimateButton';
 // style constant
 const useStyles = makeStyles((theme) => ({
     card: {
-        background: theme.palette.warning.light,
-        marginTop: '16px',
-        marginBottom: '16px',
+        background: '#e0f7fa',
+        marginTop: '12px',
+        marginBottom: '12px',
         overflow: 'hidden',
         position: 'relative',
+        height:'18%',
         '&:after': {
             content: '""',
             position: 'absolute',
             width: '200px',
             height: '200px',
             border: '19px solid ',
-            borderColor: theme.palette.warning.main,
+            borderColor: '#bbeff5',
             borderRadius: '50%',
-            top: '65px',
+            top: '45px',
             right: '-150px'
         },
         '&:before': {
@@ -32,23 +33,23 @@ const useStyles = makeStyles((theme) => ({
             width: '200px',
             height: '200px',
             border: '3px solid ',
-            borderColor: theme.palette.warning.main,
+            borderColor: '#bbeff5',
             borderRadius: '50%',
             top: '145px',
             right: '-70px'
         }
     },
     tagLine: {
-        color: theme.palette.grey[900],
+        color: theme.palette.grey[700],
         opacity: 0.6
     },
     button: {
         color: theme.palette.grey[800],
-        backgroundColor: theme.palette.warning.main,
+        backgroundColor: '#b8ecf2',
         textTransform: 'capitalize',
         boxShadow: 'none',
         '&:hover': {
-            backgroundColor: theme.palette.warning.dark
+            backgroundColor:'#91d8e1'
         }
     }
 }));
@@ -63,8 +64,8 @@ const UpgradePlanCard = () => {
             <CardContent>
                 <Grid container direction="column" spacing={2}>
                     <Grid item>
-                        <Typography variant="h4">
-                        Consult NYCU KY Lab if required.
+                        <Typography sx={{fontSize:'0.8rem', fontWeight:'500', marginTop:'-4px'}}>
+                            Consult NYCU KY Lab if required.
                         </Typography>
                     </Grid>
                     <Grid item>
@@ -74,8 +75,9 @@ const UpgradePlanCard = () => {
                                     component={Link}
                                     href="https://ibs.nycu.edu.tw/Home.html"
                                     target="_blank"
-                                    variant="contained"
+                                    variant="h6"
                                     className={classes.button}
+                                    sx={{fontSize:'0.8rem', fontWeight:'500', marginTop:'-3px'}}
                                 >
                                     Contact Us
                                 </Button>
