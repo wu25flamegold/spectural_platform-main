@@ -210,3 +210,8 @@ def generate_f5_signal(fs=200, signal_size=400000):
 
 def generate_f6_signal(fs=200, signal_size=400000):
     return generate_f4_signal(fs, signal_size) + generate_f5_signal(fs, signal_size)
+
+
+def generate_f7_signal(fs=200, signal_size=400000):
+    t = np.arange(signal_size) / fs
+    return 0.5 * np.sin(2 * np.pi * 2 * t) + np.sin(2 * np.pi * 1.5 * t) * np.sin(2 * np.pi * 14 * t)
