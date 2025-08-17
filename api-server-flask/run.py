@@ -10,6 +10,7 @@ def make_shell_context():
 @app.route('/test-db')
 def test_db():
     try:
+        # 嘗試建立連接
         db.session.execute('SELECT 1')
         return 'Connected to Database: {}'.format(app.config['SQLALCHEMY_DATABASE_URI'])
     except Exception as e:
