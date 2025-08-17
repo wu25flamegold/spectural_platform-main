@@ -16,7 +16,6 @@ export default function UsageTooltip() {
 
   return (
     <div className="inline-block overflow-visible z-0">
-      {/* ⬇️ 提示文字 + Icon 包在 capsule 裡 */}
       <div
         className="inline-flex items-center gap-1 px-3 py-1 rounded-full bg-blue-50 border border-blue-100 text-xs text-blue-700 cursor-pointer hover:bg-blue-100 transition"
         onClick={() => setShowTooltip(!showTooltip)}
@@ -34,7 +33,6 @@ export default function UsageTooltip() {
         <span className="font-medium">First-Time User Tips</span>
       </div>
 
-      {/* ⬇️ Tooltip 本體 */}
       {showTooltip && (
         <div
           ref={tooltipRef}

@@ -21,7 +21,7 @@ from .config import BaseConfig
 import tempfile
 from datetime import datetime
 
-matplotlib.use('Agg')  # 使用非 GUI 後端
+matplotlib.use('Agg') 
 
 
 class HoloVisualizer:
@@ -65,22 +65,6 @@ class HoloVisualizer:
         HOLO_DC[1:, :] = self.HOLO
         HOLO_DC[0, :] = HOLO_DC[1, :] / 4
         HOLO_DC[1, :] = HOLO_DC[1, :] / 10
-        #HOLO_DC = HOLO_DC + 0.001
-        
-        # fig, ax = plt.subplots(figsize=(15, 15))
-        
-        # contour = ax.contour(self.FMscale, AMscale_DC, HOLO_DC**self.SquareIdx, levels=np.linspace(0, 80, 11), cmap='jet', vmin=0, vmax=80)
-        # contour.set_clim(self.CLIM**self.SquareIdx)
-        # norm = colors.Normalize(vmin=0, vmax=80)
-        # sm = cm.ScalarMappable(cmap="jet", norm=norm)
-        # sm.set_array([])  # 這是為了讓 `colorbar` 正常顯示
-
-        # divider = make_axes_locatable(ax)
-        # cax = divider.append_axes("right", size="5%", pad=0.05)
-        # cbar = fig.colorbar(sm, cax=cax)
-        # ax.set_xlabel('FM(Hz)', fontname='Times New Roman', fontsize=13)
-        # ax.set_ylabel('AM(Hz)', fontname='Times New Roman', fontsize=13)
-        # ax.set_title(self.figureTitle, fontname='Times New Roman', fontsize=20, fontweight='bold')
         
         ytickmin = np.ceil(ymin)
         ytickmax = np.floor(ymax)
@@ -94,8 +78,6 @@ class HoloVisualizer:
                 yLABEL.append(f'1/{ytick_VALUE[idx]}')
             else:
                 yLABEL.append(str(ytick_VALUE[idx]))
-        # ax.set_yticks(np.insert(ytick_value, 0, ytick_value[0] - 0.35))
-        # ax.set_yticklabels(yLABEL, fontsize=12)
         
         xtickmin = np.ceil(xmin)
         xtickmax = np.floor(xmax)
@@ -107,31 +89,9 @@ class HoloVisualizer:
                 xLABEL.append(f'1/{xtick_VALUE[idx]}')
             else:
                 xLABEL.append(str(xtick_VALUE[idx]))
-        # ax.set_xticks(xtick_value)
-        # ax.set_xticklabels(xLABEL, fontsize=12)
         
-        # ssx = np.linspace(xmin, ymax)
-        # ssy = ssx
-        # contour.set_clim(0, 80)  # 限制 colorbar 數值範圍
-        # cbar.mappable.set_clim(0, 80)  # 這會真正限制 colorbar 只顯示 0~100
-        # cbar.ax.set_yticks(np.linspace(0, 80, num=11))
-        
-        # ax.plot(ssx, ssy, ':', color=[0, 0, 0], linewidth=1.8)
-        # ax.plot(self.FMscale, self.AMscale[0] * np.ones_like(self.FMscale), ':', color=[0, 0, 0], linewidth=1.8)        
-        # img_buffer = BytesIO()
-        # fig.savefig(img_buffer, format="png", dpi=300, bbox_inches="tight")
-        # plt.close(fig)  # 釋放記憶體
-        # img_buffer.seek(0)
-        # img_str = base64.b64encode(img_buffer.getvalue()).decode("utf-8")
-
-        # # **如果指定了 save_path，則存為 PNG**
-        # if save_path:
-        #     with open(save_path, "wb") as f:
-        #         f.write(img_buffer.getvalue())
         print("self.SquareIdx", self.SquareIdx)
         Z = HOLO_DC**self.SquareIdx
-        #Z = Z - 10
-        #Z = np.nan_to_num(HOLO_DC ** self.SquareIdx, nan=0.0, posinf=80.0, neginf=0.0)
 
         custom_colorscale = [
             [0.00, 'white'],
@@ -165,7 +125,6 @@ class HoloVisualizer:
 
         fig = go.Figure(
             data=[
-                    # 底層：Heatmap 隱形但顯示 colorbar
                     go.Contour(
                         z=Z,
                         x=self.FMscale.tolist(),
@@ -179,11 +138,11 @@ class HoloVisualizer:
                             size=10,
                             coloring='heatmap'
                         ),
-                        showscale=True,  # 顯示 colorbar
-                        line=dict(width=0),  # 不畫線條
+                        showscale=True, 
+                        line=dict(width=0), 
                         opacity=0,
-                        xaxis='x',  # 強制綁定 x
-                        yaxis='y'   # 強制綁定 y  # 不畫圖，只是為了 colorbar
+                        xaxis='x',  
+                        yaxis='y' 
                     ),
 
                     go.Contour(
@@ -201,7 +160,7 @@ class HoloVisualizer:
                             showlines=True
                         ),
                         line=dict(width=1, color='black'),
-                        showscale=False,  # 第二層不要顯示 colorbar,
+                        showscale=False,  
                         hovertemplate='Holo: %{z:.2f} <extra></extra>'
                     )
                 
@@ -215,13 +174,13 @@ class HoloVisualizer:
                 ),
                 xaxis=dict(
                     title="FM (Hz)",
-                    tickvals=xtick_value.tolist(),  # Tick 的實際位置
-                    ticktext=xLABEL,                # 顯示的文字（對應 tickvals）
+                    tickvals=xtick_value.tolist(), 
+                    ticktext=xLABEL,               
                     showgrid=False,
                     zeroline=False,
                     range=[-3, 6], 
                     constrain='range',
-                    constraintoward='center',       # 拖到邊界會怎麼處理（向內保留中心）
+                    constraintoward='center',      
                 ),
                 yaxis=dict(
                     title="AM (Hz)",
@@ -237,10 +196,10 @@ class HoloVisualizer:
                 plot_bgcolor='white',
                 paper_bgcolor='white',
                 margin=dict(
-                    l=70,   # left
-                    r=0,   # right
-                    t=50,   # top（這裡設定小一點會往上）
-                    b=50    # bottom
+                    l=70,  
+                    r=0,   
+                    t=50,  
+                    b=50   
                 )
             )
         )
@@ -253,17 +212,14 @@ class HoloVisualizer:
         return fig_json
 
     def hhsa_data(self, roi_coords):
-        # 將 Hz 值轉換為對數座標（因為 HOLO 是對數尺度）
         log_x1 = np.log2(roi_coords['x1'])
         log_x2 = np.log2(roi_coords['x2'])
         log_y1 = np.log2(roi_coords['y1'])
         log_y2 = np.log2(roi_coords['y2'])
 
-        # 找出落在 ROI 區間內的索引範圍
         x_mask = (self.FMscale >= log_x1) & (self.FMscale <= log_x2)
         y_mask = (self.AMscale >= log_y1) & (self.AMscale <= log_y2)
 
-        # ROI 對應的 Z 區塊
         roi_z = self.HOLO[np.ix_(y_mask, x_mask)]
 
 
@@ -276,17 +232,15 @@ class MATLABSharedMemoryClient:
         self.timeout = 120
         os.makedirs(os.path.dirname(self.file_path), exist_ok=True)
 
-        # 初始化共享記憶體文件
         if not os.path.exists(self.file_path):
             with open(self.file_path, "wb") as f:
                 f.write(b"\x00" * self.buffer_size)
 
-        # 開啟 memory-mapped file
+        # Open memory-mapped file
         self.mm = None
         self._open_memory_map()
 
     def _open_memory_map(self):
-        """開啟 memory-mapped 檔案"""
         with open(self.file_path, "r+b") as f:
             self.mm = mmap.mmap(f.fileno(), self.buffer_size)
 
@@ -295,32 +249,25 @@ class MATLABSharedMemoryClient:
         """發送 EDF 文件名稱到 MATLAB 端並觸發計算"""
         self.mm[5] = 200
         while struct.unpack("B", self.mm[5:6])[0] != 200:
-            print("🕒 等待 MATLAB server 初始化中...")
+            print("Wait MATLAB server init...")
             time.sleep(0.2)
-        edf_filename = os.path.abspath(edf_filename)  # 取得完整絕對路徑
+        edf_filename = os.path.abspath(edf_filename) 
 
-        #print(f"Python: 發送請求 `{edf_filename}` 給 MATLAB...")
         fs_bytes = struct.pack("<I", int(fs))
         n_bytes = struct.pack("<I", int(n))
         start_idx_bytes = struct.pack("<I", int(start_index))
         end_idx_bytes = struct.pack("<I", int(end_index))
         print("USERID")
         print(UserId)
-        user_id_bytes = UserId.encode("utf-8")  # 直接轉 UTF-8
-        user_id_bytes = user_id_bytes.ljust(8, b"\x00")  # 使用 NULL (\x00) 補滿 8 bytes
-        #user_id_bytes = UserId.ljust(8, b"\x00").encode("utf-8")
+        user_id_bytes = UserId.encode("utf-8")  
+        user_id_bytes = user_id_bytes.ljust(8, b"\x00")  # use NULL (\x00) fill 8 bytes
 
-       
-        # self.mm[5:] = edf_filename.encode("utf-8") + b"\x00" * (
-        #     self.buffer_size - len(edf_filename) - 5
-        # )
-        self.mm[5:] = b"\x00" * (self.buffer_size - 5)  # 清空 buffer
+        self.mm[5:] = b"\x00" * (self.buffer_size - 5)  # clean buffer
 
-        offset = 6  # 設定偏移量
+        offset = 6 
         self.mm[offset : offset + len(user_id_bytes)] = user_id_bytes
         offset += len(user_id_bytes)
 
-        # **寫入五個參數**
         self.mm[offset : offset + len(fs_bytes)] = fs_bytes
         offset += len(fs_bytes)
 
@@ -333,51 +280,43 @@ class MATLABSharedMemoryClient:
         self.mm[offset : offset + len(end_idx_bytes)] = end_idx_bytes
         offset += len(end_idx_bytes)
 
-        # **寫入 EDF 檔案名稱**
         self.mm[offset : offset + len(edf_filename)] = edf_filename.encode("utf-8")
-        self.mm[0:4] = struct.pack("I", 1)  # 設定 `uint32` 來觸發 MATLAB
+        self.mm[0:4] = struct.pack("I", 1) 
 
         
         def debug_mm_buffer(mm):
             print("\n🧪 Debugging shared memory buffer...")
 
-            offset = 6  # ⬅️ 注意！offset 6 才是 user_id 開始位置（因為 [0:4] 是 trigger，5 是狀態位）
+            offset = 6  
 
-            # ✅ 解析 user_id（固定 8 bytes）
             user_id = mm[offset : offset + 8].decode("utf-8", errors="ignore").rstrip("\x00")
-            print("👤 UserId:", user_id)
+            print("UserId:", user_id)
             offset += 8
 
-            # ✅ fs (uint32)
             fs = struct.unpack("<I", mm[offset : offset + 4])[0]
             offset += 4
-            print("🧠 Sampling Rate (fs):", fs)
+            print("Sampling Rate (fs):", fs)
 
-            # ✅ n (uint32)
             n = struct.unpack("<I", mm[offset : offset + 4])[0]
             offset += 4
-            print("📶 Channel Index (n):", n)
+            print("Channel Index (n):", n)
 
-            # ✅ start_time (uint32)
             start_time = struct.unpack("<I", mm[offset : offset + 4])[0]
             offset += 4
-            print("⏱️ Start Time:", start_time)
+            print("Start Time:", start_time)
 
-            # ✅ end_time (uint32)
             end_time = struct.unpack("<I", mm[offset : offset + 4])[0]
             offset += 4
-            print("⏹️ End Time:", end_time)
+            print("End Time:", end_time)
 
-            # ✅ 剩下的是 edf_filename
             filename = mm[offset :].split(b"\x00", 1)[0].decode("utf-8", errors="ignore")
-            print("📂 EDF Filename:", filename)
+            print("EDF Filename:", filename)
 
         debug_mm_buffer(self.mm)
 
 
     def wait_for_matlab(self):
         """等待 MATLAB 完成計算"""
-        print("Python: 等待 MATLAB 處理...")
         start_time = time.time()
         while struct.unpack("I", self.mm[0:4])[0] != 2:
             time.sleep(0.1)
@@ -389,26 +328,21 @@ class MATLABSharedMemoryClient:
         """讀取 MATLAB 寫入的數據"""
         offset = 5
 
-        # **讀取 FMscale**
         num_fm = 80
         FMscale = np.frombuffer(self.mm[offset : offset + num_fm * 4], dtype=np.float32)
         offset += num_fm * 4
 
-        # **讀取 AMscale**
         num_am = 80
         AMscale = np.frombuffer(self.mm[offset : offset + num_am * 4], dtype=np.float32)
         offset += num_am * 4
 
-        # **讀取 SquareIdx**
         SquareIdx = struct.unpack("B", self.mm[offset : offset + 1])[0]
         offset += 1
 
-        # **讀取 CLIM**
         CLIM = np.frombuffer(self.mm[offset : offset + 2], dtype=np.uint8)
         offset += 2
 
-        # **讀取 HOLO**
-        HOLO_size = (81, 80)  # 確保形狀正確
+        HOLO_size = (81, 80)  
         HOLO = np.frombuffer(
             self.mm[offset : offset + HOLO_size[0] * HOLO_size[1] * 8],
             dtype=np.float64,
@@ -416,21 +350,20 @@ class MATLABSharedMemoryClient:
         offset += HOLO_size[0] * HOLO_size[1] * 8
 
         figureTitle_bytes = bytearray()
-        while self.mm[offset] != 0:  # 遇到 NULL 結束
+        while self.mm[offset] != 0: 
             figureTitle_bytes.append(self.mm[offset])
             offset += 1
 
         figureTitle1 = figureTitle_bytes.decode("utf-8")
 
         print("Python: 解析完成！")
-        print(f"FMscale: {FMscale[:5]} ...")  # 測試輸出
+        print(f"FMscale: {FMscale[:5]} ...") 
         print(f"AMscale: {AMscale[:5]} ...")
         print(f"SquareIdx: {SquareIdx}")
         print(f"CLIM: {CLIM}")
         print(f"HOLO shape: {HOLO.shape}")
         print(f"figureTitle1: {figureTitle1}")
 
-        # **清空 buffer，準備下一次請求**
         self.mm[0:4] = struct.pack("I", 0)
         print("Python: Data processed, buffer cleared.")
 
@@ -461,8 +394,8 @@ class MATLABSharedMemoryClient:
             self.wait_for_matlab()
             return self.read_data()
         except TimeoutError:
-            print("⚠️ Timeout: MATLAB did not respond in time.")
-            print("🔁 Restarting MATLAB Runtime...")
+            print("Timeout: MATLAB did not respond in time.")
+            print("Restarting MATLAB Runtime...")
             return 0   
     
     def process_request_restart(self, UserId, edf_filename="fa0019r0.edf", fs=200, n=10, start_index=220, end_index=240):
@@ -473,7 +406,7 @@ class MATLABSharedMemoryClient:
             self.wait_for_matlab()
             return self.read_data()
         except TimeoutError:
-            print("⚠️ Timeout: MATLAB did not respond in time.")
+            print("Timeout: MATLAB did not respond in time.")
             return 0   
 
     def restart_tmapi_window(self, UserId):
@@ -495,18 +428,15 @@ class MATLABSharedMemoryClient:
                 except Exception as e:
                     print(f"⚠️ Failed to kill old MATLAB: {e}")
                 try:
-                    # 建立唯一 cache 資料夾
                     unique_cache_path = os.path.join(
                         tempfile.gettempdir(),
                         f"mcrCache_{UserId}_{datetime.now().strftime('%Y%m%d_%H%M%S_%f')}"
                     )
                     os.makedirs(unique_cache_path, exist_ok=True)
 
-                    # 設定環境變數
                     env = os.environ.copy()
                     env["MCR_CACHE_ROOT"] = unique_cache_path
 
-                    # 啟動 MATLAB .exe 並給 cmd window 設標題
                     process = subprocess.Popen(
                         f'start cmd /k "title {new_title} & {exe_path} {UserId}"',
                         shell=True,
@@ -628,13 +558,4 @@ def split_specific_time_range():
 
 if __name__ == "__main__":
     split_specific_time_range()
-    #client = MATLABSharedMemoryClient('0')
-    #result = client.process_request('0', r"C:\Users\admin\Documents\react-flask-authentication\api-server-flask\fa0019r0.edf", fs=200, n=10, start_index=220, end_index=240)
-    # with open("result.pkl", "wb") as f:
-    #     pickle.dump(result, f)
-    # with open("result.pkl", "rb") as f:
-    #     result = pickle.load(f)
-    #plot_holo_contour(result["HOLO"])
-
-    # visualizer = HoloVisualizer(result)
-    # visualizer.holo_show_with_dc()
+    

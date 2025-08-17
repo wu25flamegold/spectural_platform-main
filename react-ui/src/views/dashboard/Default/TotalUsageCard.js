@@ -7,8 +7,8 @@ import { makeStyles } from '@material-ui/styles';
 import { Avatar, List, ListItem, ListItemAvatar, ListItemText, Typography } from '@material-ui/core';
 
 // project imports
-import MainCard from './../../../ui-component/cards/MainCard';
-import TotalIncomeCard from './../../../ui-component/cards/Skeleton/TotalIncomeCard';
+import MainCard from '../../../ui-component/cards/MainCard';
+import TotalIncomeCard from '../../../ui-component/cards/Skeleton/TotalIncomeCard';
 
 // assets
 import StorefrontTwoToneIcon from '@material-ui/icons/StorefrontTwoTone';
@@ -75,7 +75,7 @@ const useStyles = makeStyles((theme) => ({
 
 //-----------------------|| DASHBOARD - TOTAL INCOME LIGHT CARD ||-----------------------//
 
-const TotalIncomeLightCard = ({ isLoading }) => {
+const TotalUsageCard = ({ isLoading }) => {
     const classes = useStyles();
     const account = useSelector((state) => state.account);
     console.log(account.user);
@@ -119,8 +119,8 @@ const TotalIncomeLightCard = ({ isLoading }) => {
     );
 };
 
-TotalIncomeLightCard.propTypes = {
+TotalUsageCard.propTypes = {
     isLoading: PropTypes.bool
 };
 
-export default TotalIncomeLightCard;
+export default TotalUsageCard;

@@ -13,20 +13,16 @@ import SchoolIcon from '@material-ui/icons/School'; // citation badge icon
 const HHSAIntro = () => {
   return (
     <CardContent>
-      {/* 全局調整字體大小和行距 */}
       <Box fontSize="2rem" lineHeight={1.6}>
 
-        {/* Section: Title */}
         <Typography variant="h3" gutterBottom>
           平台緣起
         </Typography>
 
-        {/* Section: 引導句 */}
         <Typography variant="body1" paragraph sx={{  mb: 3 , fontSize: '1.1rem' }}>
           本系統設計初衷旨在讓使用者以最直覺的方式操作 HHSA，探索腦波中的非線性奧秘。
         </Typography>
 
-        {/* Section: 為什麼需要 HHSA */}
         <Typography variant="h3" gutterBottom>
           為什麼需要 HHSA？
         </Typography>
@@ -38,7 +34,6 @@ const HHSAIntro = () => {
           尤其在分析大腦波動和診斷腦部疾病方面顯示出卓越的效能。
         </Typography>
 
-        {/* Section: 面臨的挑戰 */}
         <Typography variant="h3" gutterBottom>
           使用 HHSA 的挑戰
         </Typography>
@@ -47,7 +42,6 @@ const HHSAIntro = () => {
           使用者缺少便捷的操作工具和介面，難以有效運行程式並深入熟悉 HHSA。
         </Typography>
 
-        {/* Section: 平台解法 */}
         <Typography variant="h3" gutterBottom>
           解決方案：一鍵上手 HHSA 分析
         </Typography>
@@ -60,7 +54,6 @@ const HHSAIntro = () => {
           此外，平台亦整合 EEG 資料的區段與通道前處理功能，進一步提升分析效率與使用體驗。
         </Typography>
 
-        {/* Section: 亮點 */}
         <Box
           bgcolor="#fff"
           boxShadow={1}
@@ -90,7 +83,6 @@ const HHSAIntro = () => {
 
         <Divider style={{ margin: '24px 0' }} />
 
-        {/* Section: 技術細節 */}
         <Typography variant="h3" gutterBottom sx={{ mb: 1 }}>
           什麼是 HHSA？
         </Typography>
@@ -138,7 +130,6 @@ const HHSAIntro = () => {
 
         <Divider style={{ margin: '24px 0' }} />
 
-        {/* Section: Citation Badge */}
         <Typography variant="h3" gutterBottom sx={{ mb: 1 }}>
           參考文獻：
         </Typography>

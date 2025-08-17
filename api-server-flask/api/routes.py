@@ -96,7 +96,6 @@ def token_required(f):
                 return f(*args, current_user=None, **kwargs)
             return {"success": False, "msg": "Token is invalid"}, 400
 
-        # ✅ 正確支援 class method（self）或一般 function
         if args:
             return f(args[0], current_user, *args[1:], **kwargs)
         else:
@@ -281,7 +280,6 @@ class LogoutUser(Resource):
             jwt_block = JWTTokenBlocklist(jwt_token=_jwt_token, created_at=datetime.now(timezone.utc))
             jwt_block.save()
 
-        # 正確對 current_user 設定登出狀態
         if current_user:
             current_user.set_jwt_auth_active(False)
             current_user.save()
@@ -337,41 +335,7 @@ class OpenMatlab(Resource):
         UserId = request.headers.get('UserId')
         success, message, process = open_tmapi_window(UserId)
         return jsonify({"success": success, "message": message})
-        # exe_path = r"C:\Users\admin\Documents\2024\matlab_edf_server_for_json.exe"
-        # expected_cmdline = f"{exe_path} {UserId}"
-        # user32 = WinDLL('user32', use_last_error=True)
-        # new_title = f"MATLAB_Server_{UserId}"
-        # find_existed = user32.FindWindowW( new_title, None)  # 找到 CMD
-        # try:
-        #     hwnd_existed = user32.FindWindowW(None, f"TMAP_{UserId}")
-        #     print(hwnd_existed, "hwnd_existed")
-        #     if hwnd_existed:
-        #         tmapi = get_tmapi(UserId)
-        #         return jsonify({"success": True, "message": "MATLAB opened successfully."})
-        #     else:
-        #         tmapiPath = os.path.join(os.path.dirname(__file__), '..', '..', '..', '..', 'Desktop', 'v026', 'TMAPI.exe')
-        #         tmapiPath = r"C:\Users\admin\Desktop\v026\TMAPI.exe"
-
-        #         process = subprocess.Popen(
-        #             tmapiPath,
-        #             shell=True,
-        #             creationflags=subprocess.CREATE_NEW_CONSOLE
-        #         )
-        #         time.sleep(1)
-        #         hwnd = user32.FindWindowW(None, "TMAPI")
-        #         if hwnd:
-        #             new_title = f"TMAP_{UserId}"
-        #             user32.SetWindowTextW(hwnd, c_wchar_p(new_title))
-        #             print(f"Window title changed to: {new_title}")
-        #             from api import get_tmapi
-
-        #             tmapi = get_tmapi(UserId)
-        #             return jsonify({"success": True, "message": "MATLAB opened successfully."})
-        #         else:
-        #             return jsonify({"success": False, "message": "MATLAB opened successfully."})
-        # except Exception as e:
-        #     return jsonify({"success": False, "message": f"Failed to open MATLAB: {e}"})
-
+        
 
 
 @rest_api.route('/tmapi/send_command', endpoint='tmapi_send_command')
@@ -400,17 +364,10 @@ class SendCommand(Resource):
         chn = int(request.form['chn'])
         d_start = int(request.form['d_start'])
         d_stop = int(request.form['d_stop'])
-        #sampling_rate = float(request.form['sampling_rate'])
         email = request.form['email']
         usage = int(request.form['usage'])
         cmd=""
-        # buf, buf_n = prepare_tmapi_data(
-        #     tmapi, selectedFunction, file.filename if file_path else "",
-        #     cmd, sampling_rate, chn, d_start, d_stop
-        # )
         
-        # result = tmapi.send_message(buf, buf_n, UserId)
-        # #result = tmapi.process_request(UserId, file_path, fs=sampling_rate, n=chn, start_index=d_start, end_index=d_stop)
         valid, sampling_rate, labels, err_msg = validate_edf_by_header_only(file_path, n=chn, start_index=d_start, end_index=d_stop)
         if not valid:
             print(f"[ERROR] {err_msg}")
@@ -425,9 +382,6 @@ class SendCommand(Resource):
         elif result == 0:
             return jsonify({"success": False, "message": "Send Msg fail: no response"})
         else:
-            # img_str = tmapi.process_queue(fname, timestamp)
-            # #visualizer = api.matlab_client.HoloVisualizer(result)
-            # #img_str = visualizer.holo_show_with_dc()
             if "HOLO_INSTANCES" not in current_app.config:
                 current_app.config["HOLO_INSTANCES"] = {}
 
@@ -555,7 +509,6 @@ class AnalyzeROI(Resource):
         roi_data = request.get_json()
         roi_coords = roi_data.get('roi_coords')
 
-        # 取出 HOLO 與座標軸
         FMscale = np.array(hhsa_data["FMscale"])
         AMscale = np.array(hhsa_data["AMscale"])
         HOLO = np.array(hhsa_data["HOLO"])
@@ -563,7 +516,6 @@ class AnalyzeROI(Resource):
         x1, x2 = roi_coords["x1"], roi_coords["x2"]
         y1, y2 = roi_coords["y1"], roi_coords["y2"]
 
-        # 🔁 ROI 座標 → Index 範圍
         x_idx = np.where((FMscale >= x1 - 1e-4) & (FMscale <= x2 + 1e-4))[0]
         y_idx = np.where((AMscale >= y1 - 1e-4) & (AMscale <= y2 + 1e-4))[0]
 
@@ -573,15 +525,12 @@ class AnalyzeROI(Resource):
 
         roi_holo = HOLO[np.ix_(y_idx, x_idx)]
 
-        # ✅ 1. Marginal Spectrum
         marginal_fm = np.sum(roi_holo, axis=0).tolist()
         marginal_am = np.sum(roi_holo, axis=1).tolist()
 
-        # ✅ 2. Dominant Frequencies
         dominant_fm = float(FMscale[x_idx[np.argmax(marginal_fm)]])
         dominant_am = float(AMscale[y_idx[np.argmax(marginal_am)]])
 
-        # ✅ 3. Modulation Profile
         modulation_profile = roi_holo.tolist()
         fm_axis = FMscale[x_idx].tolist()
         am_axis = AMscale[y_idx].tolist()
@@ -656,7 +605,7 @@ class GetHistoryFile(Resource):
 
 def validate_edf_by_header_only(edf_path, n, start_index, end_index):
     if not os.path.exists(edf_path):
-        return False, 0, f"❌ 找不到檔案：{edf_path}"
+        return False, 0, f"找不到檔案：{edf_path}"
 
     try:
         filesize = os.path.getsize(edf_path)
@@ -672,7 +621,7 @@ def validate_edf_by_header_only(edf_path, n, start_index, end_index):
             num_records_str = f.read(8).decode().strip()
 
             if not duration_str or not num_records_str:
-                return False, 0, [],"❌ EDF 檔案缺少紀錄段資訊（duration 或 record 數）"
+                return False, 0, [],"EDF 檔案缺少紀錄段資訊（duration 或 record 數）"
 
             duration_per_record = float(duration_str)
             num_records = int(num_records_str)
@@ -693,7 +642,7 @@ def validate_edf_by_header_only(edf_path, n, start_index, end_index):
                     continue
 
             if fs_detected is None:
-                return False, 0,[], "❌ 無法解析 EDF headers 中的 sample rate"
+                return False, 0,[], "無法解析 EDF headers 中的 sample rate"
             f.seek(256)
             labels = []
             for _ in range(num_signals):
@@ -706,16 +655,16 @@ def validate_edf_by_header_only(edf_path, n, start_index, end_index):
         print(f"⏱️ 檔案總長：約 {total_duration:.2f} 秒")
 
         if n < 1 or n > num_signals:
-            return False, 0,[], f"❌ 通道 index ({n}) 超出範圍，僅有 {num_signals} 通道"
+            return False, 0,[], f"通道 index ({n}) 超出範圍，僅有 {num_signals} 通道"
 
         if start_index < 0 or end_index <= start_index:
-            return False, 0,[], "❌ 時間區間無效，start_index 必須小於 end_index 且皆為正整數"
+            return False, 0,[], "時間區間無效，start_index 必須小於 end_index 且皆為正整數"
 
         if total_duration != -1:
             if end_index > total_duration:
-                return False, 0, [],f"❌ 結束時間 {end_index}s 超出檔案總長 {total_duration:.2f}s"
+                return False, 0, [],f"結束時間 {end_index}s 超出檔案總長 {total_duration:.2f}s"
 
-        return True, fs_detected, labels, None  # ✅ 驗證成功
+        return True, fs_detected, labels, None
 
     except Exception as e:
-        return False, 0,[], f"❌ 驗證時發生錯誤：{str(e)}"
+        return False, 0,[], f"驗證時發生錯誤：{str(e)}"

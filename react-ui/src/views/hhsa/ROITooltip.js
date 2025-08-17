@@ -123,7 +123,7 @@ export default function ROITooltip() {
             </div>
           </div>
 
-          {/* Toolbar 說明 */}
+          {/* Toolbar */}
           <div className="font-semibold text-gray-700 mb-2">🛠️ 工具列說明（由左至右）</div>
           <div className="grid grid-cols-1 gap-y-2 text-xs text-gray-600">
             {plotlyToolbarItems.map((item, idx) => (

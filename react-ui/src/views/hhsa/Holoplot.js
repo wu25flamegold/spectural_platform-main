@@ -33,7 +33,6 @@ const HoloPlot = ({ holoData, isLoading, userid, token, fileName }) => {
 
   useEffect(() => {
     if (holoData?.data?.length) {
-      // 每次 holoData 改變時更新 key 強制重新 render Plot
       setPlotKey((prev) => prev + 1);
     }
   }, [holoData]);
@@ -50,7 +49,6 @@ const HoloPlot = ({ holoData, isLoading, userid, token, fileName }) => {
     console.log('分析 ROI:', roiCoordsRef.current);
     const { x1, x2, y1, y2 } = roiCoordsRef.current;
 
-    // 檢查數值是否有效
     if (
       !Number.isFinite(x1) ||
       !Number.isFinite(x2) ||
@@ -61,7 +59,6 @@ const HoloPlot = ({ holoData, isLoading, userid, token, fileName }) => {
       return;
     }
 
-    // 檢查數值是否符合邏輯（不應相等）
     if (x1 === x2 || y1 === y2) {
       setInputError("X or Y axis values should not be the same.");
       return;
@@ -77,7 +74,7 @@ const HoloPlot = ({ holoData, isLoading, userid, token, fileName }) => {
       return;
     }
   
-    setInputError(false); // 清除錯誤狀態
+    setInputError(false);
     try {
       const response = await axios.post('http://xds3.cmbm.idv.tw:81/tmapi/analyze_roi',{ roi_coords: roiCoords }, {
         method: 'POST',
@@ -90,7 +87,7 @@ const HoloPlot = ({ holoData, isLoading, userid, token, fileName }) => {
       if (response.data) {
         console.log("ROI analysis result:", response.data);
         dispatch(setRoiResult(response.data));
-        setTimeout(() => {updateSelectionBox(roiCoords)}, 0); // 用 0ms 確保在下一輪事件循環後執行
+        setTimeout(() => {updateSelectionBox(roiCoords)}, 0);
       } else {
         setInputError("Analysis failed. Try expanding your selection or regenerating the spectrum.");
       }
@@ -103,7 +100,6 @@ const HoloPlot = ({ holoData, isLoading, userid, token, fileName }) => {
   };
   
 
-  // 當 plot 上選取 ROI，更新 roiCoordsRef 和 input 的值
   const updateInputs = (coords) => {
     roiCoordsRef.current = coords;
 
@@ -123,12 +119,11 @@ const HoloPlot = ({ holoData, isLoading, userid, token, fileName }) => {
         const parentG = yTitle.parentElement;
         if (parentG && parentG.tagName === 'g') {
           parentG.setAttribute('transform', 'translate(-15,0)');
-          console.log('✅ ytitle transform updated');
+          console.log('ytitle transform updated');
         }
       }
     };
   
-    // 等待 Plotly 完全渲染後再執行（微 delay）
     const timeout = setTimeout(adjustYAxisTitle, 300);
   
     return () => clearTimeout(timeout);
@@ -161,14 +156,13 @@ const HoloPlot = ({ holoData, isLoading, userid, token, fileName }) => {
       const yMinLimit = -6;
       const yMaxLimit = 6;
 
-      // 修正不能超出邊界
       if (newX[0] < xMinLimit) newX[0] = xMinLimit;
       if (newX[1] > xMaxLimit) newX[1] = xMaxLimit;
 
       if (newY[0] < yMinLimit) newY[0] = yMinLimit;
       if (newY[1] > yMaxLimit) newY[1] = yMaxLimit;
 
-      // 再次檢查寬度是否已經到極限，不再 zoom out
+      // Stop zoom out
       const maxXSpan = xMaxLimit - xMinLimit;
       const maxYSpan = yMaxLimit - yMinLimit;
 
@@ -210,7 +204,6 @@ const HoloPlot = ({ holoData, isLoading, userid, token, fileName }) => {
   const clean_selected = {
     name: 'Clean Selected',
     icon: remove_selected,
-    //icon: Plotly.Icons.eraseshape,
     direction: 'up',
     click: function(gd) {if (!gd || !holoData) return;
       Plotly.relayout(gd, { selections: null });
@@ -227,7 +220,6 @@ const HoloPlot = ({ holoData, isLoading, userid, token, fileName }) => {
     <div className="grid grid-cols-1 md:grid-cols-3 gap-4 items-start">
       
       
-      {/* Plot 區域 */}
       <div className="md:col-span-2 w-full">
         {isLoading ? (
           <CircularProgress />
@@ -311,7 +303,7 @@ const HoloPlot = ({ holoData, isLoading, userid, token, fileName }) => {
         )}
       </div>
 
-      {/* ROI 面板 */}
+      {/* ROI  */}
       <div className="w-full">
       {holoData && (
         <Card variant="outlined" style={{ maxWidth: 420, marginTop: 16 }}>
@@ -322,10 +314,7 @@ const HoloPlot = ({ holoData, isLoading, userid, token, fileName }) => {
           <Typography variant="body2" color="textSecondary" paragraph>
             Modulation components with the highest energy are extracted from the selected region of interest (ROI).
           </Typography>
-{/* 
-          <Typography variant="subtitle1" gutterBottom>
-            ROI Selection
-          </Typography> */}
+
           <p className="text-sm text-gray-400">
             Use the <span className="inline-flex items-center gap-1 text-blue-600 font-medium">
               Box Select
@@ -343,7 +332,7 @@ const HoloPlot = ({ holoData, isLoading, userid, token, fileName }) => {
           </p>
 
           <div className="pl-1 space-y-2">
-            {/* FM 區 */}
+            {/* FM */}
             <div>
               <div className="text-gray-700 mb-1">X axis:</div>
               <div className="flex flex-wrap gap-4">
@@ -366,7 +355,7 @@ const HoloPlot = ({ holoData, isLoading, userid, token, fileName }) => {
               </div>
             </div>
 
-            {/* AM 區 */}
+            {/* AM */}
             <div>
               <div className="text-gray-700 mb-1 mt-2">Y axis:</div>
               <div className="flex flex-wrap gap-2">
@@ -391,21 +380,7 @@ const HoloPlot = ({ holoData, isLoading, userid, token, fileName }) => {
                 ))}
               </div>
             </div>
-
-            {/* 分析按鈕
-            <div className="flex justify-end mt-2">
-
-              <button
-                onClick={handleAnalyzeROI}
-                class="px-3 py-1 mt-2 bg-primary hover:bg-primary-dark text-white rounded-md text-sm"                >
-                Find Peaks	
-              </button>
-              {inputError && (
-                <div className="text-red-500 text-xs mt-2">{inputError}</div>
-              )}
-            </div> */}
           </div>
-          {/* 分析按鈕 */}
           <div className="flex justify-end mt-2">
             <button
               onClick={handleAnalyzeROI}
@@ -415,36 +390,16 @@ const HoloPlot = ({ holoData, isLoading, userid, token, fileName }) => {
             </button>
           </div>
 
-          {/* 錯誤提示 */}
           {inputError && (
             <div className="text-red-500 text-xs mt-2">{inputError}</div>
           )}
 
-          {/* ↓ 箭頭指引區塊 */}
           <div className="w-full flex justify-center mt-1 mb-1">
             <div className="w-2 h-2 rotate-45 bg-blue-200" />
           </div>
 
-          {/* ROI 統計結果，無卡片包裹 */}
           {roiResult && (
             <div className="mt-4 text-sm text-gray-800 space-y-1">
-
-              {/* <div className="text-gray-500">
-                FM Range:{" "}
-                <span className="text-gray-600">
-                  [{Math.pow(2, roiResult.roi_coords?.x1).toFixed(2)} ~{" "}
-                  {Math.pow(2, roiResult.roi_coords?.x2).toFixed(2)}] Hz
-                </span>
-              </div>
-
-              <div className="text-gray-500">
-                AM Range:{" "}
-                <span className="text-gray-600">
-                  [{Math.pow(2, roiResult.roi_coords?.y1).toFixed(2)} ~{" "}
-                  {Math.pow(2, roiResult.roi_coords?.y2).toFixed(2)}] Hz
-                </span>
-              </div> */}
-
               <div className="flex justify-between mt-2">
                 <div>
                   <div className="text-xs text-gray-500">Peak Frequency</div>
@@ -465,54 +420,9 @@ const HoloPlot = ({ holoData, isLoading, userid, token, fileName }) => {
               </div>
             </div>
           )}
-
-
-            {/* 顯示 ROI 統計結果
-            {roiResult && (
-              <>
-                <div className="w-full bg-transparent" />
-                <div className="mt-4 text-sm  text-gray-800">
-                  <Typography variant="subtitle1" gutterBottom>
-                    🎯 Dominant Peaks from Selected ROI
-                  </Typography>
-                  <div class="mb-1">
-                      <span className="text-sm text-gray-400">FM Range:</span>
-                      <span className="text-sm text-gray-400 pl-1">
-                        [{Math.pow(2, roiResult.roi_coords?.x1).toFixed(2)} ~ {Math.pow(2, roiResult.roi_coords?.x2).toFixed(2)}] Hz
-                      </span>
-                    </div>
-                    <div>
-                      <span className="text-sm text-gray-400">AM Range:</span>{' '}
-                      <span className="text-sm text-gray-400">
-                        [{Math.pow(2, roiResult.roi_coords?.y1).toFixed(2)} ~ {Math.pow(2, roiResult.roi_coords?.y2).toFixed(2)}] Hz
-                      </span>
-                    </div>
-                
-                  <div className="pl-3">
-                    
-                    <div className="w-full bg-transparent" style={{ height: '6px' }} />
-                    <div className="pb-1">
-                      <span>Peak Frequency:</span>{' '}
-                      <span className="text-blue-600">{roiResult.dominant_fm?.toFixed(2)} Hz</span>
-                    </div>
-                    <div>
-                      <span>Peak Amplitude:</span>{' '}
-                      <span className="text-blue-600">{roiResult.dominant_am?.toFixed(2)} Hz</span>
-                    </div>
-
-                    <span className="text-xs text-gray-400 mt-1 block">💡 Indicates the most energetic modulation frequency within the selected region.</span>
-
-                  </div>
-                </div>
-              </>
-            )} */}
-
           </CardContent>
         </Card>
       )}
-
-        {/* <RoiSummaryStats /> */}
-
       </div>
     </div>
   );

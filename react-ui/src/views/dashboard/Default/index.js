@@ -5,13 +5,11 @@ import { useSelector } from 'react-redux';
 import { Grid } from '@material-ui/core';
 
 // project imports
-import EarningCard from './EarningCard';
-import PopularCard from './PopularCard';
+import IntroCard from './IntroCard';
 import WatchVideoCard from './WatchVideoCard';
-import TotalIncomeDarkCard from './TotalIncomeDarkCard';
-import TotalIncomeLightCard from './TotalIncomeLightCard';
+import RoleCard from './RoleCard';
+import TotalUsageCard from './TotalUsageCard';
 import NotLoginCard from './NotLoginCard';
-import TotalGrowthBarChart from './TotalGrowthBarChart';
 import { gridSpacing } from './../../../store/constant';
 
 //-----------------------|| DEFAULT DASHBOARD ||-----------------------//
@@ -36,10 +34,10 @@ const Dashboard = () => {
                             {isLoggedIn ? (
                             <>
                                 <Grid item sm={12} xs={12} md={4} lg={4}>
-                                    <TotalIncomeDarkCard isLoading={isLoading} />
+                                    <RoleCard isLoading={isLoading} />
                                 </Grid>
                                 <Grid item sm={12} xs={12} md={4} lg={4}>
-                                    <TotalIncomeLightCard isLoading={isLoading} />
+                                    <TotalUsageCard isLoading={isLoading} />
                                 </Grid>
                                 <Grid item sm={12} xs={12} md={4} lg={4}>
                                     <WatchVideoCard isLoading={isLoading} />
@@ -59,7 +57,7 @@ const Dashboard = () => {
             <Grid item xs={12}>
                 <Grid container spacing={gridSpacing}>
                     <Grid item xs={12} md={12}>
-                        <PopularCard isLoading={isLoading} />
+                        <IntroCard isLoading={isLoading} />
                     </Grid>
                 </Grid>
             </Grid>

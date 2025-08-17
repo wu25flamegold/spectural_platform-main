@@ -8,7 +8,6 @@ import {
 } from '@material-ui/core';
 import { useSelector } from 'react-redux';
 
-// 計算 max / mean / std
 const getStats = (arr) => {
   if (!arr || arr.length === 0) return { max: 0, mean: 0, std: 0 };
   const max = Math.max(...arr);
@@ -70,7 +69,6 @@ const RoiSummaryStats = () => {
           </Box>
         ))}
 
-        {/* 👉 如果想加入能量分佈統計，建議獨立卡片更乾淨 */}
       </CardContent>
     </Card>
   );

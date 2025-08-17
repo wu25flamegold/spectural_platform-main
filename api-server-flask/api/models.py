@@ -1,10 +1,6 @@
 # -*- encoding: utf-8 -*-
-"""
-Copyright (c) 2019 - present AppSeed.us
-"""
 
 from datetime import datetime
-import json
 
 from werkzeug.security import generate_password_hash, check_password_hash
 from flask_sqlalchemy import SQLAlchemy
@@ -91,18 +87,18 @@ class JWTTokenBlocklist(db.Model):
 
 class Patients(db.Model):
     __table_args__ = {'schema': 'public'}
-    id = db.Column(db.Integer(), primary_key=True, autoincrement=True)  # 主鍵，連續遞增
-    age = db.Column(db.Integer(), nullable=False)  # 年齡
-    gender = db.Column(db.String(1), nullable=False)  # 性別
-    edf_file_path = db.Column(db.String(1000), nullable=False)  # EDF 檔案路徑
-    sample_rate = db.Column(db.Float(), nullable=False)  # 取樣率
-    start_time = db.Column(db.Integer(), nullable=False)  # 開始時間（UNIX 時間戳）
-    end_time = db.Column(db.Integer(), nullable=False)  # 結束時間（UNIX 時間戳）
-    clinical_diagnosis_code = db.Column(db.String(200), nullable=True)  # 臨床診斷代碼
-    picture_path = db.Column(db.String(1000), nullable=False)  # 圖片路徑
-    uploaded_at = db.Column(db.DateTime(), default=datetime.utcnow)  # 上傳時間，預設為當前時間
-    create_user = db.Column(db.Integer(), nullable=False)  # 關聯的用戶 ID
-    channel = db.Column(db.Integer(), nullable=False)  # 添加這行到模型中
+    id = db.Column(db.Integer(), primary_key=True, autoincrement=True)
+    age = db.Column(db.Integer(), nullable=False)
+    gender = db.Column(db.String(1), nullable=False) 
+    edf_file_path = db.Column(db.String(1000), nullable=False) 
+    sample_rate = db.Column(db.Float(), nullable=False)
+    start_time = db.Column(db.Integer(), nullable=False) 
+    end_time = db.Column(db.Integer(), nullable=False) 
+    clinical_diagnosis_code = db.Column(db.String(200), nullable=True) 
+    picture_path = db.Column(db.String(1000), nullable=False) 
+    uploaded_at = db.Column(db.DateTime(), default=datetime.utcnow) 
+    create_user = db.Column(db.Integer(), nullable=False) 
+    channel = db.Column(db.Integer(), nullable=False) 
 
 
     def __repr__(self):

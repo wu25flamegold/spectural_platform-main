@@ -110,18 +110,15 @@ def open_tmapi_window(UserId):
             return True, f"Analysis tool launched.", None
         else:
             try:
-                # 建立唯一 cache 資料夾
                 unique_cache_path = os.path.join(
                     tempfile.gettempdir(),
                     f"mcrCache_{UserId}_{datetime.now().strftime('%Y%m%d_%H%M%S_%f')}"
                 )
                 os.makedirs(unique_cache_path, exist_ok=True)
 
-                # 設定環境變數
                 env = os.environ.copy()
                 env["MCR_CACHE_ROOT"] = unique_cache_path
 
-                # 啟動 MATLAB .exe 並給 cmd window 設標題
                 process = subprocess.Popen(
                     f'start cmd /k "title {new_title} & {exe_path} {UserId}"',
                     shell=True,
@@ -159,7 +156,6 @@ def write_signal_to_edf(selectedFunction, fs, UserId):
 
     signal = generator_map[selectedFunction](fs=200, signal_size=4000).astype(np.float64)
 
-    # ✅ 建立檔名與儲存路徑
     timestamp = datetime.now().strftime("%Y%m%d_%H%M%S")
     filename = f"{selectedFunction}_{timestamp}.edf"
     file_path = os.path.join(SAVE_EDF_DIR, filename)
@@ -167,8 +163,8 @@ def write_signal_to_edf(selectedFunction, fs, UserId):
     writer = EDFwriter(file_path, 1, 1)
     writer.setSignalLabel(0, selectedFunction)
     writer.setPhysicalDimension(0, 'uV')
-    writer.setSampleFrequency(0, fs)               # ✅ 每秒 fs 個 sample
-    writer.setDataRecordDuration(1000000)       # ✅ 每筆 record 為 1 秒
+    writer.setSampleFrequency(0, fs)               
+    writer.setDataRecordDuration(1000000)      
     writer.setPhysicalMinimum(0, -1.0)
     writer.setPhysicalMaximum(0, 1.0)
     writer.setDigitalMinimum(0, -32768)

@@ -58,7 +58,6 @@ const SamplePage = () => {
         const selectedFile = e.target.files[0];
         const maxSizeMB = 1000;
     
-        //if (!selectedFile) return;
         console.log('selectedFile', selectedFile)
         const isEDF = selectedFile.name.toLowerCase().endsWith('.edf');
         if (!isEDF) {
@@ -82,7 +81,7 @@ const SamplePage = () => {
 
         parseTimeout.current = setTimeout(async () => {
             try {
-                const sliceSize = 8192; // 確保含 header + signal metadata
+                const sliceSize = 8192; 
                 const headerSlice = selectedFile.slice(0, sliceSize);
                 const arrayBuffer = await headerSlice.arrayBuffer();
                 const decoder = new TextDecoder("ascii");
@@ -96,9 +95,8 @@ const SamplePage = () => {
                 const numRecordsStr = decoder.decode(arrayBuffer.slice(236, 244)).trim();
                 const numRecords = parseInt(numRecordsStr);
 
-                // 嘗試推算 signal header 長度（常見是 256 或 216）
-                let signalHeaderBytesGuess = 256; // 預設猜 256
-                const possibleOffsets = [256, 216, 192, 200]; // 若你懷疑有特例可加進來
+                let signalHeaderBytesGuess = 256; 
+                const possibleOffsets = [256, 216, 192, 200];
 
                 let fs = null;
                 let samplesPerRecord = [];
@@ -138,10 +136,10 @@ const SamplePage = () => {
                 });
                 setMessage("Upload file successfully");
             } catch (error) {
-                console.error("❌ Failed to parse EDF header:", error);
-                setMessage("❌ Failed to parse EDF header");
+                console.error("Failed to parse EDF header:", error);
+                setMessage("Failed to parse EDF header");
             }
-        }, 500); // 0.5 秒延遲
+        }, 500);
     };
     
     useEffect(() => {
@@ -190,7 +188,6 @@ const SamplePage = () => {
     
             const filePath = response.data.file_path;
             setFilePath(filePath);
-            //fetchEDFMeta(filePath);
         } catch (error) {
             console.error('Failed to retrieve file path:', error?.response?.data?.message || error);
         }
@@ -215,7 +212,7 @@ const SamplePage = () => {
 
     useEffect(() => {
         if (file) {
-            setFilePath(null);                    // 清除歷史檔案路徑
+            setFilePath(null);            
             historySelectorRef.current?.reset();
           }
     }, [file]);
@@ -246,8 +243,6 @@ const SamplePage = () => {
         try {
             let filename = "";
             let totalChunks = 0;
-    
-            // ✅ CASE 1: 使用者自行上傳檔案
             if (file) {
                 totalChunks = Math.ceil(file.size / CHUNK_SIZE);
                 filename = `${Date.now()}_${file.name}`;
@@ -417,12 +412,6 @@ const SamplePage = () => {
                                             <div className="col-span-1 bg-white border rounded p-4 flex flex-col items-center justify-center">
                                                 {file ? (
                                                     <div className="flex flex-col items-center gap-4">
-                                                    {/* <div className="bg-blue-200 p-3 rounded-full">
-                                                    <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4 text-blue-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                                                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12l2 2l4-4M6 2a2 2 0 00-2 2v16c0 1.1.9 2 2 2h12a2 2 0 002-2V8l-6-6H6z" />
-                                                    </svg>
-                                                    </div> */}
-                                                
                                                     <div className="inline-flex items-center gap-2 bg-gray-100 text-gray-800 px-4 py-2 rounded-full text-sm">
                                                     <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4 text-gray-500" fill="none" viewBox="0 0 20 20" stroke="currentColor">
                                                         <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 16V4a1 1 0 011-1h7l5 5v8a1 1 0 01-1 1H5a1 1 0 01-1-1z" />
@@ -488,27 +477,6 @@ const SamplePage = () => {
                                                     </div>
                                                     
                                                     <div className="relative overflow-visible z-0 w-full px-2 pt-2">
-                                                        {/* <select
-                                                            id="pastFiles"
-                                                            value={selectedHistoryFile}
-                                                            className="w-full border border-gray-300 rounded px-3 py-2 text-xs text-center text-gray-500 
-                                                            focus:outline-none focus:ring-2 focus:ring-blue-400 
-                                                            hover:border-blue-400 transition"                                                            
-                                                            onChange={(e) => {
-                                                                const selectedFileName = e.target.value;
-                                                                setSelectedHistoryFile(selectedFileName);
-                                                                if (selectedFileName) {
-                                                                    handleSelectHistoryFile(selectedFileName);
-                                                                }
-                                                            }}
-                                                        >
-                                                            <option value="">-- Choose from history --</option>
-                                                            {historyFiles.map((f) => (
-                                                                <option key={f.stored_name} value={f.stored_name}>
-                                                                    {f.original_name} ({format(new Date(f.timestamp * 1000), 'yyyy-MM-dd HH:mm')})
-                                                                </option>
-                                                            ))}
-                                                        </select> */}
                                                         <HistoryFileSelector
                                                             ref={historySelectorRef}
                                                             historyFiles={historyFiles}

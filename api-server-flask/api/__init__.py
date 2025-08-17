@@ -5,14 +5,14 @@ from flask_cors import CORS
 from .routes import rest_api
 from .models import db
 from .tmapi import TMAPI
-from .matlab_client import MATLABSharedMemoryClient  # 確保 MATLABSharedMemoryClient 有正確導入
+from .matlab_client import MATLABSharedMemoryClient 
 from .config import BaseConfig
 from flask_mail import Mail
 
 app = Flask(__name__)
 app.config['MAIL_SERVER'] = os.getenv('MAIL_SERVER')
 app.config['MAIL_PORT'] = 587
-app.config['MAIL_USE_TLS'] = True  # ✅ 用 TLS，不是 SSL
+app.config['MAIL_USE_TLS'] = True
 app.config['MAIL_USE_SSL'] = False
 app.config['MAIL_USERNAME'] = os.getenv('MAIL_USERNAME')
 app.config['MAIL_DEFAULT_SENDER'] = ('LAB 906', os.getenv('MAIL_USERNAME'))

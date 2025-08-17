@@ -10,7 +10,6 @@ import AuthWrapper1 from './../AuthWrapper1';
 import AuthCardWrapper from './../AuthCardWrapper';
 import Logo from './../../../../ui-component/Logo';
 import RestRecreatepassword from './RestRecreatepassword';
-import AuthFooter from './../../../../ui-component/cards/AuthFooter';
 
 // assets
 

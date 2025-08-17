@@ -6,7 +6,6 @@ import { format } from 'date-fns';
 const HistoryFileSelector = forwardRef(({ historyFiles, onSelect, onDelete }, ref) => {
   const [selected, setSelected] = useState(null);
 
-  // 父層可調用 reset()
   useImperativeHandle(ref, () => ({
     reset: () => setSelected(null)
   }));
@@ -15,9 +14,9 @@ const HistoryFileSelector = forwardRef(({ historyFiles, onSelect, onDelete }, re
     console.log('handleSelect', file)
     setSelected(file);
     if (file === null) {
-        onSelect(null); // 明確傳 null
+        onSelect(null); 
       } else {
-        onSelect(file.stored_name); // 正常傳 filename
+        onSelect(file.stored_name);
       }
   };
 

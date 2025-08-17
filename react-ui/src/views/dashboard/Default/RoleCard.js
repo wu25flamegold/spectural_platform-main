@@ -6,8 +6,8 @@ import { makeStyles } from '@material-ui/styles';
 import { Avatar, List, ListItem, ListItemAvatar, ListItemText, Typography } from '@material-ui/core';
 
 // project imports
-import MainCard from './../../../ui-component/cards/MainCard';
-import TotalIncomeCard from './../../../ui-component/cards/Skeleton/TotalIncomeCard';
+import MainCard from '../../../ui-component/cards/MainCard';
+import TotalIncomeCard from '../../../ui-component/cards/Skeleton/TotalIncomeCard';
 
 // assets
 import BadgeOutlined from '@material-ui/icons/BadgeOutlined';
@@ -73,7 +73,7 @@ const useStyles = makeStyles((theme) => ({
 
 //-----------------------|| DASHBOARD - TOTAL INCOME DARK CARD ||-----------------------//
 
-const TotalIncomeDarkCard = ({ isLoading }) => {
+const RoleCard = ({ isLoading }) => {
     const classes = useStyles();
     const account = useSelector((state) => state.account);
 
@@ -116,8 +116,8 @@ const TotalIncomeDarkCard = ({ isLoading }) => {
     );
 };
 
-TotalIncomeDarkCard.propTypes = {
+RoleCard.propTypes = {
     isLoading: PropTypes.bool
 };
 
-export default TotalIncomeDarkCard;
+export default RoleCard;
