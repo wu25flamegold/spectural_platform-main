@@ -35,7 +35,7 @@ def get_process_instance(user_id):
     if user_id not in app.config["TMAPI_INSTANCES"]:
         if BaseConfig.PROCESSING_MODE == "TMAPI":
             app.config["TMAPI_INSTANCES"][user_id] = TMAPI(user_id)
-        elif BaseConfig.PROCESSING_MODE == "process_request":
+        elif BaseConfig.PROCESSING_MODE == "FLAMEGOLD":
             app.config["TMAPI_INSTANCES"][user_id] = MATLABSharedMemoryClient(user_id)
         else:
             raise ValueError(f"Unknown PROCESSING_MODE: {BaseConfig.PROCESSING_MODE}")

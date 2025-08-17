@@ -9,7 +9,7 @@ from datetime import timedelta
 BASE_DIR = os.path.dirname(os.path.realpath(__file__))
 
 class BaseConfig():
-    PROCESSING_MODE = "process_request"  
+    PROCESSING_MODE = "FLAMEGOLD"  
 
     SECRET_KEY = os.getenv('SECRET_KEY', None)
     if not SECRET_KEY:

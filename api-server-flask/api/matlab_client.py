@@ -412,7 +412,7 @@ class MATLABSharedMemoryClient:
     def restart_tmapi_window(self, UserId):
         exe_path = r"C:\\Users\\admin\\Documents\\2024.0\\matlab_edf_server_for_json.exe"
         user32 = ctypes.WinDLL('user32', use_last_error=True)
-        if BaseConfig.PROCESSING_MODE == "process_request":
+        if BaseConfig.PROCESSING_MODE == "FLAMEGOLD":
             new_title = f"MATLAB_Server_{UserId}"
             windows = gw.getWindowsWithTitle(new_title)
             if windows:

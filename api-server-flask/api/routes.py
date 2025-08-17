@@ -17,7 +17,7 @@ import jwt
 from scipy.fft import fft, fftfreq
 from scipy.signal import hilbert, savgol_filter
 import mne
-from utils.upload_utils import write_signal_to_edf, generate_result_image, run_tmapi_processing, prepare_tmapi_data, open_tmapi_window, create_patient_record
+from utils.upload_utils import write_signal_to_edf, generate_result_image, run_hhsa_processing, prepare_tmapi_data, open_tmapi_window, create_patient_record
 from .models import db, Users, JWTTokenBlocklist
 from .config import BaseConfig
 import requests
@@ -375,7 +375,7 @@ class SendCommand(Resource):
                 "success": False,
                 "message": f"{err_msg}"
             })
-        result = run_tmapi_processing(instance, selectedFunction, file_path, cmd, sampling_rate,
+        result = run_hhsa_processing(instance, selectedFunction, file_path, cmd, sampling_rate,
                                       chn, d_start, d_stop, UserId, fname, timestamp)
         if result == -1:
             return jsonify({"success": False, "message": "Send Msg fail: no handle"})
@@ -458,7 +458,7 @@ class SendSimulate(Resource):
         fname = selectedFunction
         timestamp, filename, file_path = write_signal_to_edf(selectedFunction, sampling_rate, UserId)
 
-        result = run_tmapi_processing(instance, selectedFunction, file_path, cmd, sampling_rate,
+        result = run_hhsa_processing(instance, selectedFunction, file_path, cmd, sampling_rate,
                                       chn, d_start, d_stop, UserId, filename, timestamp)
         if result == -1:
             return jsonify({"success": False, "message": "Send Msg fail: no handle"})

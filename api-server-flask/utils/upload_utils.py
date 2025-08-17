@@ -23,7 +23,7 @@ def is_valid_edf(file_stream):
     file_stream.seek(0) 
     return header.strip() in [b'0', b'EDF', b'EDF+C', b'EDF+D']
 
-def run_tmapi_processing(instance, selectedFunction, file_path, cmd, sampling_rate,
+def run_hhsa_processing(instance, selectedFunction, file_path, cmd, sampling_rate,
                          chn, d_start, d_stop, UserId, fname, timestamp):
     print('BaseConfig.PROCESSING_MODE', BaseConfig.PROCESSING_MODE)
     if BaseConfig.PROCESSING_MODE == "TMAPI":
@@ -34,7 +34,7 @@ def run_tmapi_processing(instance, selectedFunction, file_path, cmd, sampling_ra
         )
         result = instance.send_message(buf, buf_n, UserId)
 
-    elif BaseConfig.PROCESSING_MODE == "process_request":
+    elif BaseConfig.PROCESSING_MODE == "FLAMEGOLD":
         result = instance.process_request(UserId, file_path, fs=sampling_rate, n=chn, start_index=d_start, end_index=d_stop)
         if result == 0:
             result = instance.process_request_restart(UserId, file_path, fs=sampling_rate, n=chn, start_index=d_start, end_index=d_stop)
@@ -47,7 +47,7 @@ def generate_result_image(result, tmapi, fname, timestamp, UserId):
     if BaseConfig.PROCESSING_MODE == "TMAPI":
         return tmapi.process_queue(fname, timestamp)
 
-    elif BaseConfig.PROCESSING_MODE == "process_request":
+    elif BaseConfig.PROCESSING_MODE == "FLAMEGOLD":
         from api.matlab_client import HoloVisualizer
         visualizer = HoloVisualizer(result)
         return visualizer.holo_show_with_dc()
@@ -103,7 +103,7 @@ def open_tmapi_window(UserId):
                 return False, "TMAPI window not found after launching", None
         except Exception as e:
             return False, f"Failed to open TMAPI: {e}", None
-    elif BaseConfig.PROCESSING_MODE == "process_request":
+    elif BaseConfig.PROCESSING_MODE == "FLAMEGOLD":
         new_title = f"MATLAB_Server_{UserId}"
         windows = gw.getWindowsWithTitle(new_title)
         if windows:
