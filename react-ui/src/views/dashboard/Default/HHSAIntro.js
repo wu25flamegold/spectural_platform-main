@@ -84,14 +84,7 @@ const HHSAIntro = () => {
             <Grid item xs={12} sm={6}>
               <Typography variant="body2" sx={{ fontSize: '1.1rem' }}>✔️ 黃鍔院士授權</Typography>
             </Grid>
-            <Grid item xs={12}>
-              <Box mt={1}>
-                <Typography variant="body2" sx={{ fontSize: '1.1rem' }}>
-                  💡 相較於傳統需安裝 Matlab 的方式，若使用官方授權的 Matlab 軟體，商業標準版售價為 2,535 美元（約新台幣 83,790 元），
-                  學術版亦需 550 美元（約新台幣 18,179 元）。本平台提供免費、即時操作的替代方案，有效降低研究或臨床應用的技術與財務門檻。
-                </Typography>
-              </Box>
-            </Grid>
+            
           </Grid>
         </Box>
 
