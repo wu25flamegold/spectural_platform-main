@@ -5,15 +5,16 @@
 ##### Python dependencies are managed using `pip` and JavaScript dependencies are managed using `yarn`.
 
 #### Envornment
-- OS: Windows11 
 - Node.js: 16.20.2
 - Yarn: 1.22.22
-- Pip: 24.3.1 
+- Pip: 24.3.1
+- PostgreSQL: 17
+- DB Port: 5432
 
 
-## ✨ Prerequisites
+## Prerequisites
 
-> 👉 **Step 0: Pre-installation** 
+> **Step 0: Pre-installation** 
 
 ```bash
 $ # Install yarn
@@ -30,17 +31,13 @@ $
 
 ## ✨ How to build
 
-> 👉 **Step 1: Start the Flask API** 
+> **Step 1: Start the Flask API** 
 
 ```bash
 $ cd api-server-flask
 $ 
 $ # Create a virtual environment
 $ virtualenv env
-$
-$ # If you using zsh
-$ source env/bin/activate
-$ # If you using powershell or cmd
 $ .\env\Scripts\activate
 $
 $ # Install modules
@@ -56,7 +53,7 @@ $ flask run
 
 <br />
 
-> 👉 **Step 2: Compile & start the React UI**
+> **Step 2: Compile & start the React UI**
 
 ```bash
 $ cd react-ui
