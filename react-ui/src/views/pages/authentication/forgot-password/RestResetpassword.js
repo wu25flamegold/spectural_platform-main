@@ -1,5 +1,5 @@
 import React, { useEffect } from 'react';
-import { Link, useHistory } from 'react-router-dom';
+import {  useHistory } from 'react-router-dom';
 
 import configData from '../../../../config';
 
@@ -8,18 +8,10 @@ import { makeStyles } from '@material-ui/styles';
 import {
     Box,
     Button,
-    Checkbox,
     FormControl,
-    FormControlLabel,
     FormHelperText,
-    Grid,
-    IconButton,
-    InputAdornment,
     InputLabel,
     OutlinedInput,
-    TextField,
-    Typography,
-    useMediaQuery
 } from '@material-ui/core';
 
 // third party
@@ -27,14 +19,8 @@ import * as Yup from 'yup';
 import { Formik } from 'formik';
 import axios from 'axios';
 
-// project imports
 import useScriptRef from '../../../../hooks/useScriptRef';
 import AnimateButton from './../../../../ui-component/extended/AnimateButton';
-import { strengthColor, strengthIndicator } from '../../../../utils/password-strength';
-
-// assets
-import Visibility from '@material-ui/icons/Visibility';
-import VisibilityOff from '@material-ui/icons/VisibilityOff';
 
 // style constant
 const useStyles = makeStyles((theme) => ({
@@ -81,12 +67,6 @@ const RestResetpassword = ({ ...others }) => {
     const classes = useStyles();
     let history = useHistory();
     const scriptedRef = useScriptRef();
-    const matchDownSM = useMediaQuery((theme) => theme.breakpoints.down('sm'));
-    const [showPassword, setShowPassword] = React.useState(false);
-    const [checked, setChecked] = React.useState(true);
-
-    const [strength, setStrength] = React.useState(0);
-    const [level, setLevel] = React.useState('');
 
     return (
         <React.Fragment>

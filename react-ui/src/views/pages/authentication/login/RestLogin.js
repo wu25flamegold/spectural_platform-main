@@ -9,9 +9,7 @@ import { makeStyles } from '@material-ui/styles';
 import {
     Box,
     Button,
-    Checkbox,
     FormControl,
-    FormControlLabel,
     FormHelperText,
     IconButton,
     InputAdornment,
@@ -83,7 +81,7 @@ const RestLogin = (props, { ...others }) => {
     const scriptedRef = useScriptRef();
     const [checked, setChecked] = React.useState(true);
     const history = useHistory();
-    const location = useLocation(); // 🔥 新增
+    const location = useLocation();
 
     const [showPassword, setShowPassword] = React.useState(false);
     const handleClickShowPassword = () => {
@@ -210,17 +208,6 @@ const RestLogin = (props, { ...others }) => {
                             )}
                         </FormControl>
                         <Stack direction="row" alignItems="center" justifyContent="space-between" spacing={1}>
-                            {/* <FormControlLabel
-                                control={
-                                    <Checkbox
-                                        checked={checked}
-                                        onChange={(event) => setChecked(event.target.checked)}
-                                        name="checked"
-                                        color="primary"
-                                    />
-                                }
-                                label="Remember me"
-                            /> */}
                             <Typography
                                 variant="subtitle1"
                                 component={Link}

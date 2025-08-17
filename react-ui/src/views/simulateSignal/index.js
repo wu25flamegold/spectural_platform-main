@@ -10,11 +10,9 @@ import 'katex/dist/katex.min.css';
 import HoloPlot from './../hhsa/Holoplot';
 import clsx from 'clsx';
 import ExpandMoreIcon from '@material-ui/icons/ExpandMore';
-import { clearRoiResult } from './../../store/roiSlice'; // ← 確保路徑正確
+import { clearRoiResult } from './../../store/roiSlice'; 
 
 import {
-    Card,
-    CardContent,
     Typography,
     Divider,
     IconButton,
@@ -137,10 +135,7 @@ const SimulateSignalPage = () => {
             <div className="px-1 sm:px-4 pb-[100px]">
                 <div className="bg-white rounded-lg shadow p-3 sm:p-6 flex flex-col gap-6">
 
-
-                    {/* Header */}
                     <div>
-                        {/* <Typography variant="h6" className="text-gray-800 mb-4 transform translate-y-[6px]">Simulated Signal Analyze</Typography> */}
                         {/* Header with toggle */}
                         <div className="flex justify-between items-center mb-2 h-6">
                             <Typography variant="h6" className="text-gray-800">
@@ -170,7 +165,7 @@ const SimulateSignalPage = () => {
                                     </div>
                                     )}
                                     <div className="flex flex-wrap gap-6">
-                                    {/* 左側：Function 選擇區 */}
+                                    {/* LEFT */}
                                         <div className="flex-1">
                                             <label variant="subtitle2" className="block font-medium text-xs mb-1">Choose a Signal Pattern (ω in rad/s):
                                             </label>
@@ -194,8 +189,7 @@ const SimulateSignalPage = () => {
                                         </div>
 
 
-                                        {/* 右側：固定說明 + 按鈕 */}
-                                        {/* 右側：固定說明 + 按鈕 */}
+                                        {/* RIGHT */}
                                         <div className="w-full lg:w-[160px] flex flex-col gap-4 pt-1">
                                         <div>
                                             <label className="block font-medium text-xs mb-1">Signal Configuration:</label>

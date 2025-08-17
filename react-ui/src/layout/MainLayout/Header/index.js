@@ -1,15 +1,11 @@
 import PropTypes from 'prop-types';
 import React from 'react';
+import LogoSection from '../LogoSection';
+import ProfileSection from './ProfileSection';
 
 // material-ui
 import { makeStyles } from '@material-ui/styles';
 import { Avatar, Box, ButtonBase } from '@material-ui/core';
-
-// project imports
-import LogoSection from '../LogoSection';
-import SearchSection from './SearchSection';
-import ProfileSection from './ProfileSection';
-import NotificationSection from './NotificationSection';
 
 // assets
 import { IconMenu2 } from '@tabler/icons';
@@ -48,7 +44,6 @@ const Header = ({ handleLeftDrawerToggle }) => {
         <React.Fragment>
             {/* logo & toggler button */}
             <div className={classes.boxContainer}>
-                
                 <ButtonBase sx={{ borderRadius: '12px', overflow: 'hidden' }}>
                     <Avatar variant="rounded" className={classes.headerAvatar} onClick={handleLeftDrawerToggle} color="inherit">
                         <IconMenu2 stroke={1.5} size="1.3rem" />
@@ -58,14 +53,7 @@ const Header = ({ handleLeftDrawerToggle }) => {
                     <LogoSection />
                 </Box>
             </div>
-
-            {/* header search */}
-            {/* <SearchSection theme="light" /> */}
             <div className={classes.grow} />
-            <div className={classes.grow} />
-
-            {/* notification & profile */}
-            {/* <NotificationSection /> */}
             <ProfileSection />
         </React.Fragment>
     );

@@ -3,11 +3,10 @@ import React from 'react';
 
 // material-ui
 import { makeStyles } from '@material-ui/styles';
-import { Divider, List, Typography } from '@material-ui/core';
+import { List, Typography } from '@material-ui/core';
 
 // project imports
 import NavItem from './../NavItem';
-import NavCollapse from './../NavCollapse';
 
 // style constant
 const useStyles = makeStyles((theme) => ({
@@ -31,8 +30,6 @@ const NavGroup = ({ item }) => {
     // menu list collapse & items
     const items = item.children.map((menu) => {
         switch (menu.type) {
-            case 'collapse':
-                return <NavCollapse key={menu.id} menu={menu} level={1} />;
             case 'item':
                 return <NavItem key={menu.id} item={menu} level={1} />;
             default:
@@ -63,8 +60,6 @@ const NavGroup = ({ item }) => {
                 {items}
             </List>
 
-            {/* group divider */}
-            {/* <Divider className={classes.menuDivider} /> */}
         </React.Fragment>
     );
 };

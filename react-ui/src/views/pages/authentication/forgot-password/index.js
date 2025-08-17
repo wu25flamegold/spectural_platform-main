@@ -5,14 +5,11 @@ import { Link as RouterLink } from 'react-router-dom';
 import { useTheme } from '@material-ui/core';
 import { Divider, Grid, Stack, Typography, useMediaQuery } from '@material-ui/core';
 
-// project imports
 import AuthWrapper1 from './../AuthWrapper1';
 import AuthCardWrapper from './../AuthCardWrapper';
 import Logo from './../../../../ui-component/Logo';
 import RestResetpassword from './RestResetpassword';
-import AuthFooter from './../../../../ui-component/cards/AuthFooter';
 
-// assets
 
 //===============================|| AUTH3 - REGISTER ||===============================//
 

@@ -1,12 +1,35 @@
-import { dashboard } from './dashboard';
-import { utilities } from './utilities';
-import { other } from './other';
+import { IconApiApp} from '@tabler/icons';
+
+const icons = { IconApiApp: IconApiApp};
 
 //-----------------------|| MENU ITEMS ||-----------------------//
 
+export const utilities = {
+    id: 'utilities',
+    title: 'HHSA utilities',
+    type: 'group',
+    children: [
+        {
+            id: 'simulateSignal',
+            title: 'Simulate Signal',
+            type: 'item',
+            url: '/simulateSignal',
+            icon: icons['IconApiApp'],
+            breadcrumbs: false
+        },
+        {
+            id: 'hhsa',
+            title: 'Analyze EEG File',
+            type: 'item',
+            url: '/hhsa',
+            icon: icons['IconApiApp'],
+            breadcrumbs: false
+        }
+    ]
+};
+
 const menuItems = {
-    //items: [dashboard, utilities, other]
-    items: [utilities, other]
+    items: [utilities]
 };
 
 export default menuItems;

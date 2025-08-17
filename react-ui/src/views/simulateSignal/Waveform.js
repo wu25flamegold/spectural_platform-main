@@ -22,7 +22,6 @@ const Waveform = ({ data, title }) => {
     const minGap = 4;
   
     if (end - start < minGap) {
-      // 根據使用者滑動哪邊來做調整
       const mid = (start + end) / 2;
       setViewWindow([Math.max(0, mid - minGap / 2), Math.min(data.length, mid + minGap / 2)]);
     } else {

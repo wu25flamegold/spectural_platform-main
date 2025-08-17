@@ -107,7 +107,7 @@ const NavItem = ({ item, level }) => {
                 itemHandler(item.id);
                 if (item.external) {
                     setDisableHover(true);
-                    setTimeout(() => setDisableHover(false), 500); // 恢復 hover 行為
+                    setTimeout(() => setDisableHover(false), 500);
                 }
             }}
             
