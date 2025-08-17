@@ -7,7 +7,7 @@ module.exports = {
           primary: {
             light: '#e3f2fd',
             200: '#90caf9',
-            DEFAULT: '#2196f3',   // 對應你 $primaryMain
+            DEFAULT: '#2196f3',
             dark: '#1e88e5',
             800: '#1565c0',
           },
