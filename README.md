@@ -1,4 +1,4 @@
-# Spectural Platform
+# Spectral Platform
 
 ##### Full-stack project build by `React UI` and `Flask API Server`. 
 
