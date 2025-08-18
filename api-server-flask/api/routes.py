@@ -17,7 +17,7 @@ import jwt
 from scipy.fft import fft, fftfreq
 from scipy.signal import hilbert, savgol_filter
 import mne
-from utils.upload_utils import write_signal_to_edf, generate_result_image, run_hhsa_processing, prepare_tmapi_data, open_tmapi_window, create_patient_record
+from utils.upload_utils import write_signal_to_edf, generate_result_image, run_hhsa_processing, prepare_tmapi_data, open_process_window, create_patient_record
 from .models import db, Users, JWTTokenBlocklist
 from .config import BaseConfig
 import requests
@@ -333,7 +333,7 @@ class OpenMatlab(Resource):
     def post(self):
         global process
         UserId = request.headers.get('UserId')
-        success, message, process = open_tmapi_window(UserId)
+        success, message, process = open_process_window(UserId)
         return jsonify({"success": success, "message": message})
         
 
