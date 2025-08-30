@@ -89,7 +89,7 @@ const SimulateSignalPage = () => {
             });
             setMessage(response.data.message);
         } catch (error) {
-            setMessage(error?.response?.data?.message || error);
+            setMessage(error?.response?.data?.message || error.message || 'Unknown error');
         }
     };
 
